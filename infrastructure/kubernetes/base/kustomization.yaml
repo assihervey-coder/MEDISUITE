@@ -4,3 +4,4 @@ resources:
   - namespace.yaml
   - rbac.yaml
   - configmaps.yaml
+  - networkpolicy.yaml

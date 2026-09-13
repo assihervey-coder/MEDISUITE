@@ -3,6 +3,39 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.15.0] — 2026-09-14
+
+### Publication GHCR (v0.15)
+- Job CI `docker-publish` : les **6 services cœur** (api-gateway, auth,
+  patient, imaging, laboratory, ecrf) sont construits avec le Dockerfile
+  générique réel (`local-deployment/Dockerfile.service`, arg SERVICE_DIR)
+  et poussés sur **ghcr.io/assihervey-coder/medisuite/medisuite-<service>**
+  — tags : branche, **semver de release** (épinglage prod), sha long
+  (traçabilité commit ↔ image). `permissions: packages: write`, cache GHA,
+  publication seulement après suites vertes (`needs:`). La matrice couvre
+  le cœur ; les 24 spécialités partagent la même image de template —
+  publication à la demande (épargne le quota GHCR, choix documenté).
+
+### NetworkPolicy k8s — deny par défaut (v0.15)
+- `base/networkpolicy.yaml` : **5 politiques** — deny ingress + deny egress
+  universels, puis allowlist minimale : intra-namespace (services ↔ services,
+  scraping Prometheus, OTel), DNS sortant restreint à kube-system (UDP/TCP
+  53), entrée publique **uniquement** vers l'api-gateway :8000 depuis le
+  namespace ingress-nginx. Le transformer `namespace:` des overlays réécrit
+  tout — aucune duplication par environnement.
+
+### Multi-env staging/prod (v0.15)
+- `overlays/staging/` (namespace `medisuite-staging`, 1 réplique, images
+  edge) et `overlays/prod/` (namespace `medisuite-prod`, **≥ 2 répliques**,
+  **PodDisruptionBudget** api-gateway minAvailable 1, images épinglées
+  semver via `values.yaml` Helm pointé sur GHCR) — s'ajoutent à
+  `overlays/dev/` (v0.x). Trois namespaces distincts dérivés de la même
+  base : la politique réseau suit automatiquement.
+- Verrou `tools/tests/test_k8s_infra.py` (7 tests) : validité YAML de tous
+  les manifests, structure deny/allow, portes de sortie minimales,
+  namespaces distincts, PDB, et le contrat CI↔GHCR (matrice, permissions,
+  semver, needs) — 32/32 tests tools.
+
 ## [v0.14.0] — 2026-09-14
 
 ### 96 écrans fins du portal — 24 modules × 4 types (v0.14)

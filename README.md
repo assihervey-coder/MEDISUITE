@@ -90,6 +90,7 @@ traçabilité IEC 81001-5-1 sans la complexité d'une blockchain (décision ADR-
 | v0.12.0 | **e2e Playwright** ([5 parcours](apps/web-portal/e2e/portal.spec.ts), APIs mockées, RTL arabe vérifié bout-en-bout) + job CI, **charge k6 verrouillée** ([smoke + stress, seuil EGSP p95 ≤ 2 s](testing/load/README.md)) + workflow dispatch, Makefile réparé | ✅ |
 | v0.13.0 | **Setup local assisté** ([séquence 00-10 idempotente](local-deployment/setup/README.md), modes natif + docker, bilan final bloquant) + **paquet hors-ligne air-gapped** ([wheels + cache npm + images + SBOM + MANIFEST.sha256](local-deployment/offline/README.md)) + Makefile re-réparé (test verrou anti-récidive) | ✅ |
 | v0.14.0 | **96 écrans fins** (24 modules × 4 types — vue d'ensemble, cas, fiche avec calculateurs de scores réels, assistance IA à avertissement permanent) générés par [`tools/generate_screens.py`](tools/generate_screens.py) depuis les sources de vérité (registry, clinical-rules, configs IA) — i18n ×4, idempotence CI | ✅ |
+| v0.15.0 | **Images GHCR** (6 services cœur, tags semver/sha, job CI après suites vertes) + **NetworkPolicy k8s deny-par-défaut** (allowlist : intra-namespace, DNS kube-system, gateway :8000) + **overlays staging/prod** (namespaces, répliques ≥ 2, PDB) | ✅ |
 | v1.0.0 | Dossier de marquage CE (MDR IIb) complet, évaluation clinique multicentrique CHU, SMQ ISO 13485 | 📋 — plan `compliance/mdr/technical-documentation/08-plan-validation-v1.0.0.md` |
 
 ## 🤝 Contribution

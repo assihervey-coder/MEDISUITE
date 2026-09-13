@@ -1,5 +1,12 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.15.0** : images GHCR (6 services cœur, tags
+semver/sha, job CI conditionné aux suites vertes), NetworkPolicy k8s
+deny-par-défaut + allowlist minimale (DNS, intra-namespace, gateway) et
+overlays **staging/prod** (namespaces distincts, répliques, PDB) — le bloc
+« GHCR + NetworkPolicy, multi-env » est fermé. Reste codeable :
+mobile/desktop (v1+, assumé).
+
 > **Mise à jour v0.14.0** : 96 écrans fins générés (24 modules × 4 types)
 depuis les sources de vérité — le bloc « ~100 écrans spécialisés fins » de
 l'audit de couverture est fermé (gabarits typés + calculateurs de scores
@@ -85,7 +92,7 @@ terrain (R3 sommatif, R6, pentest, GPU CHU) et backlog §ci-dessous.
 | HDS (hébergement) | 🔴 n/a hors UE | 🔴 idem | Hébergeur équivalent local (R4, éval. fournisseurs) |
 | Interopérabilité (HL7/FHIR) | ✅ mapping FHIR + HL7 v2.5 | ✅ **serveur HAPI JPA réel** R4 validation REQUIRE + relais RBAC (v0.4) | Profils nationaux IOP CI (v1.0) |
 | Observabilité | 🟠 Prometheus/Grafana | ✅ **OTel collector + spans normés** (v0.4) | Sampling intelligent + métriques métier OTel (v1.0) |
-| Infra GPU | 🔴 absente | ✅ **K8s GPU time-slicing ×2 + HPA** (v0.4) | Image GHCR + NetworkPolicy + overlays staging/prod : chantier v0.14+ |
+| Infra GPU | 🔴 absente | ✅ **K8s GPU time-slicing ×2 + HPA** (v0.4) + **GHCR + NetworkPolicy + staging/prod** (v0.15) | Alignement des labels pods ↔ NetworkPolicy au déploiement réel CHU (R6) |
 | Explicabilité IA | ✅ importance modalités | ✅ idem | Éval. clinique des sorties IA (R5-R7) |
 | Dérive de modèles | 🟠 DAG Airflow drift-check | 🟠 idem | Seuils calibrés données CHU réelles (RM-05) |
 

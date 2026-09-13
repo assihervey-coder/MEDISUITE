@@ -39,9 +39,9 @@ banc EGSP…) sont **la part d'ingénierie allant au-delà de la spécification*
 | `apps/mobile`, `apps/desktop`, extensions viewer maison | 38 | 0 (OHIF v3.8.3 branché `/dicom-web` à la place des extensions maison) | Choix assumé : viewer standard éprouvé > extensions à maintenir ; mobile/desktop hors périmètre v0.x | 🔴 backlog v1+ |
 | `docs/` guides+architecture | 163 | 36 f. dont 24 ADR + 10 guides réels (PACS, OHIF, FHIR, OTEL, K8S-GPU, E-CRF, OFFLINE, UDI-GS1, BENCHMARK, MODULES) | La spec empilait des docs normatives ; réel = guides d'usage + ADR traçables | 🟠 |
 | `docs/compliance/` 15 normes + 26 model-cards | 46 | `compliance/` 30 f. **répartis** : dossier CE MDR 11 docs, SMQ 9 PROC, IFU 4 profils + étiquetage, usabilité, hardening, SBOM CycloneDX | Structure réelle (par livrable CE) plus opérante que 15 fichiers normatifs plats ; **model-cards formelles par module : 🔴** (partiellement couvert par datasets/registry + audit-26-modules + configs IA) | 🟠 model-cards 🔴 |
-| `infrastructure/` | 83 | 17 f. : Terraform, K8s base+overlays+Helm, GPU (8 YAML validés), ArgoCD+Flux | La spec listait 8 modules Terraform × 4 env ; réel = un socle paramétrable + overlays | 🟢 (multi-env staging/prod à dérouler) |
+| `infrastructure/` | 83 | 24 f. : Terraform, K8s base+**4 overlays** (dev/staging/prod+gpu)+Helm, GPU, ArgoCD+Flux, **NetworkPolicy deny-par-défaut** (v0.15) | La spec listait 8 modules Terraform × 4 env ; réel = socle + overlays déroulés (3 namespaces + PDB prod) | 🟢 |
 | `configs/` | 64 | 2 f. configs ops + 26 configs IA (dans `ai/multimodal/configs/`) | Déplacement assumé : les configs vivent près du code | 🟢 |
-| `.github/` CI 12 workflows + 13 actions composables | 55 | 1 `ci.yml` (3 jobs) | **Écart réel découvert par cet audit** → corrigé v0.8 : job `core+datasets+integration` ajouté, `tsc \|\| true` silencieux remplacé par contrôle strict ; GPU/e2e actions = backlog | 🟠 corrigé |
+| `.github/` CI 12 workflows + 13 actions composables | 55 | 3 workflows (ci.yml **5 jobs dont docker-publish GHCR**, ci-gpu, ci-load) | **Écart réel découvert par cet audit** → corrigé v0.8 : job `core+datasets+integration` ajouté, `tsc \|\| true` silencieux remplacé par contrôle strict ; GPU/e2e actions = backlog | 🟠 corrigé |
 | `compliance/` (racine spec) | — | → voir `docs/compliance/` ci-dessus | — | 🟢 |
 | `local-deployment/` 12 scripts setup | 32 | compose minimal **11 services** + **séquence setup 00-10 idempotente** (v0.13 : prereqs→verify, 2 modes natif/docker, bilan bloquant) + **paquet offline air-gapped** (wheels + cache npm + images + SBOM + MANIFEST.sha256, installateur vérifié) | Livré v0.13 avec 10 tests verrou ; `DRY_RUN=1` testable | 🟢 |
 | `security/` | 19 | `compliance/security/hardening/` : Vault (compose+policies+init), PKI mTLS (script vérifié openssl), plan pentest ASVS, SBOM | — | 🟢 outillage ; exécution pentest externe 🔴 terrain |
@@ -72,7 +72,7 @@ La quasi-totalité tombe dans trois mécanismes **conscients et documentés** :
    retient 1 compose + 1 CI + K8s/Helm (déploiement réel documenté).
 
 **Reste réellement manquant et utile** (honnêteté, non consolidable) :
-GHCR/NetworkPolicy/overlays, mobile/desktop (v1+).
+mobile/desktop (v1+, assumé).
 **Livrés depuis cet audit** : model-cards ×26 (v0.10), i18n ar/es (v0.11),
 usabilité sommative (v0.11), e2e Playwright + k6 (v0.12), setup 00-10 +
 paquet offline (v0.13). **Livrés depuis cet audit** : model-cards

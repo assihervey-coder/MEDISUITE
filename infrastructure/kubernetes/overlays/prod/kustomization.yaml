@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: medisuite-prod
+resources: [../../base, pdb.yaml]
+# Production : ≥ 2 répliques par service + PDB sur la passerelle.
+# Les images GHCR (ghcr.io/assihervey-coder/medisuite/<service>) sont
+# épinglées par tag de release (type=semver) au déploiement — voir
+# infrastructure/kubernetes/helm/medisuite-core/values.yaml (image.tag).
+patches: [{path: replicas.yaml, target: {kind: Deployment}}]

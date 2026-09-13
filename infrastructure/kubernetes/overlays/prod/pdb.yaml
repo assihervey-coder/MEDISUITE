@@ -1,0 +1,9 @@
+# PDB : un redémarrage de nœud ne peut pas couper toute la passerelle.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: api-gateway-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {app: api-gateway}
