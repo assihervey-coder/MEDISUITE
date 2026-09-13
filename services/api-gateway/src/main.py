@@ -4,9 +4,12 @@
 - validation JWT du header Authorization avant transmission (X-User-* injectés)
 - token bucket en mémoire (anti-abus, 100 req/min par client)
 - /health agrégé : état de tous les services (fanout parallèle)
+- /api/v1/about : étiquetage UDI public (MDR Annexe I §23.2 — jalon R2)
 """
 from __future__ import annotations
 
+import json
+import os
 import pathlib
 import sys
 import time
@@ -50,6 +53,27 @@ REGISTRY: dict[str, str] = {
 # Rate limiting : token bucket par client (dév en mémoire ; Redis en prod)
 BUCKETS: dict[str, tuple[float, float]] = {}  # client → (tokens, last refill)
 RATE_LIMIT = 100 / 60.0  # req/s
+
+# Étiquetage UDI : fichier versionné + surcharge d'environnement au déploiement
+# (la version/commit injectés font foi — règle 1 de l'étiquetage).
+_LABELING_PATH = pathlib.Path(__file__).resolve().parents[1] / "labeling.json"
+with open(_LABELING_PATH, encoding="utf-8") as _fh:
+    LABELING: dict = json.load(_fh)
+
+
+@app.get("/api/v1/about", tags=["opérationnel"])
+def about() -> dict:
+    """Étiquette logicielle publique (écran « À propos » du web-portal).
+
+    Public volontairement : une étiquette réglementaire doit rester lisible
+    même sans session (MDR Annexe I §23.2, Règlement UDI 2019/320).
+    """
+    out = dict(LABELING)
+    out["version"] = os.environ.get("MEDISUITE_VERSION", out["version"])
+    out["commit"] = os.environ.get("MEDISUITE_COMMIT", "inconnu")
+    out["date_liberation"] = os.environ.get("MEDISUITE_RELEASE_DATE",
+                                             out["date_liberation"])
+    return out
 
 
 def _allow(client: str) -> bool:

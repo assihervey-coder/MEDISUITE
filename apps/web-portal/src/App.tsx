@@ -9,6 +9,7 @@ import TriageBoard from "./features/emergency/TriageBoard";
 import StrokeCode from "./features/neurology/StrokeCode";
 import FusionViewer from "./features/multimodal/FusionViewer";
 import AuditLog from "./features/admin/AuditLog";
+import About from "./features/about/About";
 import { useAuth } from "./store/authStore";
 import ClinicalPanel from "./components/ClinicalPanel";
 import { MODULE_NAV } from "./features/modules-nav";
@@ -23,6 +24,7 @@ const NAV_MAIN = [
   { to: "/code-avc", label: "🧠 Code AVC (stroke)" },
   { to: "/multimodal", label: "🧠 Fusion multimodale" },
   { to: "/audit", label: "🔐 Audit (chaîné)" },
+  { to: "/about", label: "ℹ️ À propos (UDI)" },
 ];
 
 export default function App() {
@@ -63,6 +65,7 @@ export default function App() {
           <Route path="/code-avc" element={<StrokeCode />} />
           <Route path="/multimodal" element={<FusionViewer />} />
           <Route path="/audit" element={<AuditLog />} />
+          <Route path="/about" element={<About />} />
           {MODULE_NAV.map((n) => (
             <Route
               key={n.to}

@@ -53,3 +53,21 @@ def test_rate_limiter():
         _allow("client-rl-test")
     assert _allow("client-rl-test") is False
     assert _allow("autre-client-rl") is True
+
+
+def test_about_etiquetage_public():
+    # étiquette UDI lisible SANS JWT (MDR Annexe I §23.2)
+    r = client.get("/api/v1/about").json()
+    assert r["basic_udi_di"] == "MEDISUITE-PLTF-AIDE-DECISION"
+    assert r["classe_mdr"].startswith("IIb")
+    assert r["marquage_ce"] is False          # honnêteté : NON CE affiché
+    assert "commit" in r and r["ifu"] and len(r["ifu"]) == 4
+
+
+def test_about_env_prime_deployment(monkeypatch):
+    # la version injectée au déploiement fait foi (règle 1 étiquetage)
+    monkeypatch.setenv("MEDISUITE_VERSION", "v9.9.9-rc")
+    monkeypatch.setenv("MEDISUITE_COMMIT", "abc1234")
+    r = client.get("/api/v1/about").json()
+    assert r["version"] == "v9.9.9-rc" and r["commit"] == "abc1234"
+    assert r["basic_udi_di"] == "MEDISUITE-PLTF-AIDE-DECISION"

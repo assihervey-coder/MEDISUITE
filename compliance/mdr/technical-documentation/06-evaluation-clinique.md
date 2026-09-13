@@ -24,6 +24,12 @@ retenue. La stratégie combine :
 
 ## 2. Investigation clinique multicentrique CHU (plan d'étude)
 
+> **Mise à jour v0.6.0** : le protocole détaillé est rédigé —
+> `10-protocole-investigation-multicentrique-R5.md` (MEDISUITE-CI-01,
+> ISO 14155, 3 CHU, n=600, co-endpoints κ/sûreté/délais, DSMB, ANOC-CI,
+> PACTR). Il **supersède l'estimation d'effectifs** ci-dessous (§7.4 du
+> protocole justifie l'écart). Les soumissions restent 🔴 (jalon R5).
+
 | Champ | Proposition (à affiner par l'investigateur coordonnateur) |
 |---|---|
 | Design | étude prospective, multi-centres (2-3 CHU pilotes), cohorte consécutive, comparaison aidé-par-MEDISUITE vs pratique standard historique |

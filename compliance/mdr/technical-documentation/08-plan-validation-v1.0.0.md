@@ -19,10 +19,10 @@
 | # | Livrable | Section dossier | Priorité | Estimation |
 |---|---|---|---|---|
 | R1 | SMQ ISO 13485 : cartographie processus, procédures documentées (libération, incidents, qualité fournisseurs) | `../smq/` PROC-01…08 ✅ rédigées v0.5 | haute — **audit interne + auditeur externe 🔴** | M+0 → M+4 |
-| R2 | IFU complètes (4 profils) + étiquetage + UDI/EID (GS1) | `ifu/` ✅ rédigées v0.5 | haute — **UDI-EID émission + écran À propos 🔴** | M+1 → M+3 |
+| R2 | IFU complètes (4 profils) + étiquetage + UDI/EID (GS1) | `ifu/` ✅ rédigées v0.5 | haute — écran « À propos » **✅ v0.6.0** ; **UDI-EID émission 🔴** | M+1 → M+3 |
 | R3 | Usabilité formative (IEC 62366) | `usability/` protocole + grilles ✅ prêts v0.5 | haute — **exécution avec participants CHU 🔴** | M+2 → M+6 |
 | R4 | Durcissement : Vault/mTLS/SBOM + pentest + banc perf | `security/hardening/` + `tools/bench/` ✅ outillage v0.5 | haute — **exécution pentest externe + campagne GPU CHU 🔴** | M+1 → M+5 |
-| R5 | Protocole investigation multicentrique + accords CHU + comité d'éthique | `06-evaluation-clinique.md` | critique | M+2 → M+6 |
+| R5 | Protocole investigation multicentrique + accords CHU + comité d'éthique | `10-protocole-investigation-multicentrique-R5.md` (MEDISUITE-CI-01) | critique — **protocole v1.0-draft rédigé v0.6.0 🟠 ; ANOC/Ministère/accords/signatures 🔴** | M+2 → M+6 |
 | R6 | Exécution investigation (inclusions, monitoring DSMB) | Annexe XV | critique | M+6 → M+18 |
 | R7 | Rapport évaluation clinique (MEDDEV 2.7/1 rev 4) + bénéfice-risque final | Annexe XIV | critique | M+18 → M+21 |
 | R8 | Dossier notifié (EUDAMED) + audit organisme notifié + certification | art. 52-54 | critique | M+21 → M+30+ |

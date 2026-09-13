@@ -19,15 +19,19 @@
 | 5 | Gestion des risques (ISO 14971, Annexe I §3) | `03-analyse-risques-iso14971.md` | 🟠 |
 | 6 | Vérification & validation (IEC 62304, 81001-5-1) | `04-iec-62304-classe-C.md` | 🟠 |
 | 7 | Ingénierie d'usage (IEC 62366-1) | `05-iec-62366-usabilite.md` | 🔴 |
-| 8 | Évaluation clinique (Annexe XIV) + investigation (Annexe XV) | `06-evaluation-clinique.md` | 🔴 |
+| 8 | Évaluation clinique (Annexe XIV) + investigation (Annexe XV) | `06-evaluation-clinique.md` + **`10-protocole-investigation-multicentrique-R5.md` (v0.6 : protocole MEDISUITE-CI-01 rédigé)** | 🟠 protocole rédigé — soumissions ANOC/Ministère, accords sites 🔴 |
 | 9 | Surveillance après commercialisation & vigilance | `07-pms-vigilance.md` | 🔴 |
 | 10 | SMQ (ISO 13485) — preuves de processus | `../smq/` (8 procédures PROC-01…08, v0.5) | 🟠 rédigées, audit interne 🔴 |
 | 11 | Plan de mise en conformité, jalons v1.0.0 | `08-plan-validation-v1.0.0.md` | 🟢 |
 
 ## Traçabilité avec le dépôt
 
-- **Preuves techniques** : 373+ tests automatisés (packages, services,
-  fusion IA), 21+ ADR (`docs/adr/`), audit d'écart `compliance/GAP-ANALYSIS.md`.
+- **Preuves techniques** : 380+ tests automatisés (packages, services,
+  fusion IA, datasets), 24 ADR (`docs/adr/`), audit d'écart
+  `compliance/GAP-ANALYSIS.md`, audit des 26 modules `docs/audit-26-modules.md`.
+- **Datasets synthétiques** (`datasets/`, v0.6) : 26 jeux train/val +
+  manifest SHA-256 — AUCUNE donnée réelle ; le corpus réel viendra de
+  l'investigation R6.
 - **Écarts connus** : la GAP-ANALYSIS distingue explicitement ce qui est
   implémenté, documenté-à-exécuter et manquant — elle alimente directement
   les sections 🔴.

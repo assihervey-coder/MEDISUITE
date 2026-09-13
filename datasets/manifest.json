@@ -1,0 +1,858 @@
+{
+  "generateur": "datasets/generate.py",
+  "version_generateur": "1.0.0",
+  "seed": 42,
+  "date_generation": "2026-09-14",
+  "note": "Synthétique — AUCUNE donnée réelle. Signaux artificiels destinés aux tests d'intégration de la fusion, aux smoke trains et aux démonstrations de drift. Interdit pour l'entraînement clinique validé (voir dossier CE, R5-R6).",
+  "modules": {
+    "imaging": {
+      "no": 1,
+      "task": "classification",
+      "modalites": [
+        "imaging_2d",
+        "imaging_3d",
+        "tabulaire"
+      ],
+      "d_model": 32,
+      "features": [
+        "bruit_std",
+        "contraste",
+        "dose_ct_gy",
+        "qualite_image",
+        "score_anomalie"
+      ],
+      "discriminantes": [
+        "score_anomalie",
+        "contraste"
+      ],
+      "label_spec": {
+        "task": "classification",
+        "label_nom": "anomalie",
+        "prevalence": 0.35
+      },
+      "n_train": 120,
+      "sha256_train": "de30dd6d8127c4df464eb5152cee17a9f5970cc74754a0e270720db367f1438c",
+      "n_val": 30,
+      "sha256_val": "1bf44c2f6ac6cd2afe8817a576396be1a04fa90aea2d28dff71560b7f5926583"
+    },
+    "laboratory": {
+      "no": 2,
+      "task": "regression",
+      "modalites": [
+        "tabulaire",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "creatinine_mg_l",
+        "crp_mg_l",
+        "glycemie_g_l",
+        "hgb_g_dl",
+        "plt_g_l",
+        "wbc_g_l"
+      ],
+      "discriminantes": [
+        "crp_mg_l",
+        "wbc_g_l"
+      ],
+      "label_spec": {
+        "task": "regression",
+        "target_nom": "score_severite_0_10",
+        "lo": 0.0,
+        "hi": 10.0
+      },
+      "n_train": 120,
+      "sha256_train": "b9371540719246e0fdfee02b921ca8975192c24d0ef1dd6ec6129ee5b874a57a",
+      "n_val": 30,
+      "sha256_val": "cf305b4159b259e712eb5304d628bb760cb97a35467036ab59e39f6366350909"
+    },
+    "oncology": {
+      "no": 3,
+      "task": "multiclass",
+      "modalites": [
+        "imaging_2d",
+        "imaging_3d",
+        "tabulaire",
+        "texte",
+        "genomique"
+      ],
+      "d_model": 32,
+      "features": [
+        "age",
+        "ca_125_u_ml",
+        "ecog",
+        "psa_ng_ml",
+        "taille_tumeur_mm"
+      ],
+      "discriminantes": [
+        "ca_125_u_ml",
+        "taille_tumeur_mm"
+      ],
+      "label_spec": {
+        "task": "multiclass",
+        "classes": [
+          "sain",
+          "benin",
+          "invasif_precoce",
+          "invasif_avance"
+        ],
+        "poids": [
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ]
+      },
+      "n_train": 120,
+      "sha256_train": "98e8a3e37d4edbcf4d59dc38041c6e991c060787caba1dffd781ae223a017227",
+      "n_val": 30,
+      "sha256_val": "10bbf61e631dea30763539bce59b7be910d9b6ede755e30b6e06b75f70c7441b"
+    },
+    "tumor": {
+      "no": 4,
+      "task": "segmentation",
+      "modalites": [
+        "imaging_3d",
+        "tabulaire"
+      ],
+      "d_model": 32,
+      "features": [
+        "grade_oms",
+        "karnofsky",
+        "oedema_mm",
+        "volume_tumeur_mm3"
+      ],
+      "discriminantes": [
+        "volume_tumeur_mm3",
+        "oedema_mm"
+      ],
+      "label_spec": {
+        "task": "segmentation",
+        "target_nom": "fraction_lesionnelle",
+        "lo": 0.0,
+        "hi": 0.6
+      },
+      "n_train": 120,
+      "sha256_train": "f66b4675da5d9a83426ffc278a07dc165c63e32bc9de15e127ea09d2d82b60b5",
+      "n_val": 30,
+      "sha256_val": "45ef8dc8862b0c4633b0bbce88eb299aa78e3fda98a9175ecfc6a844c5049a36"
+    },
+    "ophthalmology": {
+      "no": 5,
+      "task": "multiclass",
+      "modalites": [
+        "imaging_2d",
+        "tabulaire"
+      ],
+      "d_model": 32,
+      "features": [
+        "acuite_logmar",
+        "cd_ratio",
+        "hba1c_pct",
+        "pio_mmhg",
+        "rnfl_um"
+      ],
+      "discriminantes": [
+        "cd_ratio",
+        "rnfl_um"
+      ],
+      "label_spec": {
+        "task": "multiclass",
+        "classes": [
+          "rd_absente",
+          "rd_non_proliferante",
+          "rd_proliferante"
+        ],
+        "poids": [
+          0.5,
+          0.3,
+          0.2
+        ]
+      },
+      "n_train": 120,
+      "sha256_train": "ac022cdc4f17b80141afc31d82aa6290d4afa110c3a0b806fa9f425c777b2976",
+      "n_val": 30,
+      "sha256_val": "2e7f30ca942261d75a006492ff45a323c2d34380ae9e7c72ab56c9e7e5baa8a2"
+    },
+    "diabetes": {
+      "no": 6,
+      "task": "regression",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "age_dx",
+        "fbg_g_l",
+        "hba1c_pct",
+        "imc",
+        "tir_pct"
+      ],
+      "discriminantes": [
+        "hba1c_pct",
+        "tir_pct"
+      ],
+      "label_spec": {
+        "task": "regression",
+        "target_nom": "risque_complication",
+        "lo": 0.0,
+        "hi": 1.0
+      },
+      "n_train": 120,
+      "sha256_train": "bb83485c779770f87a1d0a89d675b0f2622564c52be3ff1c21885cc54ca45818",
+      "n_val": 30,
+      "sha256_val": "5b0ad3b3e4ec5ddfa7af9ac40ac7757d516ac1867358724831ca30d3eaf2f1d1"
+    },
+    "traumatology": {
+      "no": 7,
+      "task": "multilabel",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "age",
+        "cobb_deg",
+        "fractures_n",
+        "gcs",
+        "iss"
+      ],
+      "discriminantes": [
+        "iss",
+        "fractures_n"
+      ],
+      "label_spec": {
+        "task": "multilabel",
+        "classes": [
+          "fracture_ouverte",
+          "atteinte_viscerale",
+          "chirurgie_requise"
+        ],
+        "p": [
+          0.2,
+          0.3,
+          0.4
+        ]
+      },
+      "n_train": 120,
+      "sha256_train": "a84be78c2a8e3789451abb210e83d9b0f5b9596f579b612410fe71d802e50232",
+      "n_val": 30,
+      "sha256_val": "f3dc8413926bc3d4d459732452b0fa79de9b0dd2868b221e118b4572d451c709"
+    },
+    "cardiology": {
+      "no": 8,
+      "task": "multiclass",
+      "modalites": [
+        "signal_1d",
+        "tabulaire",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "bpm",
+        "cha2ds2_vasc",
+        "fevg_pct",
+        "qt_ms",
+        "troponine_ng_ml"
+      ],
+      "discriminantes": [
+        "troponine_ng_ml",
+        "fevg_pct"
+      ],
+      "label_spec": {
+        "task": "multiclass",
+        "classes": [
+          "stable",
+          "angor_instable",
+          "sca"
+        ],
+        "poids": [
+          0.55,
+          0.25,
+          0.2
+        ]
+      },
+      "n_train": 120,
+      "sha256_train": "ecf3a8b3f3712acba39b5d716e5fd33a02f51619c22dbb39efc771ed6b21a9ee",
+      "n_val": 30,
+      "sha256_val": "bf9befbc3e9fcfd3c44f77f376fbcaa8a0b7abb492bacc3f666107d5bf61877b"
+    },
+    "pneumology": {
+      "no": 9,
+      "task": "multilabel",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "crp_mg_l",
+        "fev1_pct",
+        "paquets_annees",
+        "spo2_pct",
+        "wells"
+      ],
+      "discriminantes": [
+        "spo2_pct",
+        "fev1_pct"
+      ],
+      "label_spec": {
+        "task": "multilabel",
+        "classes": [
+          "tb_active",
+          "bpco",
+          "embolie"
+        ],
+        "p": [
+          0.15,
+          0.35,
+          0.2
+        ]
+      },
+      "n_train": 120,
+      "sha256_train": "2192fb6cb9de61269ca60a35908f18e7d421632919aa3d2763f8547c4d33290a",
+      "n_val": 30,
+      "sha256_val": "35eb46cbd3c90ff9eff817557680fa39dbfa46d750e683a01ff5995abb6877dd"
+    },
+    "obstetrics": {
+      "no": 10,
+      "task": "classification",
+      "modalites": [
+        "waveform",
+        "imaging_2d",
+        "tabulaire"
+      ],
+      "d_model": 32,
+      "features": [
+        "age_gestation_sem",
+        "bishop",
+        "clarte_nucale_mm",
+        "proteinurie_g_j",
+        "tas_mmhg"
+      ],
+      "discriminantes": [
+        "tas_mmhg",
+        "proteinurie_g_j"
+      ],
+      "label_spec": {
+        "task": "classification",
+        "label_nom": "pre_eclampsie",
+        "prevalence": 0.2
+      },
+      "n_train": 120,
+      "sha256_train": "b429906adc5568e5e56ec1265e3be6a508a959e2efb779e5a4a7e2ab24ff8cc4",
+      "n_val": 30,
+      "sha256_val": "5e0a6bb20b1396a58f6b528e4a7f1508b44697d70f729df30ad639b541460a0c"
+    },
+    "gynecology": {
+      "no": 11,
+      "task": "classification",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "hpv_vl_log",
+        "iota_score",
+        "orads",
+        "pap_bethesda",
+        "saignement_j"
+      ],
+      "discriminantes": [
+        "iota_score",
+        "orads"
+      ],
+      "label_spec": {
+        "task": "classification",
+        "label_nom": "malignite_suspectee",
+        "prevalence": 0.25
+      },
+      "n_train": 120,
+      "sha256_train": "d797472a1a399553d02125d87cfd9855a032dadcbccc78bfb5f4e598c8cce09f",
+      "n_val": 30,
+      "sha256_val": "4b8f2824000729393b876bc638c1c73d6330e6a65ff385de735085e4bdd33fe5"
+    },
+    "fertility": {
+      "no": 12,
+      "task": "regression",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "age_femme",
+        "amh_ng_ml",
+        "cfa_n",
+        "fsh_ui_l",
+        "spermato_millions"
+      ],
+      "discriminantes": [
+        "amh_ng_ml",
+        "spermato_millions"
+      ],
+      "label_spec": {
+        "task": "regression",
+        "target_nom": "proba_conception",
+        "lo": 0.0,
+        "hi": 1.0
+      },
+      "n_train": 120,
+      "sha256_train": "332838a4d80e63c7245468c7b406538323c6fe3140a8c05a3289721c8e4a0a2f",
+      "n_val": 30,
+      "sha256_val": "0ae79eb843f57b033793aa83d5efed65025714644e7f9efa6ed8e8eb44fff048"
+    },
+    "neurology": {
+      "no": 13,
+      "task": "classification",
+      "modalites": [
+        "imaging_3d",
+        "tabulaire",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "age",
+        "aspects",
+        "delai_onset_h",
+        "mmse",
+        "nihss"
+      ],
+      "discriminantes": [
+        "nihss",
+        "aspects"
+      ],
+      "label_spec": {
+        "task": "classification",
+        "label_nom": "avc_ischemique",
+        "prevalence": 0.4
+      },
+      "n_train": 120,
+      "sha256_train": "13d608cb9c748cf415a464c0a792ec7265c8a505ffdd6730eb60aa9e4485ac70",
+      "n_val": 30,
+      "sha256_val": "a9244174786d77104ca4015ce7fc0c2461bafcbb9e59899d54edbfd57406a864"
+    },
+    "psychiatry": {
+      "no": 14,
+      "task": "regression",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "audit",
+        "cssrs",
+        "gad7",
+        "phq9",
+        "sommeil_h"
+      ],
+      "discriminantes": [
+        "phq9",
+        "gad7"
+      ],
+      "label_spec": {
+        "task": "regression",
+        "target_nom": "severite_globale",
+        "lo": 0.0,
+        "hi": 30.0
+      },
+      "n_train": 120,
+      "sha256_train": "98d500e2c179ee7098fe1abcce1816ff69b8dde286c9659633261a590782001b",
+      "n_val": 30,
+      "sha256_val": "acc0860a178b9e4734b5492ab54ca6b12eafc075705da1c31f2662e6290bd13f"
+    },
+    "pediatrics": {
+      "no": 15,
+      "task": "regression",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "age_mois",
+        "apgar",
+        "bilirubine_mg_dl",
+        "poids_z",
+        "taille_z"
+      ],
+      "discriminantes": [
+        "poids_z",
+        "taille_z"
+      ],
+      "label_spec": {
+        "task": "regression",
+        "target_nom": "indice_croissance",
+        "lo": 0.0,
+        "hi": 1.0
+      },
+      "n_train": 120,
+      "sha256_train": "72d7223240703c9d73dcfc36e7b0ac834d1fd553b999b302f5df4153f47a93c7",
+      "n_val": 30,
+      "sha256_val": "2374b45ca5f8b7a6c0adf20a162dacff10431b93b9e7351fe04f37b119fc2963"
+    },
+    "nephrology": {
+      "no": 16,
+      "task": "regression",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "creatinine_mg_l",
+        "dfao_ckdepi",
+        "kaliemia_mmol_l",
+        "ktv",
+        "proteinurie_g_j"
+      ],
+      "discriminantes": [
+        "dfao_ckdepi",
+        "creatinine_mg_l"
+      ],
+      "label_spec": {
+        "task": "regression",
+        "target_nom": "stade_ckd_1_5",
+        "lo": 1.0,
+        "hi": 5.0
+      },
+      "n_train": 120,
+      "sha256_train": "72891eb355e0ff69234f47b166e289221eba20e3540ba972d3406c5ad7bb89dc",
+      "n_val": 30,
+      "sha256_val": "e36155442a7f96c7c77d401d57fa06ae9834651956dbcdd0eb825a3ccc3c5dd9"
+    },
+    "gastroenterology": {
+      "no": 17,
+      "task": "classification",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "alcool_u_sem",
+        "forrest",
+        "hb_g_dl",
+        "li_rads",
+        "nodule_mm"
+      ],
+      "discriminantes": [
+        "forrest",
+        "hb_g_dl"
+      ],
+      "label_spec": {
+        "task": "classification",
+        "label_nom": "hemorragie_active",
+        "prevalence": 0.3
+      },
+      "n_train": 120,
+      "sha256_train": "95a36dcb214df32d9a828a29d49bc311a4d2a365d45778345c873a63dc6e928b",
+      "n_val": 30,
+      "sha256_val": "b1a452a395e2adcd3d890cb3b4831b012097e0c1434ba21b25f964455aaae4d0"
+    },
+    "dermatology": {
+      "no": 18,
+      "task": "multiclass",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "asymetrie",
+        "breslow_mm",
+        "couleurs_n",
+        "diametre_mm",
+        "evolutivite"
+      ],
+      "discriminantes": [
+        "breslow_mm",
+        "asymetrie"
+      ],
+      "label_spec": {
+        "task": "multiclass",
+        "classes": [
+          "nevus",
+          "douteux",
+          "melanome"
+        ],
+        "poids": [
+          0.5,
+          0.3,
+          0.2
+        ]
+      },
+      "n_train": 120,
+      "sha256_train": "f0d42cdb4cdfb3f6bd0f7ac5b67ba5515841d359c49684d190d76b5130530946",
+      "n_val": 30,
+      "sha256_val": "4c60355b8ad81e58d2f561299f44f162d2285a051efd905b4cddd25e96339d76"
+    },
+    "ent": {
+      "no": 19,
+      "task": "classification",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "hpv_pos",
+        "lund_mackay",
+        "perte_db",
+        "pta_db",
+        "tinnitus"
+      ],
+      "discriminantes": [
+        "perte_db",
+        "lund_mackay"
+      ],
+      "label_spec": {
+        "task": "classification",
+        "label_nom": "tumeur_orl_suspectee",
+        "prevalence": 0.2
+      },
+      "n_train": 120,
+      "sha256_train": "634cb7ab005fadcdd586855e8b645fb9e91be7120862352982a347255284306b",
+      "n_val": 30,
+      "sha256_val": "f5b26e97ba59c1086f7fd373a2adb70ba409d7df162350213b2d76004511ef07"
+    },
+    "rheumatology": {
+      "no": 20,
+      "task": "regression",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "crp_mg_l",
+        "das28",
+        "facteur_rhumato_ui",
+        "kl_grade",
+        "sledai"
+      ],
+      "discriminantes": [
+        "das28",
+        "crp_mg_l"
+      ],
+      "label_spec": {
+        "task": "regression",
+        "target_nom": "activite_0_10",
+        "lo": 0.0,
+        "hi": 10.0
+      },
+      "n_train": 120,
+      "sha256_train": "7305ce1e66776ac419dd69bb56a546040d0d02bdcbf9cb5e95f40f96d17b803f",
+      "n_val": 30,
+      "sha256_val": "015d6612cef2bfdcbe8eb1f56d9e20e379bc950d4c985b3eff7af4bf64f3c673"
+    },
+    "urology": {
+      "no": 21,
+      "task": "classification",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "gleason",
+        "ips",
+        "pirads",
+        "psa_ng_ml",
+        "renal_score"
+      ],
+      "discriminantes": [
+        "pirads",
+        "gleason"
+      ],
+      "label_spec": {
+        "task": "classification",
+        "label_nom": "ca_prostate_significatif",
+        "prevalence": 0.28
+      },
+      "n_train": 120,
+      "sha256_train": "329f88c69f673a788e86252823859d86b2cb44fbcbfed486ddd997cedd4c85dc",
+      "n_val": 30,
+      "sha256_val": "f3c2657530ebc5c51a33d64ac6d79da4ccc9bb2da6a8b374f5d2cd6f96f1b7aa"
+    },
+    "nuclear_medicine": {
+      "no": 22,
+      "task": "regression",
+      "modalites": [
+        "imaging_3d",
+        "tabulaire"
+      ],
+      "d_model": 32,
+      "features": [
+        "dlco_pct",
+        "dose_mbq",
+        "mtv_cm3",
+        "suv_max",
+        "tlg"
+      ],
+      "discriminantes": [
+        "suv_max",
+        "mtv_cm3"
+      ],
+      "label_spec": {
+        "task": "regression",
+        "target_nom": "reponse_pct",
+        "lo": -40.0,
+        "hi": 100.0
+      },
+      "n_train": 120,
+      "sha256_train": "78a95690164d7e1a59c0ad3d32ef9f2668c881414b034406b9632c2e87ad860e",
+      "n_val": 30,
+      "sha256_val": "c98898363087031c68e7894749b4a19cee9df899bf0f0e7096432ecaa5b05bcc"
+    },
+    "radiotherapy": {
+      "no": 23,
+      "task": "regression",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "dose_gy",
+        "eqd2_gy",
+        "fractions",
+        "gamma_pct",
+        "v20_pct"
+      ],
+      "discriminantes": [
+        "v20_pct",
+        "eqd2_gy"
+      ],
+      "label_spec": {
+        "task": "regression",
+        "target_nom": "toxicite_0_1",
+        "lo": 0.0,
+        "hi": 1.0
+      },
+      "n_train": 120,
+      "sha256_train": "3962ba6e687a190f87ec407a491efc01db2357460ef4d7ebdca48c1665d67e8f",
+      "n_val": 30,
+      "sha256_val": "5b4966573491f982803fc0f1f6e2334ddffed4c932670ed735c484991b83f771"
+    },
+    "anesthesia": {
+      "no": 24,
+      "task": "classification",
+      "modalites": [
+        "signal_1d",
+        "tabulaire",
+        "waveform"
+      ],
+      "d_model": 32,
+      "features": [
+        "asa",
+        "duree_chir_h",
+        "lee_rcri",
+        "sofa",
+        "stopbang"
+      ],
+      "discriminantes": [
+        "asa",
+        "sofa"
+      ],
+      "label_spec": {
+        "task": "classification",
+        "label_nom": "evenement_perop",
+        "prevalence": 0.18
+      },
+      "n_train": 120,
+      "sha256_train": "61062969fac7b3e73762b7cf61e8331be6d3b8d0a963b689fbd274f415c0e508",
+      "n_val": 30,
+      "sha256_val": "7761e99ddc923761aef8258636286b33ed2caeea0d7264f7ab11b504549f2dea"
+    },
+    "geriatrics": {
+      "no": 25,
+      "task": "classification",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "beers_n",
+        "braden",
+        "fried",
+        "mna",
+        "rockwood",
+        "tug_s"
+      ],
+      "discriminantes": [
+        "fried",
+        "tug_s"
+      ],
+      "label_spec": {
+        "task": "classification",
+        "label_nom": "chute_12_mois",
+        "prevalence": 0.3
+      },
+      "n_train": 120,
+      "sha256_train": "489f3c2b9d6a6687c934a6e79ee8a786e46467f32b577b59fcc4d15d3aec4aa3",
+      "n_val": 30,
+      "sha256_val": "5d00f8bc2bca20dee2500ffe52329390d0673c6e276eed6162a1b4d0110d5373"
+    },
+    "emergency": {
+      "no": 26,
+      "task": "multiclass",
+      "modalites": [
+        "tabulaire",
+        "imaging_2d",
+        "texte"
+      ],
+      "d_model": 32,
+      "features": [
+        "esi",
+        "iss",
+        "nihss",
+        "qsofa",
+        "shock_index"
+      ],
+      "discriminantes": [
+        "qsofa",
+        "shock_index"
+      ],
+      "label_spec": {
+        "task": "multiclass",
+        "classes": [
+          "hors_danger",
+          "urgent",
+          "tres_urgent",
+          "vital"
+        ],
+        "poids": [
+          0.35,
+          0.3,
+          0.2,
+          0.15
+        ]
+      },
+      "n_train": 120,
+      "sha256_train": "0cd99bf0d9c00d03a91f6b99d72cd30eac0767d746a90ab3e64acc32452c20ce",
+      "n_val": 30,
+      "sha256_val": "1d34ec733e53186ccdc0a53383e430b86633a8d548122dfdf9f22bf453fd23b5"
+    }
+  }
+}

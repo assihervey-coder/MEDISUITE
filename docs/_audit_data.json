@@ -1,0 +1,364 @@
+[
+ {
+  "no": 1,
+  "slug": "imaging",
+  "scores": [],
+  "n_scores": 0,
+  "loc": 371,
+  "n_tests": 16,
+  "config_ia": "01_imaging.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 2,
+  "slug": "laboratory",
+  "scores": [],
+  "n_scores": 0,
+  "loc": 267,
+  "n_tests": 8,
+  "config_ia": "02_laboratory.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 3,
+  "slug": "oncology",
+  "scores": [
+   "birads",
+   "fleischner",
+   "lung-rads",
+   "tnm-breast",
+   "roma",
+   "ecog"
+  ],
+  "n_scores": 6,
+  "loc": 201,
+  "n_tests": 9,
+  "config_ia": "03_oncology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 4,
+  "slug": "tumor",
+  "scores": [
+   "growth-rate",
+   "ecog"
+  ],
+  "n_scores": 2,
+  "loc": 209,
+  "n_tests": 5,
+  "config_ia": "04_tumor.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 5,
+  "slug": "ophthalmology",
+  "scores": [
+   "glaucome-cdr",
+   "retinopathie-diabetique"
+  ],
+  "n_scores": 2,
+  "loc": 149,
+  "n_tests": 5,
+  "config_ia": "05_ophthalmology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 6,
+  "slug": "diabetes",
+  "scores": [
+   "dfg-ckd-epi",
+   "imc-oms"
+  ],
+  "n_scores": 2,
+  "loc": 150,
+  "n_tests": 5,
+  "config_ia": "06_diabetes.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 7,
+  "slug": "traumatology",
+  "scores": [
+   "iss",
+   "gcs"
+  ],
+  "n_scores": 2,
+  "loc": 149,
+  "n_tests": 5,
+  "config_ia": "07_traumatology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 8,
+  "slug": "cardiology",
+  "scores": [
+   "chads2ds2vasc",
+   "heart-score",
+   "nyha",
+   "framingham"
+  ],
+  "n_scores": 4,
+  "loc": 175,
+  "n_tests": 7,
+  "config_ia": "08_cardiology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 9,
+  "slug": "pneumology",
+  "scores": [
+   "gold",
+   "stop-bang",
+   "tb-oms",
+   "spirometrie"
+  ],
+  "n_scores": 4,
+  "loc": 175,
+  "n_tests": 7,
+  "config_ia": "09_pneumology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 10,
+  "slug": "obstetrics",
+  "scores": [
+   "bishop",
+   "dg-iadpsg"
+  ],
+  "n_scores": 2,
+  "loc": 209,
+  "n_tests": 5,
+  "config_ia": "10_obstetrics.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 11,
+  "slug": "gynecology",
+  "scores": [
+   "iota",
+   "rotterdam",
+   "orads"
+  ],
+  "n_scores": 3,
+  "loc": 162,
+  "n_tests": 6,
+  "config_ia": "11_gynecology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 12,
+  "slug": "fertility",
+  "scores": [
+   "roma"
+  ],
+  "n_scores": 1,
+  "loc": 136,
+  "n_tests": 4,
+  "config_ia": "12_fertility.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 13,
+  "slug": "neurology",
+  "scores": [
+   "aspects",
+   "nihss",
+   "mmse",
+   "mcdonald"
+  ],
+  "n_scores": 4,
+  "loc": 175,
+  "n_tests": 7,
+  "config_ia": "13_neurology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 14,
+  "slug": "psychiatry",
+  "scores": [
+   "phq9",
+   "gad7",
+   "cssrs",
+   "audit-c"
+  ],
+  "n_scores": 4,
+  "loc": 175,
+  "n_tests": 7,
+  "config_ia": "14_psychiatry.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 15,
+  "slug": "pediatrics",
+  "scores": [
+   "apgar",
+   "imc-pediatre"
+  ],
+  "n_scores": 2,
+  "loc": 209,
+  "n_tests": 5,
+  "config_ia": "15_pediatrics.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 16,
+  "slug": "nephrology",
+  "scores": [
+   "dfg-ckd-epi",
+   "kdigo-mrc",
+   "kdigo-aki",
+   "ktv"
+  ],
+  "n_scores": 4,
+  "loc": 175,
+  "n_tests": 7,
+  "config_ia": "16_nephrology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 17,
+  "slug": "gastroenterology",
+  "scores": [
+   "child-pugh",
+   "meld",
+   "mayo",
+   "forrest"
+  ],
+  "n_scores": 4,
+  "loc": 175,
+  "n_tests": 7,
+  "config_ia": "17_gastroenterology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 18,
+  "slug": "dermatology",
+  "scores": [
+   "abcde",
+   "pasi",
+   "scorad"
+  ],
+  "n_scores": 3,
+  "loc": 162,
+  "n_tests": 6,
+  "config_ia": "18_dermatology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 19,
+  "slug": "ent",
+  "scores": [
+   "pta-oms",
+   "lund-mackay",
+   "bppv"
+  ],
+  "n_scores": 3,
+  "loc": 162,
+  "n_tests": 6,
+  "config_ia": "19_ent.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 20,
+  "slug": "rheumatology",
+  "scores": [
+   "das28",
+   "basdai",
+   "sledaik",
+   "kellgren"
+  ],
+  "n_scores": 4,
+  "loc": 175,
+  "n_tests": 7,
+  "config_ia": "20_rheumatology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 21,
+  "slug": "urology",
+  "scores": [
+   "ipss",
+   "gleason",
+   "renal-score",
+   "pirads"
+  ],
+  "n_scores": 4,
+  "loc": 175,
+  "n_tests": 7,
+  "config_ia": "21_urology.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 22,
+  "slug": "nuclear-medicine",
+  "scores": [
+   "suv",
+   "ecog"
+  ],
+  "n_scores": 2,
+  "loc": 209,
+  "n_tests": 5,
+  "config_ia": "22_nuclear_medicine.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 23,
+  "slug": "radiotherapy",
+  "scores": [
+   "eqd2",
+   "ecog"
+  ],
+  "n_scores": 2,
+  "loc": 209,
+  "n_tests": 5,
+  "config_ia": "23_radiotherapy.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 24,
+  "slug": "anesthesia",
+  "scores": [
+   "sofa",
+   "stop-bang",
+   "gcs"
+  ],
+  "n_scores": 3,
+  "loc": 164,
+  "n_tests": 6,
+  "config_ia": "24_anesthesia.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 25,
+  "slug": "geriatrics",
+  "scores": [
+   "fried",
+   "tug",
+   "braden",
+   "mna-sf",
+   "beers"
+  ],
+  "n_scores": 5,
+  "loc": 188,
+  "n_tests": 8,
+  "config_ia": "25_geriatrics.yaml",
+  "n_train": 120
+ },
+ {
+  "no": 26,
+  "slug": "emergency",
+  "scores": [
+   "esi",
+   "ctmp",
+   "qsofa",
+   "parkland",
+   "curbs65",
+   "shock-index"
+  ],
+  "n_scores": 6,
+  "loc": 202,
+  "n_tests": 9,
+  "config_ia": "26_emergency.yaml",
+  "n_train": 120
+ }
+]

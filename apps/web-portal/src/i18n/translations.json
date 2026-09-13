@@ -9,6 +9,7 @@
     "consent_ia": "Consentement à l'utilisation de l'IA",
     "consent_recherche": "Consentement à la recherche",
     "critical": "CRITIQUE — notification envoyée",
+    "about": "À propos (étiquetage UDI)",
     "logout": "Déconnexion"
   },
   "en": {
@@ -21,6 +22,7 @@
     "consent_ia": "AI usage consent",
     "consent_recherche": "Research consent",
     "critical": "CRITICAL — notification sent",
+    "about": "About (UDI labeling)",
     "logout": "Sign out"
   }
 }

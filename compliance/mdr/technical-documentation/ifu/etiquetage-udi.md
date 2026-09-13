@@ -1,15 +1,18 @@
 # Étiquetage et identification UDI (MDR Annexe I §23.2, Règlement UDI 2019/320)
 
-> Statut : modèle d'étiquetage logiciel + attributions 🔴 (EID GS1) — jalon R2.
+> Statut : modèle d'étiquetage logiciel **implémenté** (v0.6.0 : écran
+> « À propos » + endpoint `/api/v1/about` + `/health` version+commit) ;
+> attributions 🔴 (EID GS1) — jalon R2/R8.
 
 ## 1. Étiquette logicielle (écran « À propos » + README + docs)
 
-Chaque déploiement affiche obligatoirement (endpoint `/health` enrichi et
-page d'accueil web) :
+Chaque déploiement affiche obligatoirement (implémenté v0.6.0 : endpoint
+public `GET /api/v1/about` alimentant l'écran « À propos » du web-portal,
+et `/health` exposant version + commit sur les 38 services) :
 
 ```
 MEDISUITE — Plateforme d'aide à la décision clinique
-Version : v0.5.0 (tag Git + hash de commit)
+Version : v0.6.0 (tag Git + hash de commit)
 Fabricant : ASSI Herve — Abidjan, Côte d'Ivoire
 Basic UDI-DI : MEDISUITE-PLTF-AIDE-DECISION (à confirmer par émission GS1)
 UDI-EID : à attribuer (agence émettrice à désigner 🔴)
@@ -56,5 +59,6 @@ bouton « Notice » par écran).
 ## 5. Écarts déclarés (honnêteté)
 
 - 🔴 UDI-EID non émis (dépend GS1/agence) ; SRN EUDAMED non attribué.
-- 🔴 Écran « À propos » à ajouter au web-portal (tâche UI v0.6).
+- 🟢 Écran « À propos » livré (v0.6.0) : `services/api-gateway/labeling.json`
+  + `GET /api/v1/about` + `apps/web-portal/src/features/about/About.tsx`.
 - 🔴 Notices de sécurité : gabarit à produire avec la vigilance (PROC-04).

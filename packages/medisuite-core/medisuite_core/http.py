@@ -1,13 +1,18 @@
 """Fabrique d'applications FastAPI : un contrat unique pour les 38 services.
 
 Chaque service obtient gratuitement :
-- /health  (liveness) et /ready (readiness avec vérification BDD)
+- /health  (liveness, version+commit UDI) et /ready (readiness avec BDD)
 - middleware X-Request-ID + header X-Service-Name
 - gestion d'erreurs homogène (dict {"error", "detail"})
 - CORS et documentation OpenAPI automatique
+
+Traçabilité UDI (étiquetage §2, règle 1) : la version affichée est
+MEDISUITE_VERSION (défaut : paramètre), le commit est MEDISUITE_COMMIT
+(« inconnu » si non injecté — K8s/compose l'injectent au déploiement).
 """
 from __future__ import annotations
 
+import os
 import time
 import uuid
 from typing import Callable
@@ -29,6 +34,8 @@ def create_service_app(
     module_label: str = "",
 ) -> FastAPI:
     """Construit une app FastAPI conforme au contrat de service MEDISUITE."""
+    version = os.environ.get("MEDISUITE_VERSION", version)
+    commit = os.environ.get("MEDISUITE_COMMIT", "inconnu")
     app = FastAPI(
         title=f"MEDISUITE · {title}",
         description=description,
@@ -38,6 +45,7 @@ def create_service_app(
     )
     app.state.service_name = name
     app.state.module_label = module_label or title
+    app.state.commit = commit
 
     app.add_middleware(
         CORSMiddleware,
@@ -89,6 +97,7 @@ def create_service_app(
     @app.get("/health", tags=["opérationnel"])
     def health():
         return {"status": "ok", "service": name, "version": version,
+                "commit": app.state.commit,
                 "module": app.state.module_label,
                 "uptime_s": round(time.time() - _STARTED_AT, 1)}
 

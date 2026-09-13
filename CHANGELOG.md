@@ -3,6 +3,48 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.6.0] — 2026-09-14
+
+### R5 — Protocole d'investigation clinique multicentrique détaillé
+- `compliance/mdr/technical-documentation/10-protocole-investigation-multicentrique-R5.md` :
+  **MEDISUITE-CI-01** (ISO 14155:2020, MDR Annexe XV, art. 62-80) — design
+  prospectif multicentrique intra-patient apparié (CHU Cocody, Treichville,
+  Yopougon ; extension Bouaké), 5 scénarios critiques S1-S5, co-endpoints
+  primaires (κ pondéré ≥ 0,80 IC95 borné ; sûreté 30 j ; délai priorisation),
+  référence adjudiquée par comité indépendant, calcul d'effectif justifié
+  (n=600, 200/site — supersede l'estimation 300-500/site avec note d'écart),
+  gestion des événements indésirables + règles d'arrêt DSMB, eCRF sur profils
+  FHIR IOP (ADR-0024), pseudonymisation/DPIA (loi 2013-450), ANOC-CI + PACTR,
+  calendrier R5 M+2→M+6 et annexes A1-A6. Soumissions/signatures : 🔴.
+- `06-evaluation-clinique.md` + `00-index…` + `08-plan…` mis à jour en
+  conséquence.
+
+### R2 — Écran « À propos » UDI (écart 🔴 clôturé)
+- **Noyau** : `create_service_app` expose désormais `version` + `commit`
+  (`MEDISUITE_VERSION`/`MEDISUITE_COMMIT`) sur `/health` des 38 services
+  (étiquetage §2 règle 1) + 3 tests (`test_http_factory.py`).
+- **api-gateway** : `labeling.json` versionné + `GET /api/v1/about` PUBLIC
+  (MDR Annexe I §23.2) avec surcharge env au déploiement + 2 tests.
+- **web-portal** : écran `About.tsx` (identification produit/réglementaire,
+  Basic UDI-DI, UDI-EID état, classe IIb, marquage CE ❌ affiché, IFU,
+  symboles, avertissement) + route `/about` + nav + i18n fr/en ; repli
+  hors-ligne honnête (`VITE_APP_VERSION`).
+
+### Datasets synthétiques des 26 modules (écart 🟠 clôturé)
+- `datasets/` : `registry.py` (features cliniques nommées + schémas de labels
+  par tâche), `generate.py` (déterministe, flux RNG par module seed*100+no,
+  signal apprenant, modalités manquantes ADR-0018 : ≤1, jamais la primaire),
+  `manifest.json` (SHA-256 par fichier, note légale), 26 jeux train(120)/
+  val(30) JSONL alignés sur les configs IA, README, **6 tests** (manifest,
+  intégrité SHA-256, schéma par tâche, déterminisme bit-à-bit, signal,
+  politique ADR-0018).
+
+### Audit des 26 modules
+- `docs/audit-26-modules.md` + `tools/audit_26_modules.py` (+ données
+  `docs/_audit_data.json`) : matrice Module/Service/AI/Datasets/Configs
+  vérifiée par les artefacts, écarts corrigés en v0.6.0 et limites restantes
+  (entraînement réel → R6, campagne GPU CHU → R4, i18n/offline → backlog).
+
 ## [v0.5.0] — 2026-09-14
 
 ### Jalons réglementaires R1-R4 (dossier CE v1.0.0)

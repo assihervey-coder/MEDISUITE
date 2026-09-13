@@ -1,5 +1,12 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.6.0** : protocole d'investigation R5 rédigé
+> (`10-protocole-…-R5.md`, MEDISUITE-CI-01), écran « À propos » UDI livré
+> (`/api/v1/about` + web-portal), datasets synthétiques 26 modules + audit
+> reproductible (`docs/audit-26-modules.md`). Les lignes ci-dessous restent
+> référencées à la v0.4 ; les jalons R2/R5 concernés sont marqués dans
+> `08-plan-validation-v1.0.0.md`.
+
 > Honnêteté d'ingénieur : ce tableau distingue ce qui est **implémenté**, ce qui est
 > **documenté mais à exécuter**, et ce qui **manque** avant toute utilisation clinique.
 > Mise à jour v0.4 : le dossier technique de marquage CE est **structuré et

@@ -1,0 +1,23 @@
+{
+  "produit": "MEDISUITE — Plateforme d'aide à la décision clinique",
+  "fabricant": "ASSI Herve — Abidjan, Côte d'Ivoire",
+  "version": "v0.6.0",
+  "date_liberation": "2026-09-14",
+  "basic_udi_di": "MEDISUITE-PLTF-AIDE-DECISION",
+  "basic_udi_di_statut": "à confirmer par émission GS1",
+  "udi_eid": "non attribué (agence émettrice à désigner — jalon R8)",
+  "classe_mdr": "IIb (règle 11, Annexe VIII MDR 2017/745)",
+  "marquage_ce": false,
+  "marquage_ce_texte": "NON CE — usage clinique interdit hors cadre pilote recherche (voir dossier technique)",
+  "destinataires": "Professionnels de santé (profils clinicien, technicien, administrateur) et patients (portal dédié)",
+  "ifu": ["IFU-clinicien.md", "IFU-technicien.md", "IFU-administrateur.md", "IFU-patient.md"],
+  "symboles": [
+    {"symbole": "Consultez la notice d'utilisation", "signification": "IFU obligatoire avant usage"},
+    {"symbole": "Fabricant", "signification": "ASSI Herve, Abidjan, Côte d'Ivoire"},
+    {"symbole": "Dispositif médical de classe IIb (MDR 2017/745)", "signification": "classification réglementaire"},
+    {"symbole": "Non destiné à un usage pédiatrique sans protocole dédié", "signification": "limite population (hors modules pédiatrie)"},
+    {"symbole": "Ne pas utiliser en cas de doute sur l'intégrité du système", "signification": "règle d'or exploitation"},
+    {"symbole": "Date de libération (AAAA-MM-JJ)", "signification": "identification de version (couple tag + commit)"}
+  ],
+  "avertissement": "Ce logiciel ne remplace pas le jugement clinique. Toute sortie IA doit être validée par un professionnel de santé avant décision."
+}
