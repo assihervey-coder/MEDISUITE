@@ -314,3 +314,155 @@ def test_fhir_push_desactive_par_defaut():
                     json={"sexe": "F", "tranche_age": "18-39",
                           "provenance": "laboratoire"}, headers=MED)
     assert r.json()["fhir_status"] == "desactive"
+
+# ── Verrou de base M+18 et extraction data manager (v0.8, §7.4 protocole) ────
+# Séquence ordonnée : UNE SEULE base, UNE SEULE opération de lock (irréversible)
+# — les sujets A et B sont préparés AVANT le lock, puis les cas verrouillés
+# s'enchaînent. run_tests.py fournit une BDD fraîche par exécution.
+
+STUDY_LOCK = {"temoins": ["temoin-A", "temoin-B"],
+              "declaration": "SDV complète, zéro requête ouverte"}
+_CODE_A = _CODE_B = None
+
+
+def _prepare_two_subjects() -> tuple[str, str]:
+    """Deux sujets avec F03 signé (créés AVANT tout lock)."""
+    codes = []
+    for _ in range(2):
+        code = _subject()
+        _sign_f03(code)
+        codes.append(code)
+    return codes[0], codes[1]
+
+
+def _sign_f03(code: str) -> None:
+    r = client.post(f"/api/v1/ecrf/subjects/{code}/forms/F03-DECISION",
+                    json=F03, headers=MED)
+    assert r.status_code == 200, r.text
+    eid = r.json()["entry_id"]
+    r = client.post(f"/api/v1/ecrf/entries/{eid}/sign", headers=MED)
+    assert r.status_code == 200
+
+
+def test_lock_00_extract_bloquee_avant_verrou():
+    global _CODE_A, _CODE_B
+    _CODE_A, _CODE_B = _prepare_two_subjects()
+    # extraction data manager refusée avant le lock
+    r = client.get("/api/v1/ecrf/extract", headers=DM)
+    assert r.status_code == 409 and "lock M+18" in r.json()["detail"]
+    # statut : base ouverte, checksum indicatif présent
+    s = client.get("/api/v1/ecrf/study/status", headers=DM).json()
+    assert s["locked"] is False and len(s["checksum_courant"]) == 64
+    assert s["requetes_ouvertes"] == 0
+
+
+def test_lock_01_controles_acces_et_preconditions():
+    # 1 témoin → 422 (protocole §8 : verrou + témoins)
+    r = client.post("/api/v1/ecrf/study/lock",
+                    json={"temoins": ["seul"]}, headers=PRM)
+    assert r.status_code == 422
+    # investigateur → 403 (ecrf.lock réservé au promoteur)
+    assert client.post("/api/v1/ecrf/study/lock",
+                       json={"temoins": ["a", "b"]}, headers=MED).status_code == 403
+    # data manager → 403 (il EXTRAIT, il ne verrouille pas — séparation GCP)
+    assert client.post("/api/v1/ecrf/study/lock",
+                       json={"temoins": ["a", "b"]}, headers=DM).status_code == 403
+    # requête SDV ouverte → lock refusé (plan-monitoring §5)
+    q = client.post("/api/v1/ecrf/queries",
+                    json={"subject_code": _CODE_A,
+                          "message": "horodatage P3 à justifier vs source"},
+                    headers=MON)
+    assert q.status_code == 201
+    r = client.post("/api/v1/ecrf/study/lock", json=STUDY_LOCK, headers=PRM)
+    assert r.status_code == 409 and "requête" in r.json()["detail"]
+    # clôture par le site puis LOCK OK
+    assert client.post(f"/api/v1/ecrf/queries/{q.json()['id']}/close",
+                       json={"reponse": "justifié vs registre arrivée"},
+                       headers=MED).status_code == 200
+    r = client.post("/api/v1/ecrf/study/lock", json=STUDY_LOCK, headers=PRM)
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["locked"] is True and len(body["checksum"]) == 64
+    assert body["temoins"] == ["temoin-A", "temoin-B"]
+    assert body["extraction"].startswith("débloquée")
+
+
+def test_lock_02_irreversible_et_toutes_ecritures_gelees():
+    # re-lock → 409
+    assert client.post("/api/v1/ecrf/study/lock", json=STUDY_LOCK,
+                       headers=PRM).status_code == 409
+    # inclusion → 409
+    assert client.post("/api/v1/ecrf/subjects", json=SUBJ,
+                       headers=MED).status_code == 409
+    # saisie → 409
+    r = client.post(f"/api/v1/ecrf/subjects/{_CODE_A}/forms/F02-BASELINE",
+                    json={"sexe": "M", "tranche_age": "40-59",
+                          "provenance": "urgences"}, headers=MED)
+    assert r.status_code == 409 and "verrouillée" in r.json()["detail"]
+    # amendement → 409
+    entries = client.get(f"/api/v1/ecrf/subjects/{_CODE_A}",
+                         headers=MED).json()["entries"]
+    eid = next(e["id"] for e in entries if e["form_id"] == "F03-DECISION")
+    r = client.post(f"/api/v1/ecrf/entries/{eid}/amend",
+                    json={"motif": "correction post-lock interdite",
+                          "payload": F03}, headers=MED)
+    assert r.status_code == 409
+    # sync offline → items « rejected » (jamais silencieusement perdus)
+    r = client.post("/api/v1/ecrf/sync",
+                    json={"items": [{"client_key": "k1",
+                                     "subject_code": _CODE_A,
+                                     "form_id": "F02-BASELINE",
+                                     "payload": {"sexe": "M",
+                                                 "tranche_age": "40-59",
+                                                 "provenance": "urgences"}}]},
+                    headers=MED)
+    assert r.status_code == 200
+    assert r.json()["results"][0]["status"] == "rejected"
+    # statut : verrou visible + témoins
+    s = client.get("/api/v1/ecrf/study/status", headers=MED).json()
+    assert s["locked"] is True and s["temoins"] == ["temoin-A", "temoin-B"]
+
+
+def test_lock_03_extract_saf_apres_verrou_et_separation_roles():
+    # promoteur : verrouille mais n'extrait PAS (ecrf.extract absent)
+    assert client.get("/api/v1/ecrf/extract", headers=PRM).status_code == 403
+    # investigateur → 403
+    assert client.get("/api/v1/ecrf/extract", headers=MED).status_code == 403
+    # data manager → SAF complet
+    r = client.get("/api/v1/ecrf/extract", headers=DM)
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["study"] == "MEDISUITE-CI-01"
+    assert body["integrity"]["conforme"] is True
+    assert body["integrity"]["checksum_recalcule"] == body["lock"]["checksum"]
+    assert body["lock"]["temoins"] == ["temoin-A", "temoin-B"]
+    assert body["queries_resolues"] >= 1
+    row = next(d for d in body["dataset"] if d["code"] == _CODE_A)
+    f03 = row["forms"]["F03-DECISION"]
+    assert f03["derivees"]["delai_orientation_min"] == 39.0  # 08:00 → 08:39
+    assert f03["signed_by"] == "dr-yao"
+    assert "F01-INCLUSION" not in row["forms"]  # non signée → hors SAF
+    # extraction tracée dans l'audit chaîné, chaîne intacte
+    tail = client.get("/api/v1/ecrf/audit/verify", headers=DM).json()
+    assert any(ev["action"] == "ecrf.extract" for ev in tail["tail"])
+    assert tail["integre"] is True
+
+
+def test_lock_04_alarme_integrite_si_donnees_derivent():
+    """Altération post-lock (hors API) → extraction 500 + événement audit."""
+    import main
+    from sqlalchemy import select
+    with main.SessionLocal() as session:
+        entry = session.scalars(
+            select(main.EcrfEntry)
+            .where(main.EcrfEntry.subject_code == _CODE_A)
+            .where(main.EcrfEntry.form_id == "F03-DECISION")).first()
+        mutated = dict(entry.payload)
+        mutated["decision_finale"] = "TDM seul"
+        entry.payload = mutated
+        session.commit()
+    r = client.get("/api/v1/ecrf/extract", headers=DM)
+    assert r.status_code == 500 and "intégrité" in r.json()["detail"]
+    tail = client.get("/api/v1/ecrf/audit/verify", headers=DM).json()
+    assert any(ev["action"] == "ecrf.extract.integrity" for ev in tail["tail"])
+    assert tail["integre"] is True  # l'ALERTE est elle-même tracée, chaîne OK

@@ -7,6 +7,14 @@ Implémente le §8 du protocole TD-10 :
 - signatures investigateur (verrou) puis amendements (addendum versionné,
   l'original reste intact) — exigence ISO 14155 §4.8 / EGSP traçabilité ;
 - requêtes de monitoring (SDV) ouvertes par le moniteur, closes par le site ;
+- VERROU DE BASE (lock M+18, v0.8) : le promoteur fige la base (≥ 2
+  témoins) à la fin des suivis 30 j — checksum SHA-256 de toutes les
+  entrées ; après le lock, AUCUNE écriture n'est acceptée et l'extraction
+  d'analyse devient possible pour le data manager uniquement ;
+- EXTRACTION DATA MANAGER (v0.8) : jeu de données d'analyse (SAF) —
+  dernières entrées SIGNÉES par sujet/formulaire + dérivations SAP
+  (éligibilité, délai P3, SAE) — refusée avant le lock (409), alarme
+  d'intégrité (500) si les données dérivent du checksum verrouillé ;
 - synchronisation OFFLINE idempotente (rejouable sans doublon) — les sites
   CHU subissent des coupures réseau, la saisie ne doit jamais être bloquée ;
 - export DSMB agrégé SANS donnée libre ni PHI (§6 confidentialité) ;
@@ -20,6 +28,7 @@ saisir le F05 (conflit d'intérêt ↔ aveuglement).
 """
 from __future__ import annotations
 
+import hashlib
 import os
 import pathlib
 import statistics
@@ -129,6 +138,19 @@ class EcrfAuditRow(Base):
     hash: Mapped[str] = mapped_column(String(64))
 
 
+class EcrfStudyLock(Base):
+    """Verrou de base (lock M+18, protocole §7.4/SAP) — irréversible."""
+    __tablename__ = "ecrf_study_lock"
+    study: Mapped[str] = mapped_column(String(40), primary_key=True)
+    locked_at: Mapped[float] = mapped_column(Float())
+    locked_by: Mapped[str] = mapped_column(String(40))
+    temoins: Mapped[list] = mapped_column(JSON)  # ≥ 2 noms (§8 verrou + témoins)
+    nb_sujets: Mapped[int] = mapped_column(Integer)
+    nb_entrees: Mapped[int] = mapped_column(Integer)
+    checksum: Mapped[str] = mapped_column(String(64))
+    declaration: Mapped[str] = mapped_column(String(500), default="")
+
+
 SessionLocal = init_db(engine, Base.metadata)
 
 # Registre d'audit chaîné : rechargé depuis la base au démarrage (chaîne
@@ -157,6 +179,57 @@ def _audit(actor: str, role: str, action: str, resource: str,
         session.add(EcrfAuditRow(**event.to_dict()))
         session.commit()
     return event
+
+
+# ── Verrou de base (lock M+18) et extraction data manager (v0.8) ─────────
+
+def _ensure_unlocked() -> None:
+    """Interdit toute écriture après le lock M+18 (protocole §7.4)."""
+    if _lock_state()["locked"]:
+        raise HTTPException(409, "base verrouillée (lock M+18) — aucune "
+                                 "écriture acceptée ; extraction data "
+                                 "manager uniquement")
+
+
+def _lock_state() -> dict:
+    with SessionLocal() as session:
+        row = session.get(EcrfStudyLock, ecrf_mod.STUDY_CODE)
+        if row is None:
+            return {"locked": False, "study": ecrf_mod.STUDY_CODE}
+        return {"locked": True, "study": row.study,
+                "locked_at": row.locked_at, "locked_by": row.locked_by,
+                "temoins": row.temoins, "nb_sujets": row.nb_sujets,
+                "nb_entrees": row.nb_entrees, "checksum": row.checksum,
+                "declaration": row.declaration}
+
+
+def _compute_checksum() -> tuple[str, int, int]:
+    """SHA-256 canonique de l'état complet (sujets + entrées) — SAP A5.
+
+    Canonicalisation triée (sujets puis entrées par sujet/formulaire/version) :
+    `S|code|site|scenario|statut` et `E|code|form|v|statut|<hash contenu>|signataire`.
+    Le hash couvre le CONTENU CANONIQUE du payload recalculé à la volée
+    (`canonical_payload`, ecrf.py) — et non le data_hash stocké : une
+    altération directe de la base modifie le checksum et déclenche l'alarme
+    d'intégrité de l'extraction.
+    """
+    with SessionLocal() as session:
+        subjects = session.scalars(select(EcrfSubject)
+                                   .order_by(EcrfSubject.code)).all()
+        entries = session.scalars(select(EcrfEntry)
+                                  .order_by(EcrfEntry.subject_code,
+                                            EcrfEntry.form_id,
+                                            EcrfEntry.version)).all()
+        content_hashes = {
+            e.id: hashlib.sha256(
+                ecrf_mod.canonical_payload(dict(e.payload)).encode("utf-8")
+            ).hexdigest() for e in entries}
+    lines = [f"S|{s.code}|{s.site}|{s.scenario}|{s.statut}"
+             for s in subjects]
+    lines += [f"E|{e.subject_code}|{e.form_id}|{e.version:04d}|{e.statut}|"
+              f"{content_hashes[e.id]}|{e.signed_by or ''}" for e in entries]
+    blob = "\n".join(lines).encode("utf-8")
+    return hashlib.sha256(blob).hexdigest(), len(subjects), len(entries)
 
 
 # ── Poussée FHIR optionnelle (hub HAPI du site, profils IOP) ────────────────
@@ -200,6 +273,7 @@ def create_subject(body: dict,
                    user: dict = Depends(current_user)) -> dict:
     """Inclusion d'un sujet (F01 en ligne) : code pseudonyme assigné."""
     require_perm(user, "ecrf.write")
+    _ensure_unlocked()
     site = str(body.get("site", "")).strip().upper()
     scenario = str(body.get("scenario", "")).strip()
     consentement = str(body.get("consentement", "")).strip()
@@ -331,6 +405,7 @@ def submit_form(code: str, form_id: str, payload: dict,
                 user: dict = Depends(current_user)) -> dict:
     """Saisie d'un formulaire (contrôles §8) — idempotente (clé calculée)."""
     _check_form_write(user, form_id)
+    _ensure_unlocked()
     code = code.upper()
     errors = ecrf_mod.validate_entry(form_id, payload)
     if errors:
@@ -400,6 +475,7 @@ def amend_entry(entry_id: str, body: dict,
                 user: dict = Depends(current_user)) -> dict:
     """Amendement post-signature : nouvelle version, l'original est intact."""
     require_perm(user, "ecrf.write")
+    _ensure_unlocked()
     motif = str(body.get("motif", "")).strip()
     payload = body.get("payload")
     if len(motif) < 3 or not isinstance(payload, dict):
@@ -628,3 +704,151 @@ def audit_verify(user: dict = Depends(current_user)) -> dict:
     ok, first_bad = LEDGER.verify()
     return {"integre": ok, "premiere_alteration": first_bad,
             "evenements": len(LEDGER.events), "tail": LEDGER.tail(20)}
+
+
+# ── Endpoints : verrou de base M+18 et extraction (v0.8, protocole §7.4) ────
+
+@app.get("/api/v1/ecrf/study/status", tags=["eCRF"])
+def study_status(user: dict = Depends(current_user)) -> dict:
+    """État du verrou + compteurs de base — pilotage R6/R7."""
+    require_perm(user, "ecrf.read")
+    state = _lock_state()
+    with SessionLocal() as session:
+        open_q = len(session.scalars(select(EcrfQuery)
+                                     .where(EcrfQuery.statut == "ouverte")
+                                     ).all())
+        nb_sujets = len(session.scalars(select(EcrfSubject)).all())
+        nb_signes = len(session.scalars(select(EcrfEntry)
+                                        .where(EcrfEntry.statut == "signe")
+                                        ).all())
+    state |= {"requetes_ouvertes": open_q, "sujets": nb_sujets,
+              "entrees_signees": nb_signes}
+    if not state["locked"]:
+        checksum, _, nb_entrees = _compute_checksum()
+        state |= {"checksum_courant": checksum, "entrees": nb_entrees,
+                  "note": "le checksum courant est indicatif avant le lock"}
+    return state
+
+
+@app.post("/api/v1/ecrf/study/lock", tags=["eCRF"])
+def lock_study(body: dict, user: dict = Depends(current_user)) -> dict:
+    """VERROU DE BASE M+18 — promoteur (ecrf.lock), ≥ 2 témoins, irréversible.
+
+    Préconditions : zéro requête de monitoring ouverte (plan-monitoring §5).
+    Effets : checksum SHA-256 figé ; toute écriture → 409 ; l'extraction
+    d'analyse du data manager est débloquée. Aucun déverrouillage n'existe
+    (un correctif post-lock passe par un amendement documenté + nouveau
+    protocole, pas par une réouverture — EGSP).
+    """
+    require_perm(user, "ecrf.lock")
+    temoins = [str(t).strip() for t in body.get("temoins", []) if str(t).strip()]
+    declaration = str(body.get("declaration", "")).strip()[:500]
+    if len(temoins) < 2:
+        raise HTTPException(422, "≥ 2 témoins requis (protocole §8 : verrou "
+                                 "par le data manager/promoteur + témoins)")
+    with SessionLocal() as session:
+        if session.get(EcrfStudyLock, ecrf_mod.STUDY_CODE) is not None:
+            raise HTTPException(409, "base déjà verrouillée — opération "
+                                     "irréversible (voir study/status)")
+        open_q = len(session.scalars(select(EcrfQuery)
+                                     .where(EcrfQuery.statut == "ouverte")
+                                     ).all())
+        if open_q:
+            raise HTTPException(409, f"{open_q} requête(s) de monitoring "
+                                     "ouverte(s) — clôture requise avant le "
+                                     "lock (plan-monitoring §5)")
+        checksum, nb_sujets, nb_entrees = _compute_checksum()
+        row = EcrfStudyLock(study=ecrf_mod.STUDY_CODE, locked_at=time.time(),
+                            locked_by=user["sub"], temoins=temoins,
+                            nb_sujets=nb_sujets, nb_entrees=nb_entrees,
+                            checksum=checksum, declaration=declaration)
+        session.add(row)
+        session.commit()
+    _audit(user["sub"], user["role"], "ecrf.study.lock",
+           f"study:{ecrf_mod.STUDY_CODE}",
+           {"checksum": checksum, "temoins": temoins,
+            "sujets": nb_sujets, "entrees": nb_entrees})
+    bus.publish("ecrf.study.locked",
+                {"study": ecrf_mod.STUDY_CODE, "checksum": checksum})
+    return {"locked": True, "checksum": checksum, "sujets": nb_sujets,
+            "entrees": nb_entrees, "temoins": temoins,
+            "extraction": "débloquée pour le data manager"}
+
+
+@app.get("/api/v1/ecrf/extract", tags=["eCRF"])
+def extract_dataset(user: dict = Depends(current_user)) -> dict:
+    """Extraction d'analyse (SAF) — data manager UNIQUEMENT, après lock.
+
+    Jeu de données : dernières entrées SIGNÉES par (sujet, formulaire) +
+    dérivations SAP (éligibilité F01, délai P3 F03, SAE F04). Pseudonyme
+    uniquement. L'intégrité est re-vérifiée à chaque extraction : si l'état
+    courant diverge du checksum verrouillé → 500 + événement d'audit
+    `ecrf.extract.integrity` (investigation requise avant toute analyse).
+    """
+    require_perm(user, "ecrf.extract")
+    state = _lock_state()
+    if not state["locked"]:
+        raise HTTPException(409, "extraction d'analyse bloquée avant le "
+                                 "verrou de base — lock M+18 requis "
+                                 "(protocole §7.4 / SAP annexe A5)")
+    checksum_now, nb_sujets, nb_entrees = _compute_checksum()
+    if checksum_now != state["checksum"]:
+        _audit(user["sub"], user["role"], "ecrf.extract.integrity",
+               f"study:{ecrf_mod.STUDY_CODE}",
+               {"attendu": state["checksum"], "constate": checksum_now})
+        raise HTTPException(500, "alarme d'intégrité : l'état de la base "
+                                 "diverge du checksum verrouillé — "
+                                 "investigation requise (audit chaîné)")
+    with SessionLocal() as session:
+        subjects = session.scalars(select(EcrfSubject)
+                                   .order_by(EcrfSubject.code)).all()
+        entries = session.scalars(select(EcrfEntry)
+                                  .order_by(EcrfEntry.version)).all()
+        queries_resolues = len(session.scalars(
+            select(EcrfQuery).where(EcrfQuery.statut == "resolue")).all())
+    latest: dict[tuple[str, str], EcrfEntry] = {}
+    for e in entries:  # tri par version : la dernière signée gagne
+        if e.statut != "signe":
+            continue
+        key = (e.subject_code, e.form_id)
+        if key not in latest or e.version > latest[key].version:
+            latest[key] = e
+    dataset = []
+    for s in subjects:
+        forms: dict[str, dict] = {}
+        for (code, form_id), e in latest.items():
+            if code != s.code:
+                continue
+            payload = e.payload
+            derivees: dict = {}
+            if form_id == "F01-INCLUSION":
+                statut, motif = ecrf_mod.derive_eligibility(payload)
+                derivees = {"eligibilite": statut, "motif": motif}
+            elif form_id == "F03-DECISION":
+                d = ecrf_mod.derive_delai_minutes(payload)
+                derivees = {"delai_orientation_min": d}
+            elif form_id == "F04-SUIVI30J":
+                derivees = {"sae": ecrf_mod.is_sae(payload)}
+            forms[form_id] = {"entry_id": e.id, "version": e.version,
+                              "signed_by": e.signed_by,
+                              "signed_at": e.signed_at, "payload": payload,
+                              "derivees": derivees}
+        dataset.append({"code": s.code, "site": s.site,
+                        "scenario": s.scenario, "statut": s.statut,
+                        "motif": s.motif, "forms": forms})
+    _audit(user["sub"], user["role"], "ecrf.extract",
+           f"study:{ecrf_mod.STUDY_CODE}",
+           {"checksum": checksum_now, "sujets": len(dataset)})
+    return {
+        "study": ecrf_mod.STUDY_CODE,
+        "protocol_version": ecrf_mod.STUDY_VERSION,
+        "lock": {"locked_at": state["locked_at"], "locked_by": state["locked_by"],
+                 "temoins": state["temoins"], "checksum": state["checksum"],
+                 "nb_sujets": state["nb_sujets"],
+                 "nb_entrees": state["nb_entrees"]},
+        "integrity": {"checksum_recalcule": checksum_now, "conforme": True},
+        "queries_resolues": queries_resolues,
+        "dataset": dataset,
+        "note": "SAF pseudonymisé — dernière entrée signée par "
+                "(sujet, formulaire) + dérivations SAP ; usage analyse R7.",
+    }

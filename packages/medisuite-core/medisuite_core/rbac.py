@@ -15,9 +15,9 @@ PERMISSIONS = [
     "audit.read", "audit.verify",
     "admin.users", "admin.config",
     "appointment.manage", "billing.manage",
-    # Investigation MEDISUITE-CI-01 (eCRF, protocole R5/R6 — v0.7)
+    # Investigation MEDISUITE-CI-01 (eCRF, protocole R5/R6 — v0.7/v0.8)
     "ecrf.read", "ecrf.write", "ecrf.sign", "ecrf.monitor",
-    "ecrf.export", "ecrf.adjudicate",
+    "ecrf.export", "ecrf.adjudicate", "ecrf.lock", "ecrf.extract",
 ]
 
 ROLES: dict[str, set[str]] = {
@@ -41,8 +41,10 @@ ROLES: dict[str, set[str]] = {
     "investigateur": {"ecrf.read", "ecrf.write", "ecrf.sign", "patient.read"},
     "moniteur": {"ecrf.read", "ecrf.monitor"},              # indépendant, contrat
     "adjudicateur": {"ecrf.read", "ecrf.adjudicate"},       # comité aveugle §3.3
-    "data_manager": {"ecrf.read", "ecrf.write", "ecrf.export", "audit.read"},
-    "promoteur": {"ecrf.read", "ecrf.monitor", "ecrf.export", "audit.read"},
+    "data_manager": {"ecrf.read", "ecrf.write", "ecrf.export", "ecrf.extract",
+                      "audit.read"},
+    "promoteur": {"ecrf.read", "ecrf.monitor", "ecrf.export", "ecrf.lock",
+                   "audit.read"},
 }
 # Les cliniciens investigateurs de terrain sont des `medecin` : ils saisissent
 # et signent l'eCRF (le rôle dédié `investigateur` est contractuel).
