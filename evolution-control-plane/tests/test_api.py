@@ -92,7 +92,8 @@ def test_chaine_audit_par_defaut_dans_le_repo_gouverne():
 
     state_mod = importlib.import_module("evolution-control-plane.api.rest._state")
     repo_root = Path(state_mod.ROOT).resolve()
-    assert repo_root.name == "medisuite", f"racine inattendue : {repo_root}"
+    # NB : pas d'assertion sur repo_root.name — le checkout Actions s'appelle
+    # MEDISUITE (majuscules), l'invariant réel est le contenu gouverné.
     assert (repo_root / "governance").is_dir(), "ROOT doit être la racine du dépôt"
 
     # chemin PAR DÉFAUT (sans override) = dépôt/audit/evolution/api-events.jsonl
