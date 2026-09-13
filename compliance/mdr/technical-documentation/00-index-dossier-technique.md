@@ -19,7 +19,7 @@
 | 5 | Gestion des risques (ISO 14971, Annexe I §3) | `03-analyse-risques-iso14971.md` | 🟠 |
 | 6 | Vérification & validation (IEC 62304, 81001-5-1) | `04-iec-62304-classe-C.md` | 🟠 |
 | 6b | **Model-cards IA ×26** (Annexe II §4 — spécifications et caractéristiques des modules IA) | `../model-cards/` (MC-01…MC-26 + index, générées par `tools/generate_model_cards.py`, v0.10) | 🟢 structure — **métriques 🔴 R6-R8** |
-| 7 | Ingénierie d'usage (IEC 62366-1) | `05-iec-62366-usabilite.md` | 🔴 |
+| 7 | Ingénierie d'usage (IEC 62366-1) | `05-iec-62366-usabilite.md` + `usability/` (formatif R3 + **sommatif v0.11 : protocole, grille, modèle de rapport**) | 🟠 protocoles rédigés — exécutions 🔴 R3/R6 |
 | 8 | Évaluation clinique (Annexe XIV) + investigation (Annexe XV) | `06-evaluation-clinique.md` + **`10-protocole-investigation-multicentrique-R5.md` (v0.6 : protocole MEDISUITE-CI-01 rédigé)** | 🟠 protocole rédigé — soumissions ANOC/Ministère, accords sites 🔴 |
 | 8b | **Rapport d'évaluation clinique (MEDDEV 2.7/1 rev 4)** — livrable R7 | **`11-rapport-evaluation-clinique-meddev-271.md` (v0.9 : squelette normatif, ADR-0026)** | 🟢 structure — **contenu 🔴 R7 (post-verrou M+18)** |
 | 9 | Surveillance après commercialisation & vigilance | `07-pms-vigilance.md` | 🔴 |

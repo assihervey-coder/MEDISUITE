@@ -1,0 +1,48 @@
+name: CI GPU (self-hosted, optionnel)
+
+# Campagne GPU : le runner self-hosted étiqueté `gpu` est fourni par le CHU
+# (jalon banc GPU, plan R4-R6). Ce workflow n'est JAMAIS bloquant pour les
+# releases : déclenchement manuel uniquement (workflow_dispatch), l'exécution
+# terrain reste un livrable du plan de validation.
+
+on:
+  workflow_dispatch:
+    inputs:
+      requests:
+        description: "Nombre de requêtes du banc d'inférence"
+        default: "500"
+      module:
+        description: "Module clinique testé (1-26)"
+        default: "8"
+
+jobs:
+  gpu-bench:
+    runs-on: [self-hosted, gpu]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Dépendances (torch CUDA + noyau de test)
+        run: |
+          pip install -q numpy pyyaml pytest
+          python -c "import torch" 2>/dev/null || pip install -q torch --index-url https://download.pytorch.org/whl/cu121
+      - name: Vérification GPU (RuntimeClass nvidia attendu sur le runner)
+        run: python -c "import torch; print('CUDA:', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'aucun')"
+      - name: Suite fusion multimodale (équivalence numpy/torch)
+        run: cd ai && python -m pytest multimodal/tests/ -q
+      - name: Banc d'inférence torch (verdict EGSP p95 ≤ 2000 ms)
+        run: |
+          python tools/bench/bench_fusion.py --backend torch \
+            --requests "${{ inputs.requests || 500 }}" \
+            --module "${{ inputs.module || 8 }}" \
+            --missing-ratio 0.3 -o bench_gpu.json
+      - name: Banc d'inférence numpy (référence comparée)
+        run: python tools/bench/bench_fusion.py --backend numpy --requests "${{ inputs.requests || 500 }}" -o bench_numpy.json
+      - name: Artefacts de mesure
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-gpu
+          path: |
+            bench_gpu.json
+            bench_numpy.json

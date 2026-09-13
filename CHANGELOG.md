@@ -3,6 +3,41 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.11.0] — 2026-09-14
+
+### Usabilité sommative IEC 62366-1 — protocole, grille, modèle de rapport
+- `compliance/mdr/technical-documentation/usability/protocole-evaluation-sommative.md`
+  (v0.11) : 8 scénarios reliés aux dangers (chaîne usage → danger → RM), N ≥ 15
+  cliniciens (≥ 5 par groupe urgence/imagerie/laboratoire) + 2 promoteurs
+  (S8 verrou M+18), interface CONGELÉE, contre-balancement, critères globaux
+  (0 erreur dangereuse non détectée, ≥ 90 % par tâche critique, automation
+  bias ≤ 3/5), classification des erreurs et rapprochement FMEA, éthique loi
+  2013-450 ; exécution 🔴 R6.
+- `usability/grille-sommative.md` (1 exemplaire/participant) et
+  `usability/modele-rapport-sommative.md` (livrable normatif annexé TD-07,
+  référencé CER TD-11 §5.4).
+- Raccords : TD-05 §5 (pointeurs), index TD ligne 7 → 🟠 protocoles rédigés.
+
+### i18n du portal — implémentation réelle (fr/en/ar/es + RTL)
+- **Constat honnête** : `translations.json` existait mais n'était consommé par
+  AUCUN composant — actif mort. L'i18n est maintenant réel.
+- `src/i18n/resolve.ts` : noyau PUR (LANGS, `createT` avec repli fr → clé,
+  `dirFor` (ar = RTL), `storageKeyOf` fail-soft) ; parité des clés des 4
+  langues **garantie à la compilation** (`Record<Lang, Dictionary>`).
+- `src/i18n/i18n.tsx` : `LanguageProvider` (persistance localStorage,
+  `document.lang/dir` mis à jour, RTL arabe) + `useI18n()`.
+- 43 clés × 4 langues (nav + 24 modules + UI) ; sélecteur de langue dans la
+  barre latérale ; `NAV_MAIN`/`MODULE_NAV` traduits à l'affichage (clés +
+  icônes, libellés français codés en dur supprimés).
+- 6 tests vitest (parité, surface 43, traduction réelle, valeurs non vides,
+  RTL, fail-soft) — 25/25 vitest, tsc strict.
+
+### CI GPU (self-hosted, optionnel)
+- `.github/workflows/ci-gpu.yml` : `workflow_dispatch` (jamais bloquant) sur
+  runner étiqueté `gpu` (fourni par le CHU, jalons R4-R6) — vérification CUDA,
+  suite fusion (équivalence numpy/torch), banc torch + numpy avec verdict
+  EGSP p95 ≤ 2000 ms, artefacts de mesure. Exécution terrain 🔴.
+
 ## [v0.10.0] — 2026-09-14
 
 ### Model-cards formelles ×26 — fermeture du bloc 🔴 de l'audit de couverture

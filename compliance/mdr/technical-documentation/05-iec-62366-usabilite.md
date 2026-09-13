@@ -51,6 +51,12 @@ Fonctions à risque d'usage identifié (croisées avec la FMEA) :
 
 ## 5. Summative usability testing (condition de libération)
 
+> **Protocole complet rédigé (v0.11)** : `usability/protocole-evaluation-sommative.md`
+> (8 scénarios reliés aux dangers, N≥15+2 promoteurs, critères globaux,
+> contre-balancement) + grille par participant `usability/grille-sommative.md`
+> + modèle de rapport normatif `usability/modele-rapport-sommative.md`.
+> Exécution 🔴 R6 sur interface congelée.
+
 | Paramètre | Cible |
 |---|---|
 | Participants | ≥15 utilisateurs professionnels répartis sur les 3 groupes d'usage (urgence, imagerie, laboratoire) |

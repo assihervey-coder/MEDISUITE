@@ -1,5 +1,13 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.11.0** : usabilité sommative IEC 62366-1 rédigée
+(protocole 8 scénarios reliés aux dangers + grille + modèle de rapport,
+index TD §7 → 🟠 ; exécution 🔴 R6 sur interface congelée) ; i18n du
+portal implémenté RÉELLEMENT (fr/en/ar RTL/es, 43 clés × 4, parité
+compile-time + 6 tests) — l'actif mort `translations.json` est désormais
+consommé ; CI GPU self-hosted optionnelle (dispatch). Reste 🔴 : exécutions
+terrain (R3 sommatif, R6, pentest, GPU CHU) et backlog §ci-dessous.
+
 > **Mise à jour v0.10.0** : model-cards formelles ×26 (`compliance/mdr/model-cards/`,
 > MC-01…MC-26 + index) générées par outil depuis les sources de vérité du dépôt
 > (datasets/registry.py, configs IA, audit 26 modules) — 6 tests verrouillants

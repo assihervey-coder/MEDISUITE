@@ -16,24 +16,46 @@ import OfflineBanner from "./components/OfflineBanner";
 import { useAuth } from "./store/authStore";
 import ClinicalPanel from "./components/ClinicalPanel";
 import { MODULE_NAV } from "./features/modules-nav";
+import { LanguageProvider, useI18n } from "./i18n/i18n";
+import type { Lang, MsgKey } from "./i18n/resolve";
+import { LANGS } from "./i18n/resolve";
 
-const NAV_MAIN = [
-  { to: "/", label: "🏠 Tableau de bord" },
-  { to: "/patients", label: "🧑‍⚕️ Dossiers patients" },
-  { to: "/imaging", label: "🩻 Imagerie (DICOMweb)" },
-  { to: "/birads", label: "🎗️ Lecteur BI-RADS" },
-  { to: "/laboratory", label: "🧪 Laboratoire" },
-  { to: "/emergency", label: "🚨 Urgences — Triage" },
-  { to: "/code-avc", label: "🧠 Code AVC (stroke)" },
-  { to: "/multimodal", label: "🧠 Fusion multimodale" },
-  { to: "/audit", label: "🔐 Audit (chaîné)" },
-  { to: "/ecrf", label: "📋 eCRF (CI-01)" },
-  { to: "/study", label: "📈 Promoteur — CI-01" },
-  { to: "/about", label: "ℹ️ À propos (UDI)" },
+/** Libellés de langue pour le sélecteur (chaque langue s'affiche dans sa
+ * propre écriture — volontairement hors i18n). */
+const LANG_LABELS: Record<Lang, string> = {
+  fr: "Français",
+  en: "English",
+  ar: "العربية",
+  es: "Español",
+};
+
+/** Navigation principale : `key` = clé de traduction (i18n v0.11). */
+const NAV_MAIN: Array<{ to: string; icon: string; key: MsgKey }> = [
+  { to: "/", icon: "🏠", key: "dashboard" },
+  { to: "/patients", icon: "🧑‍⚕️", key: "patients" },
+  { to: "/imaging", icon: "🩻", key: "imaging" },
+  { to: "/birads", icon: "🎗️", key: "nav.birads" },
+  { to: "/laboratory", icon: "🧪", key: "laboratory" },
+  { to: "/emergency", icon: "🚨", key: "emergency" },
+  { to: "/code-avc", icon: "🧠", key: "nav.code_avc" },
+  { to: "/multimodal", icon: "🧠", key: "nav.multimodal" },
+  { to: "/audit", icon: "🔐", key: "nav.audit" },
+  { to: "/ecrf", icon: "📋", key: "nav.ecrf" },
+  { to: "/study", icon: "📈", key: "nav.study" },
+  { to: "/about", icon: "ℹ️", key: "about" },
 ];
 
 export default function App() {
+  return (
+    <LanguageProvider>
+      <AppShell />
+    </LanguageProvider>
+  );
+}
+
+function AppShell() {
   const { token, role, nom, logout } = useAuth();
+  const { t, lang, setLang } = useI18n();
   if (!token) return <Login />;
 
   return (
@@ -43,21 +65,36 @@ export default function App() {
         <h2>🏥 MEDISUITE</h2>
         {NAV_MAIN.map((n) => (
           <NavLink key={n.to} to={n.to} className={({ isActive }) => (isActive ? "active" : "")}>
-            {n.label}
+            {n.icon} {t(n.key)}
           </NavLink>
         ))}
         <p style={{ borderTop: "1px solid rgba(255,255,255,.25)", margin: "14px 0 6px" }} />
         {MODULE_NAV.map((n) => (
           <NavLink key={n.to} to={n.to} className={({ isActive }) => (isActive ? "active" : "")}>
-            {n.label}
+            {n.icon} {t(`mod.${n.slug}` as MsgKey)}
           </NavLink>
         ))}
         <p style={{ borderTop: "1px solid rgba(255,255,255,.25)", margin: "14px 0 6px" }} />
         <span style={{ fontSize: 13, color: "#a8c4dc" }}>
-          Connecté : {nom} ({role})
+          {t("connected")} : {nom} ({role})
         </span>
+        <label style={{ display: "block", marginTop: 10, fontSize: 13 }}>
+          <span style={{ color: "#a8c4dc" }}>{t("language")}</span>
+          <select
+            value={lang}
+            onChange={(e) => setLang(e.target.value as Lang)}
+            aria-label={t("language")}
+            style={{ width: "100%", marginTop: 4, color: "#0d1b2a" }}
+          >
+            {LANGS.map((l) => (
+              <option key={l} value={l}>
+                {LANG_LABELS[l]}
+              </option>
+            ))}
+          </select>
+        </label>
         <button onClick={logout} style={{ marginTop: 10, background: "rgba(255,255,255,.15)" }}>
-          Déconnexion
+          {t("logout")}
         </button>
       </aside>
       <main className="content">
@@ -78,7 +115,12 @@ export default function App() {
             <Route
               key={n.to}
               path={n.to}
-              element={<ClinicalPanel title={n.label} servicePath={n.to.slice(1)} />}
+              element={
+                <ClinicalPanel
+                  title={`${n.icon} ${t(`mod.${n.slug}` as MsgKey)}`}
+                  servicePath={n.to.slice(1)}
+                />
+              }
             />
           ))}
         </Routes>
