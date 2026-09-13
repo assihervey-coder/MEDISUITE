@@ -60,6 +60,14 @@ def create_service_app(
         start = time.perf_counter()
         # Télémétrie OTel (v0.4) : span serveur par requête, propagation W3C.
         tracer = observability.get_tracer(name)
+        if request.url.path in tracer.noise_routes:
+            # ADR-0025 : les sondes de vie/readiness ne génèrent pas de span —
+            # elles noieraient les traces métier (K8s tire /health et /ready
+            # en continu). Contexte de corrélation minimal conservé.
+            response = await call_next(request)
+            response.headers["X-Request-ID"] = request_id
+            response.headers["X-Service-Name"] = name
+            return response
         span = tracer.start_server_span(
             f"HTTP {request.method} {request.url.path}",
             traceparent=request.headers.get("traceparent"))
@@ -82,8 +90,10 @@ def create_service_app(
         response.headers["X-Request-ID"] = request_id
         response.headers["X-Service-Name"] = name
         response.headers["X-Elapsed-Ms"] = str(elapsed_ms)
+        # ADR-0025 : la décision d'échantillonnage est propagée honnêtement
+        # en aval (flags bit 0) — un span non échantillonné annonce "00".
         response.headers["traceparent"] = observability.format_traceparent(
-            span.trace_id, span.span_id)
+            span.trace_id, span.span_id, "01" if span.sampled else "00")
         return response
 
     @app.exception_handler(Exception)

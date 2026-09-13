@@ -236,14 +236,121 @@ def test_middleware_creates_span_and_propagates():
     tracer = observability.get_tracer("integration-service")
     before = tracer.snapshot()["pending_spans"]
     tp_in = observability.format_traceparent("c" * 32, "d" * 16)
-    r = client.get("/health", headers={"traceparent": tp_in})
-    assert r.status_code == 200
+    # route métier (403 attendu sans auth — le middleware passe avant) ;
+    # /health et /ready sont des routes de bruit sans span depuis ADR-0025
+    r = client.get("/api/v1/fhir/server/status", headers={"traceparent": tp_in})
+    assert r.status_code == 403
     # le middleware poursuit la trace entrante (même trace_id)
     tp_out = r.headers.get("traceparent", "")
     assert tp_out.startswith("00-" + "c" * 32 + "-")
     # et un span a été enregistré
     after = tracer.snapshot()["pending_spans"]
     assert after == before + 1
+
+
+def test_noise_routes_produce_no_span():
+    """ADR-0025 : les sondes de vie ne génèrent pas de span."""
+    tracer = observability.get_tracer("integration-service")
+    before = tracer.snapshot()["pending_spans"]
+    for path in ("/health", "/ready"):
+        r = client.get(path)
+        assert r.status_code == 200
+        assert r.headers.get("X-Service-Name") == "integration-service"
+    assert tracer.snapshot()["pending_spans"] == before
+
+
+def test_sampling_root_ratio_deterministic():
+    """ADR-0025 : décision racine déterministe sur le trace_id."""
+    tracer = observability.Tracer("smp", sampling_ratio=0.0)
+    for _ in range(2):  # même décision à chaque appel (pas d'aléatoire)
+        s = tracer.start_server_span("HTTP GET /x")
+        assert s.sampled is False
+        assert s.attributes["otel.sampling.decision"] == "ratio_dropped"
+    tracer_full = observability.Tracer("smp", sampling_ratio=1.0)
+    s = tracer_full.start_server_span("HTTP GET /x")
+    assert s.sampled is True
+    assert s.attributes["otel.sampling.decision"] == "ratio_sampled"
+
+
+def test_sampling_parent_based():
+    """ADR-0025 : la décision du parent W3C prévaut (ParentBased)."""
+    drop = observability.Tracer("smp", sampling_ratio=0.0)
+    keep = observability.Tracer("smp", sampling_ratio=1.0)
+    s1 = drop.start_server_span(
+        "x", traceparent=observability.format_traceparent("a" * 32, "b" * 16, "01"))
+    assert s1.sampled is True and s1.attributes["otel.sampling.decision"] == "parent_sampled"
+    s2 = keep.start_server_span(
+        "x", traceparent=observability.format_traceparent("c" * 32, "d" * 16, "00"))
+    assert s2.sampled is False and s2.attributes["otel.sampling.decision"] == "parent_unsampled"
+    # flags réservés (bit 1) : le bit 0 seul décide
+    s3 = drop.start_server_span(
+        "x", traceparent=observability.format_traceparent("e" * 32, "f" * 16, "03"))
+    assert s3.sampled is True
+
+
+def test_sampling_always_on_errors():
+    """ADR-0025 : un span en erreur est TOUJOURS conservé."""
+    tracer = observability.Tracer("smp", sampling_ratio=0.0)
+    ok = tracer.start_server_span("HTTP GET /ok")
+    ok.end(ok=True)
+    tracer.record(ok)  # non échantillonné → compté comme écarté
+    ko = tracer.start_server_span("HTTP GET /ko")
+    ko.end(ok=False)
+    tracer.record(ko)  # erreur → conservé malgré ratio 0.0
+    snap = tracer.snapshot()
+    assert snap["pending_spans"] == 1
+    assert snap["sampling_dropped"] == 1
+    assert snap["sampling_ratio"] == 0.0
+
+
+def test_sampling_unsampled_propagates_flags_00():
+    """ADR-0025 : la décision est propagée honnêtement en aval."""
+    observability._default = observability.Tracer("prop", sampling_ratio=0.0)
+    try:
+        from fastapi import FastAPI
+        from fastapi.testclient import TestClient
+        app = FastAPI()
+
+        @app.middleware("http")
+        async def _mw(request, call_next):
+            tracer = observability.get_tracer("prop")
+            if request.url.path in tracer.noise_routes:
+                resp = await call_next(request)
+                resp.headers["X-Skip"] = "1"
+                return resp
+            span = tracer.start_server_span(
+                f"HTTP {request.method} {request.url.path}",
+                traceparent=request.headers.get("traceparent"))
+            resp = await call_next(request)
+            span.end(ok=resp.status_code < 500)
+            tracer.record(span)
+            resp.headers["traceparent"] = observability.format_traceparent(
+                span.trace_id, span.span_id, "01" if span.sampled else "00")
+            return resp
+
+        @app.get("/api/x")
+        def x():
+            return {"ok": True}
+
+        c = TestClient(app)
+        r = c.get("/api/x")
+        assert r.headers["traceparent"].endswith("-00")
+        r = c.get("/health")
+        assert r.headers.get("X-Skip") == "1"
+    finally:
+        observability._default = None
+
+
+def test_sampling_ratio_env_fail_open(monkeypatch):
+    """ADR-0025 : env invalide → 1.0 (ne jamais supprimer la télémétrie)."""
+    monkeypatch.setenv("MEDISUITE_OTEL_SAMPLING_RATIO", "nonsense")
+    assert observability.Tracer("env1").sampling_ratio == 1.0
+    monkeypatch.setenv("MEDISUITE_OTEL_SAMPLING_RATIO", "0.25")
+    assert observability.Tracer("env2").sampling_ratio == 0.25
+    monkeypatch.setenv("MEDISUITE_OTEL_SAMPLING_RATIO", "12")
+    assert observability.Tracer("env3").sampling_ratio == 1.0
+    monkeypatch.setenv("MEDISUITE_OTEL_SAMPLING_RATIO", "-3")
+    assert observability.Tracer("env4").sampling_ratio == 0.0
 
 
 def test_otlp_export_payload():

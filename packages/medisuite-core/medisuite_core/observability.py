@@ -13,6 +13,11 @@ production hospitalière (contrainte « stdlib d'abord » du repo) :
 4. **Dégradation gracieuse** : sans endpoint configuré, les spans restent
    visibles dans le tampon local (diagnostic `__main__`/tests) et l'export
    est un no-op — jamais d'exception, jamais de ralentissement du service.
+5. **Échantillonnage (ADR-0025, v0.8)** : head sampling déterministe
+   parent-based — la décision suit le parent W3C s'il existe, sinon un
+   ratio déterministe sur le trace_id (env `MEDISUITE_OTEL_SAMPLING_RATIO`,
+   défaut 1.0) ; les spans en erreur sont TOUJOURS conservés ; les routes
+   de bruit (probes /health, /ready, /metrics) ne produisent pas de span.
 
 Format d'export : OTLP traces v1 (protobuf JSON mapping) tel qu'attendu par
 `otel/opentelemetry-collector-contrib` sur le receiver `otlp/http`.
@@ -29,6 +34,11 @@ from typing import Any
 
 TRACEPARENT_VERSION = "00"
 _RANDOM_FLAGS = "01"  # sampled
+
+# Routes de bruit (ADR-0025) : sondes K8s/compose tirées quelques fois par
+# minute par service — tracer des spans pour elles noierait les traces
+# métier sans aucune valeur diagnostique.
+NOISE_ROUTES = frozenset({"/health", "/ready", "/metrics"})
 
 # Tailles W3C : trace-id 32 hex, span-id 16 hex
 _HEX = "0123456789abcdef"
@@ -72,10 +82,12 @@ class Span:
     """Span OTel minimal (attributs, statut, horodatage ns)."""
 
     __slots__ = ("trace_id", "span_id", "parent_span_id", "name", "kind",
-                 "start_ns", "end_ns", "attributes", "status", "error")
+                 "start_ns", "end_ns", "attributes", "status", "error",
+                 "sampled")
 
     def __init__(self, trace_id: str, span_id: str, name: str,
-                 parent_span_id: str = "", kind: str = "SPAN_KIND_SERVER") -> None:
+                 parent_span_id: str = "", kind: str = "SPAN_KIND_SERVER",
+                 sampled: bool = True) -> None:
         self.trace_id = trace_id
         self.span_id = span_id
         self.parent_span_id = parent_span_id
@@ -86,6 +98,7 @@ class Span:
         self.attributes: dict[str, Any] = {}
         self.status = "STATUS_CODE_OK"
         self.error = False
+        self.sampled = sampled  # décision ADR-0025
 
     def set_attribute(self, key: str, value: Any) -> None:
         self.attributes[key] = value
@@ -121,35 +134,77 @@ class Tracer:
     """Tracer par service : spans en mémoire + export OTLP/HTTP par lots."""
 
     def __init__(self, service_name: str, endpoint: str | None = None,
-                 batch_size: int = 64, flush_interval_s: float = 2.0) -> None:
+                 batch_size: int = 64, flush_interval_s: float = 2.0,
+                 sampling_ratio: float | None = None) -> None:
         self.service_name = service_name
         self.endpoint = (endpoint or os.environ.get(
             "MEDISUITE_OTEL_ENDPOINT", "")).strip()
         self.batch_size = batch_size
         self.flush_interval_s = flush_interval_s
+        self.noise_routes: frozenset[str] = NOISE_ROUTES
+        self.sampling_ratio = _resolve_ratio(sampling_ratio)
         self._buffer: deque[Span] = deque(maxlen=2048)
         self._lock = threading.Lock()
         self._opener = None  # injection pour tests
         self.exported_batches = 0
         self.dropped = 0
+        self.sampling_dropped = 0
         if self.endpoint:
             t = threading.Thread(target=self._worker, daemon=True)
             t.name = f"otel-export-{service_name}"
             t.start()
 
+    # ── échantillonnage (ADR-0025) ───────────────────────────────────
+    def should_sample(self, trace_id: str,
+                      parent_flags: str | None = None) -> tuple[bool, str]:
+        """Décision head-sampling déterministe.
+
+        - parent W3C présent : sa décision prévaut (ParentBased) — bit 0 des
+          flags (les autres bits sont réservés) ;
+        - racine : ratio appliqué de façon DÉTERMINISTE sur le trace_id
+          (16 premiers hex < ratio × 2^64) — tous les spans d'une même trace
+          prennent la même décision sans coordination inter-services.
+        """
+        if parent_flags is not None:
+            sampled = (int(parent_flags, 16) & 1) == 1
+            return sampled, "parent_sampled" if sampled else "parent_unsampled"
+        threshold = int(self.sampling_ratio * (1 << 64))
+        if int(trace_id[:16], 16) < threshold:
+            return True, "ratio_sampled"
+        return False, "ratio_dropped"
+
     # ── création de spans ────────────────────────────────────────────────────
     def start_server_span(self, name: str, traceparent: str | None = None) -> Span:
-        """Crée un span serveur en poursuivant (ou initiant) une trace W3C."""
+        """Crée un span serveur en poursuivant (ou initiant) une trace W3C.
+
+        La décision d'échantillonnage est prise ICI (head sampling) et
+        tracée dans l'attribut `otel.sampling.decision`.
+        """
         ctx = parse_traceparent(traceparent)
         if ctx:
+            sampled, decision = self.should_sample(ctx["trace_id"],
+                                                   ctx["flags"])
             span = Span(ctx["trace_id"], _hex_random(16), name,
-                        parent_span_id=ctx["parent_span_id"])
+                        parent_span_id=ctx["parent_span_id"],
+                        sampled=sampled)
         else:
-            span = Span(_hex_random(32), _hex_random(16), name)
+            trace_id = _hex_random(32)
+            sampled, decision = self.should_sample(trace_id, None)
+            span = Span(trace_id, _hex_random(16), name, sampled=sampled)
+        span.set_attribute("otel.sampling.decision", decision)
         return span
 
     def record(self, span: Span) -> None:
-        """Conserve le span terminé dans le tampon (overflow → drop compté)."""
+        """Conserve le span terminé dans le tampon (overflow → drop compté).
+
+        ADR-0025 : un span non échantillonné n'est PAS enregistré — sauf en
+        erreur (always-on errors : un incident n'est jamais échantillonné
+        hors des données de télémétrie).
+        """
+        if not span.sampled and not span.error:
+            with self._lock:
+                self.sampling_dropped += 1
+            return
         with self._lock:
             if len(self._buffer) == self._buffer.maxlen:
                 self.dropped += 1
@@ -211,7 +266,26 @@ class Tracer:
             pending = len(self._buffer)
         return {"service": self.service_name, "endpoint": self.endpoint or None,
                 "pending_spans": pending, "exported_batches": self.exported_batches,
-                "dropped": self.dropped}
+                "dropped": self.dropped,
+                "sampling_ratio": self.sampling_ratio,
+                "sampling_dropped": self.sampling_dropped}
+
+
+# ── Résolution du ratio (ADR-0025) ───────────────────────────────────────
+def _resolve_ratio(value: float | None) -> float:
+    """Ratio ∈ [0,1] ; défaut env MEDISUITE_OTEL_SAMPLING_RATIO sinon 1.0.
+
+    Valeur invalide → 1.0 : en télémétrie, une mauvaise configuration ne
+    doit pas SUPPRIMER les données (fail-open observability, assumé ADR).
+    """
+    if value is not None:
+        raw = str(value).strip() or "1.0"
+    else:
+        raw = os.environ.get("MEDISUITE_OTEL_SAMPLING_RATIO", "1.0").strip() or "1.0"
+    try:
+        return min(1.0, max(0.0, float(raw)))
+    except ValueError:
+        return 1.0
 
 
 # ── Singleton par service (configuré par env) ─────────────────────────────────
