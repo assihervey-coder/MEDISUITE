@@ -77,9 +77,14 @@ app = create_service_app("cardiology-service", "Cardiologie", "…")
   exposées via le collector ; les compteurs métier (ordonnances, résultats
   critiques) restent sur les `/metrics` FastAPI existants — unification
   prévue v1.0 avec le SDK OTel officiel quand l'emprise mémoire le permettra.
-- **Pas de sampling intelligent** : tout est exporté (taille maîtrisée par le
-  batch) ; un `tail_sampling` (garder 100 % des erreurs, 10 % des OK) est à
-  calibrer sur le trafic réel du CHU.
+- **Sampling (ADR-0025, v0.8)** : head sampling **déterministe parent-based**
+  — décision du parent W3C honorée, sinon ratio déterministe sur le
+  trace_id (`MEDISUITE_OTEL_SAMPLING_RATIO`, défaut **1.0** pendant
+  l'investigation R6 ; 0.1 recommandé en production courante) ; spans en
+  erreur **toujours** exportés ; probes `/health`, `/ready`, `/metrics`
+  sans span ; décision propagée en aval (flags `01`/`00`) et mesurable
+  (`snapshot() → sampling_ratio/sampling_dropped`). Un tail sampling au
+  collecteur reste réévaluable quand le volume réel CHU sera mesuré.
 - **Traces cross-service partielles** : la propagation s'appuie sur les
   appels HTTP entrants ; les appels sortants effectués hors middleware
   (ex. `HapiClient` interne) créent des traces distinctes tant que les
@@ -92,5 +97,8 @@ app = create_service_app("cardiology-service", "Cardiologie", "…")
 `test_traceparent_roundtrip` (format/parse + 5 headers invalides),
 `test_middleware_creates_span_and_propagates` (span enregistré + trace
 poursuivie de bout en bout), `test_otlp_export_payload` (payload OTLP JSON
-conforme : `resourceSpans → scopeSpans → spans`, ids W3C, statut erreur) —
-12/12 verts sur integration-service, 81/81 sur les packages.
+conforme : `resourceSpans → scopeSpans → spans`, ids W3C, statut erreur)
+et le lot ADR-0025 (`test_noise_routes_produce_no_span`,
+`test_sampling_root_ratio_deterministic`, `test_sampling_parent_based`,
+`test_sampling_always_on_errors`, `test_sampling_unsampled_propagates_flags_00`,
+`test_sampling_ratio_env_fail_open`) — 21/21 verts sur integration-service.

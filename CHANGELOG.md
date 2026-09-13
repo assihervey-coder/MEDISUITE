@@ -3,6 +3,63 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.8.0] — 2026-09-14
+
+### Couverture de l'arborescence initiale (audit mesuré)
+- `docs/COUVERTURE-ARBRE-INITIAL.md` : relecture intégrale de l'arborescence
+  initiale (2 674 chemins) vs dépôt réel (509 fichiers) — 108 correspondances
+  exactes, 43 par famille, 401 fichiers réels **au-delà** de la spec ;
+  cartographie des consolidations volontaires (ADR-0020, noyau partagé,
+  écrans config-driven) et des manques assumés ; outil reproductible
+  `tools/compare_arborescence.py`.
+
+### Instruments terrain R6 (monitoring, annexe A4)
+- `compliance/mdr/clinical/monitoring/` : plan de monitoring (ISO 14155
+  §5.6 — visites V0/V1-V6/VC, SDV 20 %/100 % SAE, critères
+  d'intensification), **modèle de rapport de visite format A4** (3 pages,
+  sections système/consentements/SDV/sûreté/déviations/actions/signatures),
+  **registre des déviations** central (typologie, classement majeure/mineure,
+  condition de lock).
+
+### Pilotage des soumissions (jalon R5, M+3)
+- `compliance/mdr/submissions/` : tableau de bord des soumissions + checklist
+  **ANOC-CI** (30 items reliés aux artefacts du dépôt), checklist **PACTR**
+  (jeu de données ICTRP 24 items, valeurs protocole), checklist
+  **Ministère + DPIA loi 2013-450** (chaîne critique des dépendances).
+
+### Verrou de base M+18 et extraction data manager (§7.4 / SAP A5)
+- `services/ecrf-service` : `POST /api/v1/ecrf/study/lock` — promoteur
+  (`ecrf.lock`), ≥ 2 témoins, zéro requête SDV ouverte, **checksum SHA-256
+  de l'état complet** (contenu canonique recalculé, pas le hash stocké),
+  **irréversible** ; après lock : toute écriture → 409 (inclusion, saisie,
+  amendement, sync rejetés proprement).
+- `GET /api/v1/ecrf/extract` — **data manager uniquement** (`ecrf.extract`),
+  **409 avant le lock** ; après : SAF pseudonymisé (dernière entrée signée
+  par sujet/formulaire + dérivations SAP recalculées) ; **alarme
+  d'intégrité 500** + événement `ecrf.extract.integrity` audité si l'état
+  diverge du checksum verrouillé.
+- `GET /api/v1/ecrf/study/status` (verrou, témoins, compteurs, checksum
+  indicatif) ; RBAC v0.8 : `ecrf.lock` (promoteur), `ecrf.extract`
+  (data manager) — celui qui verrouille n'extrait pas.
+- Tests : 5 nouveaux cas séquentiels (23/23 ecrf-service) dont altération
+  post-lock → alarme prouvée.
+
+### ADR-0025 — Échantillonnage OTel
+- `medisuite_core/observability.py` : head sampling **déterministe
+  parent-based** (décision parent W3C honorée, sinon ratio déterministe sur
+  le trace_id — traces toujours complètes), **always-on errors**, routes de
+  bruit `/health` `/ready` `/metrics` sans span, décision propagée
+  (flags `01`/`00`) et mesurable (`snapshot()`), env
+  `MEDISUITE_OTEL_SAMPLING_RATIO` (défaut 1.0 pendant R6, fail-open
+  assumé) — middleware `http.py` mis à jour, 6 tests (21/21 integration).
+- `docs/adr/0025-otel-sampling.md` (alternatives écartées : tail sampling,
+  SDK officiel, ratio aléatoire).
+
+### CI renforcée (écart découvert par l'audit de couverture)
+- Job `packages+integration` ajouté (noyau + datasets + tests
+  d'intégration HAPI/OTel/IOP) ; contrôle TypeScript strict sans
+  `|| true` silencieux.
+
 ## [v0.7.0] — 2026-09-14
 
 ### R6 — eCRF FHIR opérationnel (saisie → signature → monitoring → DSMB)

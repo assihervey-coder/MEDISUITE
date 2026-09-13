@@ -229,6 +229,16 @@ cette ligne ; `06-evaluation-clinique.md` sera mis à jour à la clôture R5
   > poussée HAPI IOP) et écran `/ecrf` du web-portal (saisie hors-ligne).
   > Voir `docs/E-CRF.md`. L'exécution (inclusions, visites de monitoring)
   > reste 🔴 jusqu'au feu vert R6.
+  > **Mise à jour v0.8.0** : le verrou de base M+18 et l'extraction
+  > verrouillée sont OPÉRATIONNELS 🟢 — `POST /api/v1/ecrf/study/lock`
+  > (promoteur, ≥ 2 témoins, zéro requête ouverte, checksum SHA-256 du
+  > contenu canonique, irréversible) puis `GET /api/v1/ecrf/extract`
+  > (data manager seul, 409 avant lock, alarme d'intégrité 500 + audit si
+  > divergence). Les instruments de monitoring (plan, rapport de visite
+  > A4, registre des déviations) sont rédigés dans
+  > `compliance/mdr/clinical/monitoring/` ; les checklists de soumission
+  > ANOC-CI/PACTR/Ministère-DPIA dans `compliance/mdr/submissions/`. Les
+  > EXÉCUTIONS restent 🔴 terrain.
 - **Déviations et amendements** : toute modification du protocole =
   version amendée + ANOC + ré-information ; registre des déviations.
 - **Audit qualité** : audit interne SMQ (PROC-08) de l'investigation à M+9 ;

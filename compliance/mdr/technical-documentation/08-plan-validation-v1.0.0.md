@@ -23,8 +23,8 @@
 | R3 | Usabilité formative (IEC 62366) | `usability/` protocole + grilles ✅ prêts v0.5 | haute — **exécution avec participants CHU 🔴** | M+2 → M+6 |
 | R4 | Durcissement : Vault/mTLS/SBOM + pentest + banc perf | `security/hardening/` + `tools/bench/` ✅ outillage v0.5 | haute — **exécution pentest externe + campagne GPU CHU 🔴** | M+1 → M+5 |
 | R5 | Protocole investigation multicentrique + accords CHU + comité d'éthique | `10-protocole-investigation-multicentrique-R5.md` (MEDISUITE-CI-01) | critique — **protocole v1.0-draft rédigé v0.6.0 🟠 ; ANOC/Ministère/accords/signatures 🔴** | M+2 → M+6 |
-| R6 | Exécution investigation (inclusions, monitoring DSMB) | Annexe XV | critique — **outillage eCRF opérationnel v0.7.0 🟢** (`services/ecrf-service` + écran portal offline-first + export DSMB) ; **inclusions/monitoring réels 🔴** | M+6 → M+18 |
-| R7 | Rapport évaluation clinique (MEDDEV 2.7/1 rev 4) + bénéfice-risque final | Annexe XIV | critique | M+18 → M+21 |
+| R6 | Exécution investigation (inclusions, monitoring DSMB) | Annexe XV | critique — **outillage eCRF opérationnel v0.7.0 🟢** (`services/ecrf-service` + écran portal offline-first + export DSMB) ; **instruments monitoring A4 rédigés v0.8.0 🟢** (`compliance/mdr/clinical/monitoring/`) ; **verrou M+18 + extraction SAF data manager opérationnels v0.8.0 🟢** ; **inclusions/monitoring réels 🔴** | M+6 → M+18 |
+| R7 | Rapport évaluation clinique (MEDDEV 2.7/1 rev 4) + bénéfice-risque final | Annexe XIV | critique — **extraction SAF du data manager prête (v0.8.0) pour l'analyse** | M+18 → M+21 |
 | R8 | Dossier notifié (EUDAMED) + audit organisme notifié + certification | art. 52-54 | critique | M+21 → M+30+ |
 | R9 | PMS/vigilance opérationnels (registre incidents, PSUR, PMCF) | `07-pms-vigilance.md` | haute | M+3 → M+8 |
 

@@ -91,15 +91,49 @@ d'éligibilité dérivée. Statuts gracieux par entrée : `pousse`,
 Comptages dérivés sans aucune donnée libre ni PHI : sujets par
 site/scénario/statut, entrées par formulaire, EI/SAE liés dispositif
 (règle d'arrêt A5 rappelée), médiane du délai d'orientation (P3),
-répartition d'adhésion. Les extractions nominatives restent réservées
-au data manager (verrou §8) — non implémenté dans cet endpoint
-volontairement.
+répartition d'adhésion. Aucune donnée nominative : les extractions de
+niveau enregistrement passent par l'extraction data manager ci-dessous.
+
+## Verrou de base M+18 et extraction data manager (v0.8, §7.4/SAP A5)
+
+**Verrou** (`POST /api/v1/ecrf/study/lock`, permission `ecrf.lock` =
+promoteur) : fige la base à la fin des suivis 30 j avec **≥ 2 témoins**
+(protocole §8 : verrou + témoins) et **zéro requête de monitoring
+ouverte** (plan-monitoring §5). Il calcule un **checksum SHA-256 de
+l'état complet** — sujets + entrées, chaque payload haché à partir de
+son **contenu canonique recalculé** (`canonical_payload`), pas d'un hash
+stocké : toute altération directe de la base modifie le checksum.
+Effets, irréversibles (aucun déverrouillage n'existe — EGSP) :
+- toute écriture (inclusion, saisie, amendement, sync) → **409** ;
+- l'**extraction d'analyse** est débloquée ;
+- l'événement `ecrf.study.locked` est publié et l'action audité
+  (chaîne SHA-256 persistée).
+
+**Extraction** (`GET /api/v1/ecrf/extract`, permission `ecrf.extract` =
+data manager uniquement ; promoteur, investigateur, moniteur → 403) :
+- **409 avant le lock** — verrouillage prérequis (§7.4) ;
+- après lock : SAF pseudonymisé — dernière entrée **SIGNÉE** par
+  (sujet, formulaire), dérivations SAP recalculées (éligibilité F01,
+  délai P3 F03, SAE F04), checksum re-vérifié à chaque appel ;
+- si l'état courant diverge du checksum verrouillé → **500 alarme
+  d'intégrité** + événement `ecrf.extract.integrity` audité (investigation
+  requise avant toute analyse R7) ;
+- `GET /api/v1/ecrf/study/status` (ecrf.read) : état du verrou, témoins,
+  compteurs, checksum courant indicatif avant lock.
+
+RBAC ajouté v0.8 : `ecrf.lock` (promoteur), `ecrf.extract` (data
+manager) — séparation stricte : celui qui verrouille n'extrait pas.
 
 ## Ce qui reste 🔴 (terrain)
 
 - R6 : feu vert ANOC-CI/Ministère, accords sites, formation PROC-06,
   inclusions réelles.
 - Monitoring de terrain (visites annexe A4) : l'outil de requêtes SDV
-  est opérationnel ; la VISITE elle-même est humaine.
-- Extraction verrouillée data manager + témoins (§8) : à ouvrir lors
-  du lock M+18, après contrôle de complétude.
+  est opérationnel et les **instruments sont rédigés** (plan, rapport de
+  visite A4, registre des déviations — `compliance/mdr/clinical/monitoring/`) ;
+  la VISITE elle-même reste humaine.
+- Pilotage des soumissions : checklists ANOC-CI / PACTR /
+  Ministère-DPIA prêtes (`compliance/mdr/submissions/`) — dépôts réels
+  🔴 (jalon R5, M+3).
+- Le lock M+18 s'exécutera en fin d'étude (promoteur + témoins) —
+  l'OUTILLAGE est 🟢, l'opération est 🔴 terrain.

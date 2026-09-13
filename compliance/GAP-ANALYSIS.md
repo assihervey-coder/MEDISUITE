@@ -1,5 +1,13 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.8.0** : couverture de l'arborescence initiale mesurée
+> (`docs/COUVERTURE-ARBRE-INITIAL.md`), instruments terrain R6 rédigés
+> (monitoring A4, registre déviations), checklists de soumission
+> ANOC-CI/PACTR/Ministère-DPIA, **verrou de base M+18 + extraction SAF du
+> data manager opérationnels** (R6 outillage complet), ADR-0025 sampling
+> OTel. La validité clinique des sorties IA reste 🔴 **par conception**
+> jusqu'à l'exécution de l'investigation (R6-R8).
+
 > **Mise à jour v0.7.0** : eCRF FHIR opérationnel (`services/ecrf-service`
 > + écran portal offline-first — jalon R6 volet outillage 🟢), mode
 > offline du web-portal (SW + file idempotente), UDI-EID GS1 volet
