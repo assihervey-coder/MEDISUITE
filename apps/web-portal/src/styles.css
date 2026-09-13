@@ -57,3 +57,80 @@ button:hover { filter: brightness(1.08); }
 .login-card input { width: 100%; margin: 6px 0 12px; }
 .error { color: var(--critical); font-size: 13px; }
 .note { color: var(--muted); font-size: 12.5px; }
+
+/* ── Écrans spécialisés : lecteur BI-RADS ─────────────────────────────────── */
+.birads-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; align-items: start; }
+@media (max-width: 1100px) { .birads-layout { grid-template-columns: 1fr; } }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin-top: 8px; }
+.form-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.form-grid label.chk { flex-direction: row; align-items: center; gap: 8px; color: var(--text); }
+.form-grid input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); }
+.form-grid select { width: 100%; }
+.birads-verdict { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+.birads-badge { font-size: 17px; font-weight: 700; padding: 6px 16px; }
+.birads-scale { display: flex; gap: 4px; margin-top: 12px; }
+.birads-step {
+  flex: 1; text-align: center; padding: 8px 0; border-radius: 8px;
+  background: #eef4fb; color: var(--muted); font-weight: 600; font-size: 13px;
+  border: 2px solid transparent;
+}
+.birads-step.ok { background: #e5f2e8; color: var(--ok); }
+.birads-step.warn { background: #f7f0dd; color: var(--warn); }
+.birads-step.critical { background: #f7e3de; color: var(--critical); }
+.birads-step.current { border-color: var(--primary); transform: scale(1.06); }
+tr.row-selected td { background: #eaf2fb; }
+
+/* ── Écrans spécialisés : code AVC ────────────────────────────────────────── */
+.stroke-timer { margin-bottom: 18px; }
+.stroke-timer-head { display: flex; gap: 24px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px; }
+.stroke-timer-head h3 { margin-bottom: 4px; }
+.stroke-lkw { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.stroke-elapsed { display: flex; flex-direction: column; min-width: 150px; }
+.window-bar {
+  position: relative; height: 18px; border-radius: 9px; overflow: hidden;
+  display: flex; background: #e3ecf6;
+}
+.window-seg { height: 100%; }
+.window-seg.alteplase { background: var(--ok); }
+.window-seg.thrombectomie { background: var(--warn); }
+.window-seg.perfusion { background: #b9cde2; }
+.window-marker {
+  position: absolute; top: -3px; width: 4px; height: 24px;
+  background: var(--critical); border-radius: 2px; box-shadow: 0 0 0 2px #fff;
+}
+.window-legend { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.window-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.window-legend .dot.alteplase { background: var(--ok); }
+.window-legend .dot.thrombectomie { background: var(--warn); }
+.window-legend .dot.perfusion { background: #b9cde2; }
+.window-legend strong { margin-left: auto; }
+.decision-inline.go { color: var(--ok); }
+.decision-inline.caution { color: var(--warn); }
+.decision-inline.stop { color: var(--critical); }
+.stroke-columns { display: grid; grid-template-columns: 1.05fr 1fr; gap: 18px; align-items: start; }
+@media (max-width: 1100px) { .stroke-columns { grid-template-columns: 1fr; } }
+.nihss-rows { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.nihss-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13.5px; }
+.nihss-row select { width: 90px; padding: 5px 8px; }
+.aspects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin-top: 10px; }
+.aspects-chip {
+  display: flex; flex-direction: column; gap: 2px; padding: 8px 6px;
+  border-radius: 10px; font-size: 12.5px; font-weight: 600;
+  background: #e5f2e8; color: var(--ok); border: 2px solid transparent; cursor: pointer;
+}
+.aspects-chip em { font-style: normal; font-weight: 400; font-size: 11px; opacity: 0.85; }
+.aspects-chip.ischemie { background: #f7e3de; color: var(--critical); }
+.aspects-chip:hover { filter: brightness(0.97); }
+.check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; margin-top: 8px; }
+@media (max-width: 700px) { .check-grid { grid-template-columns: 1fr; } }
+.check-grid label.chk { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.check-grid input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--critical); }
+.decision-banner {
+  margin-top: 18px; padding: 16px 20px; border-radius: 12px;
+  background: #eef4fb; border-left: 6px solid var(--accent);
+}
+.decision-banner.go { background: #e5f2e8; border-left-color: var(--ok); }
+.decision-banner.caution { background: #f7f0dd; border-left-color: var(--warn); }
+.decision-banner.stop { background: #f7e3de; border-left-color: var(--critical); }
+.decision-verdict { font-size: 18px; font-weight: 700; color: var(--primary); }
+.decision-detail { font-size: 13.5px; margin-top: 4px; }

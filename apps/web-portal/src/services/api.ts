@@ -34,7 +34,7 @@ export const api = {
     request<T>(p, { method: "POST", body: body ? JSON.stringify(body) : undefined }),
 };
 
-/** Score clinique via un module de spécialité. */
-export function postScore(module: string, score: string, body: unknown) {
-  return api.post(`/api/specialty/${module}/api/v1/scores/${score}`, body);
+/** Score clinique via un module de spécialité (réponse typée par l'appelant). */
+export function postScore<T = unknown>(module: string, score: string, body: unknown): Promise<T> {
+  return api.post<T>(`/api/specialty/${module}/api/v1/scores/${score}`, body);
 }
