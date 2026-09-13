@@ -14,11 +14,11 @@ import Ecrf from "./features/ecrf/Ecrf";
 import StudyStatus from "./features/study/StudyStatus";
 import OfflineBanner from "./components/OfflineBanner";
 import { useAuth } from "./store/authStore";
-import ClinicalPanel from "./components/ClinicalPanel";
 import { MODULE_NAV } from "./features/modules-nav";
 import { LanguageProvider, useI18n } from "./i18n/i18n";
 import type { Lang, MsgKey } from "./i18n/resolve";
 import { LANGS } from "./i18n/resolve";
+import { SCREEN_ROUTES } from "./screens/routes.generated";
 
 /** Libellés de langue pour le sélecteur (chaque langue s'affiche dans sa
  * propre écriture — volontairement hors i18n). */
@@ -111,17 +111,10 @@ function AppShell() {
           <Route path="/ecrf" element={<Ecrf />} />
           <Route path="/study" element={<StudyStatus />} />
           <Route path="/about" element={<About />} />
-          {MODULE_NAV.map((n) => (
-            <Route
-              key={n.to}
-              path={n.to}
-              element={
-                <ClinicalPanel
-                  title={`${n.icon} ${t(`mod.${n.slug}` as MsgKey)}`}
-                  servicePath={n.to.slice(1)}
-                />
-              }
-            />
+          {/* 96 écrans fins générés (24 modules × 4 types — v0.14) : vue
+              d'ensemble, liste des cas, fiche détail, assistance IA. */}
+          {SCREEN_ROUTES.map((r) => (
+            <Route key={r.path} path={r.path} element={r.element} />
           ))}
         </Routes>
       </main>

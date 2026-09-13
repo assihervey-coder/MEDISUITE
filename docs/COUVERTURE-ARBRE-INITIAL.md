@@ -35,7 +35,7 @@ banc EGSP…) sont **la part d'ingénierie allant au-delà de la spécification*
 |---|---|---|---|---|
 | `services/` 34 microservices, ~60 f. chacun | 1 581 | 39 services testés (152 f.) + `medisuite_core` 23 modules | **ADR-0020** : un template + fabrique `create_service_app` ; ce que la spec dupliquait 34× (`middleware/`, `routing/`, `core/`, `schemas/`, JWT/TOTP/RBAC, audit) vit **une seule fois** dans le noyau partagé | 🟢 fonctionnel, mieux que spec |
 | `ai/` fusion + MLOps | 269 | 57 f. : core NumPy + torch (ADR-0022/0023), 7 encodeurs, 6 têtes, 26 configs, MLflow/DVC/Airflow/Feast/Kubeflow/KServe | Les 269 fichiers aspirés = éclatement d'un même moteur ; réel = moteur unique testé (47 tests, équivalence NumPy↔torch prouvée) | 🟢 |
-| `apps/web-portal` ~130 écrans | ~180 | 37 f. : 12 domaines d'écrans + ClinicalPanel **piloté par configs** (24 modules) + BiRadsViewer, StrokeCode, ECRF, About UDI, offline (SW+IndexedDB), i18n fr/en | Les écrans spécialisés de la spec = variantes d'un même gabarit ; réel = gabarit + configs + 4 écrans critiques dédiés | 🟠 générique livré, écrans dédiés par spécialité = backlog |
+| `apps/web-portal` ~130 écrans | ~180 | ~135 f. : 13 écrans critiques dédiés (BI-RADS, Code AVC, eCRF, UDI, promoteur, offline, i18n ×4) + **96 écrans fins générés** (v0.14 : 24 modules × 4 types — vue d'ensemble/cas/fiche+calculateurs de scores réels/assistance IA, sources de vérité + `--check`) | Le gabarit unique devient 4 gabarits typés × 24 modules, chacun deep-linkable et individuellement évolutif | 🟢 |
 | `apps/mobile`, `apps/desktop`, extensions viewer maison | 38 | 0 (OHIF v3.8.3 branché `/dicom-web` à la place des extensions maison) | Choix assumé : viewer standard éprouvé > extensions à maintenir ; mobile/desktop hors périmètre v0.x | 🔴 backlog v1+ |
 | `docs/` guides+architecture | 163 | 36 f. dont 24 ADR + 10 guides réels (PACS, OHIF, FHIR, OTEL, K8S-GPU, E-CRF, OFFLINE, UDI-GS1, BENCHMARK, MODULES) | La spec empilait des docs normatives ; réel = guides d'usage + ADR traçables | 🟠 |
 | `docs/compliance/` 15 normes + 26 model-cards | 46 | `compliance/` 30 f. **répartis** : dossier CE MDR 11 docs, SMQ 9 PROC, IFU 4 profils + étiquetage, usabilité, hardening, SBOM CycloneDX | Structure réelle (par livrable CE) plus opérante que 15 fichiers normatifs plats ; **model-cards formelles par module : 🔴** (partiellement couvert par datasets/registry + audit-26-modules + configs IA) | 🟠 model-cards 🔴 |
@@ -72,7 +72,7 @@ La quasi-totalité tombe dans trois mécanismes **conscients et documentés** :
    retient 1 compose + 1 CI + K8s/Helm (déploiement réel documenté).
 
 **Reste réellement manquant et utile** (honnêteté, non consolidable) :
-~100 écrans spécialisés fins, GHCR/NetworkPolicy/overlays, mobile/desktop.
+GHCR/NetworkPolicy/overlays, mobile/desktop (v1+).
 **Livrés depuis cet audit** : model-cards ×26 (v0.10), i18n ar/es (v0.11),
 usabilité sommative (v0.11), e2e Playwright + k6 (v0.12), setup 00-10 +
 paquet offline (v0.13). **Livrés depuis cet audit** : model-cards

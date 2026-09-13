@@ -32,6 +32,8 @@ jobs:
         run: python -m pytest tools/tests/ -q
       - name: Idempotence des model-cards (dérive = échec)
         run: python tools/generate_model_cards.py --check
+      - name: Idempotence des écrans fins (dérive = échec)
+        run: python tools/generate_screens.py --check
 
   services:
     runs-on: ubuntu-latest

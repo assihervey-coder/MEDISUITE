@@ -69,3 +69,6 @@ setup-local-docker: ## Installation locale, suite mode conteneurs (07→10)
 
 offline-bundle: ## Construit le paquet d'installation hors-ligne (.tar.gz)
 	bash local-deployment/offline/build-bundle.sh
+
+screens: ## Régénère les 96 écrans fins du portal (puis --check)
+	$(PY) tools/generate_screens.py && $(PY) tools/generate_screens.py --check

@@ -68,7 +68,7 @@ traçabilité IEC 81001-5-1 sans la complexité d'une blockchain (décision ADR-
 ## 📊 Chiffres du dépôt
 
 - **38 services** Python/FastAPI prêts à démarrer, chacun avec `/health`, seed ivoirien et tests
-- **~120 écrans** web générés sur le pattern `ClinicalPanel` branchés aux vraies API
+- **~110 écrans** web : 13 écrans critiques dédiés + 96 écrans fins générés (4 types × 24 modules) branchés aux vraies API
 - **60+ scores cliniques** implémentés et testés dans `packages/clinical-rules`
 - **23 ADR** (`docs/adr/`) documentant chaque décision d'architecture, y compris les choix **contre** la spec initiale (et pourquoi)
 
@@ -89,6 +89,7 @@ traçabilité IEC 81001-5-1 sans la complexité d'une blockchain (décision ADR-
 | v0.11.0 | **Usabilité sommative IEC 62366-1** ([protocole + grille + rapport](compliance/mdr/technical-documentation/usability/protocole-evaluation-sommative.md) — exécution R6), **i18n réel du portal** fr/en/**ar (RTL)**/es — 43 clés × 4 langues + 6 tests, **CI GPU self-hosted optionnelle** (dispatch, banc EGSP) | ✅ |
 | v0.12.0 | **e2e Playwright** ([5 parcours](apps/web-portal/e2e/portal.spec.ts), APIs mockées, RTL arabe vérifié bout-en-bout) + job CI, **charge k6 verrouillée** ([smoke + stress, seuil EGSP p95 ≤ 2 s](testing/load/README.md)) + workflow dispatch, Makefile réparé | ✅ |
 | v0.13.0 | **Setup local assisté** ([séquence 00-10 idempotente](local-deployment/setup/README.md), modes natif + docker, bilan final bloquant) + **paquet hors-ligne air-gapped** ([wheels + cache npm + images + SBOM + MANIFEST.sha256](local-deployment/offline/README.md)) + Makefile re-réparé (test verrou anti-récidive) | ✅ |
+| v0.14.0 | **96 écrans fins** (24 modules × 4 types — vue d'ensemble, cas, fiche avec calculateurs de scores réels, assistance IA à avertissement permanent) générés par [`tools/generate_screens.py`](tools/generate_screens.py) depuis les sources de vérité (registry, clinical-rules, configs IA) — i18n ×4, idempotence CI | ✅ |
 | v1.0.0 | Dossier de marquage CE (MDR IIb) complet, évaluation clinique multicentrique CHU, SMQ ISO 13485 | 📋 — plan `compliance/mdr/technical-documentation/08-plan-validation-v1.0.0.md` |
 
 ## 🤝 Contribution

@@ -1,5 +1,11 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.14.0** : 96 écrans fins générés (24 modules × 4 types)
+depuis les sources de vérité — le bloc « ~100 écrans spécialisés fins » de
+l'audit de couverture est fermé (gabarits typés + calculateurs de scores
+réels + assistance IA avec avertissement de validité). Reste codeable :
+GHCR/NetworkPolicy, mobile/desktop (v1+).
+
 > **Mise à jour v0.13.0** : setup local assisté (séquence 00-10
 idempotente + `make setup-local`) et paquet hors-ligne air-gapped
 (`build-bundle.sh` + MANIFEST.sha256 + `install-bundle.sh`) — le bloc

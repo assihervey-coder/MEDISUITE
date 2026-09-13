@@ -3,6 +3,35 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.14.0] — 2026-09-14
+
+### 96 écrans fins du portal — 24 modules × 4 types (v0.14)
+- `tools/generate_screens.py` : générateur déterministe depuis les sources de
+  vérité du dépôt — services/registry (24 spécialités), modules-nav.ts
+  (icônes/clés i18n), **docstrings + AST des services** (mapping exact
+  endpoint → fonction de règles, 73/73 résolus), **signatures inspectées de
+  packages/clinical-rules** (203 paramètres typés number/text/boolean),
+  configs IA (tâche, modalités, ADR-0018/0019, explicabilité) et
+  datasets/registry (features + plages, spec de label). Mode `--check` en CI
+  (6 tests verrou tools) + cible `make screens`.
+- Quatre gabarits typés partagés (`apps/web-portal/src/screens/templates/`) :
+  **Vue d'ensemble** (KPI dérivés des cas réels, scores du module, tabs) ·
+  **Liste des cas** (recherche + filtres statut/sévérité — logique pure
+  testée — et création de cas sous RBAC serveur) · **Fiche cas**
+  (détail + payload + **calculateurs de scores réels** : un bloc par
+  endpoint, paramètres générés depuis les signatures, résultat brut du
+  service affiché tel quel, erreurs 422 explicites) · **Assistance IA**
+  (transparence ADR-0015/0018/0019 + **avertissement permanent 🔴 validité
+  R6-R8** + rappel consentement IA).
+- 96 fichiers d'écran générés (deep-linkable : routes `/module/<slug>`,
+  `/cas`, `/cas/:caseId`, `/ia`), `registry.generated.ts` (96 ScreenDef) +
+  `routes.generated.tsx` consommés par App.tsx — le ClinicalPanel générique
+  est supprimé (actif mort) ; la sidebar v0.11 reste inchangée (e2e verts).
+- i18n : **39 clés nouvelles × 4 langues** (fr/en/ar/es, 82 clés parité
+  compile-time + runtime) ; arabic RTL couvert sur tous les écrans fins.
+- Tests : vitest 45/45 (logique pure + verrous de structure du registre),
+  tsc strict, build production, e2e Playwright 5/5, tools 25/25.
+
 ## [v0.13.0] — 2026-09-14
 
 ### Setup local assisté — séquence 00-10 (v0.13)

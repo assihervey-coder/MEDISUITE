@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
 // Proxy dev : /api/auth → :8001, etc. En prod, l'api-gateway (:8000) route tout.
@@ -21,4 +21,7 @@ const proxy: Record<string, { target: string; rewrite?: (p: string) => string }>
 export default defineConfig({
   plugins: [react()],
   server: { port: 5173, proxy },
+  // vitest : uniquement les tests unitaires du src — les parcours e2e
+  // Playwright (e2e/*.spec.ts) ont leur runner dédié (npx playwright test).
+  test: { environment: "node", exclude: ["e2e/**", "**/node_modules/**"] },
 });
