@@ -64,3 +64,6 @@ mlartifacts/
 wandb/
 security/hardening/tls/out/
 test-results/
+
+# ---- Local deployment (certificats dev générés) ----
+local-deployment/certs/

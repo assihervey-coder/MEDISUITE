@@ -1,5 +1,12 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.13.0** : setup local assisté (séquence 00-10
+idempotente + `make setup-local`) et paquet hors-ligne air-gapped
+(`build-bundle.sh` + MANIFEST.sha256 + `install-bundle.sh`) — le bloc
+« scripts setup 00-10 + packages offline `.tar` » de l'audit de couverture
+est fermé. Makefile re-réparé (TAB) avec test verrou CI anti-récidive.
+Reste codeable : écrans fins, GHCR/NetworkPolicy, mobile/desktop (v1+).
+
 > **Mise à jour v0.12.0** : e2e Playwright (5 parcours, APIs mockées, job CI)
 et charge k6 verrouillée (smoke/stress, seuil EGSP p95 ≤ 2 000 ms, workflow
 dispatch) — le bloc « e2e Playwright/charge k6 » de l'audit de couverture
@@ -72,7 +79,7 @@ terrain (R3 sommatif, R6, pentest, GPU CHU) et backlog §ci-dessous.
 | HDS (hébergement) | 🔴 n/a hors UE | 🔴 idem | Hébergeur équivalent local (R4, éval. fournisseurs) |
 | Interopérabilité (HL7/FHIR) | ✅ mapping FHIR + HL7 v2.5 | ✅ **serveur HAPI JPA réel** R4 validation REQUIRE + relais RBAC (v0.4) | Profils nationaux IOP CI (v1.0) |
 | Observabilité | 🟠 Prometheus/Grafana | ✅ **OTel collector + spans normés** (v0.4) | Sampling intelligent + métriques métier OTel (v1.0) |
-| Infra GPU | 🔴 absente | ✅ **K8s GPU time-slicing ×2 + HPA** (v0.4) | Image GHCR publiée + NetworkPolicy (v1.0) |
+| Infra GPU | 🔴 absente | ✅ **K8s GPU time-slicing ×2 + HPA** (v0.4) | Image GHCR + NetworkPolicy + overlays staging/prod : chantier v0.14+ |
 | Explicabilité IA | ✅ importance modalités | ✅ idem | Éval. clinique des sorties IA (R5-R7) |
 | Dérive de modèles | 🟠 DAG Airflow drift-check | 🟠 idem | Seuils calibrés données CHU réelles (RM-05) |
 

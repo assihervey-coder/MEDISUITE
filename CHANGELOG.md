@@ -3,6 +3,46 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.13.0] — 2026-09-14
+
+### Setup local assisté — séquence 00-10 (v0.13)
+- `local-deployment/setup/00-prereqs.sh` → `10-verify.sh` : 11 scripts
+  **idempotents** (`set -euo pipefail`, honnêteté 🟢 fait / 🟠 sauté avec
+  raison / 🔴 bloquant) : prérequis versionnés (python ≥ 3.10, node ≥ 18,
+  compose v2), venv + dépendances (`SKIP_AI=1`), portail Node
+  (`PLAYWRIGHT=1`), `.env` à secrets aléatoires (600, jamais écrasé),
+  certificat DEV autosigné 30 j, injection Vault dev, bases SQLite + seeds
+  (smoke inclus), build/pull images compose, `up -d` + 6 sondes santé,
+  smoke double mode, **bilan final bloquant** (venv/portal/.env) avec
+  prochaines étapes imprimées.
+- Raccourcis `make setup-local` (natif) et `make setup-local-docker` ;
+  flags `ALLOW_NO_DOCKER`, `SKIP_SEED`, `OFFLINE=1` (air-gapped).
+- `setup/README.md` : tableau des 11 scripts, deux modes, règles communes.
+
+### Paquet d'installation hors-ligne (v0.13)
+- `local-deployment/offline/build-bundle.sh` : paquet air-gapped
+  `medisuite-offline-<version>.tar.gz` — wheels PyPI, `package-lock` + cache
+  npm, images docker tierces versionnées + images MEDISUITE (`--no-images`
+  pour un paquet léger, `--with-ai` pour torch), README + SBOM CycloneDX,
+  **MANIFEST.sha256** de tous les fichiers ; `DRY_RUN=1` testable (plan
+  sans effet — verrouillé par test).
+- `offline/install-bundle.sh` : contrôle du manifeste **avant** toute
+  installation (refus si paquet altéré), `docker load`, `pip install
+  --no-index --find-links`, `npm ci --offline`, puis relais vers la séquence
+  00-10 en `OFFLINE=1`. `offline/README.md` : procédure émetteur/cible,
+  transport chiffré, traçabilité SBOM ↔ commit ↔ version (audit MDR).
+
+### Tests verrou + qualité (v0.13)
+- `tools/tests/test_setup_scripts.py` : 10 tests (séquence 00-10 complète
+  et exécutable, `set -euo pipefail` partout, `bash -n`, ni `.env` ni
+  certificats versionnés, références compose vivantes, DRY_RUN sans effet,
+  manifeste obligatoire, README/Makefile raccordés) — 19/19 tools verts.
+- **Makefile réparé à nouveau** : la conversion TAB de v0.12 n'avait pas
+  survécu sur le disque (toutes les recettes en 8 espaces, `make` en
+  « missing separator ») — conversion globale re-faite et `make -n`
+  vérifié sur TOUTES les cibles ; le test verrou `test_09_makefile_raccorde`
+  rejoue `make -n setup-local` à chaque CI pour interdire la récidive.
+
 ## [v0.12.0] — 2026-09-14
 
 ### e2e Playwright du portal (v0.12)

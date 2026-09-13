@@ -88,6 +88,7 @@ traçabilité IEC 81001-5-1 sans la complexité d'une blockchain (décision ADR-
 | v0.10.0 | **Model-cards formelles ×26** ([index](compliance/mdr/model-cards/00-index-model-cards.md)) générées par `tools/generate_model_cards.py` depuis les sources de vérité du dépôt (registry, configs IA, audit 26 modules) — 6 tests verrouillants + idempotence CI (`--check`) ; métriques 🔴 R6-R8 (verrou M+18 → SAP → CER TD-11) | ✅ |
 | v0.11.0 | **Usabilité sommative IEC 62366-1** ([protocole + grille + rapport](compliance/mdr/technical-documentation/usability/protocole-evaluation-sommative.md) — exécution R6), **i18n réel du portal** fr/en/**ar (RTL)**/es — 43 clés × 4 langues + 6 tests, **CI GPU self-hosted optionnelle** (dispatch, banc EGSP) | ✅ |
 | v0.12.0 | **e2e Playwright** ([5 parcours](apps/web-portal/e2e/portal.spec.ts), APIs mockées, RTL arabe vérifié bout-en-bout) + job CI, **charge k6 verrouillée** ([smoke + stress, seuil EGSP p95 ≤ 2 s](testing/load/README.md)) + workflow dispatch, Makefile réparé | ✅ |
+| v0.13.0 | **Setup local assisté** ([séquence 00-10 idempotente](local-deployment/setup/README.md), modes natif + docker, bilan final bloquant) + **paquet hors-ligne air-gapped** ([wheels + cache npm + images + SBOM + MANIFEST.sha256](local-deployment/offline/README.md)) + Makefile re-réparé (test verrou anti-récidive) | ✅ |
 | v1.0.0 | Dossier de marquage CE (MDR IIb) complet, évaluation clinique multicentrique CHU, SMQ ISO 13485 | 📋 — plan `compliance/mdr/technical-documentation/08-plan-validation-v1.0.0.md` |
 
 ## 🤝 Contribution

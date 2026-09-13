@@ -43,7 +43,7 @@ banc EGSP…) sont **la part d'ingénierie allant au-delà de la spécification*
 | `configs/` | 64 | 2 f. configs ops + 26 configs IA (dans `ai/multimodal/configs/`) | Déplacement assumé : les configs vivent près du code | 🟢 |
 | `.github/` CI 12 workflows + 13 actions composables | 55 | 1 `ci.yml` (3 jobs) | **Écart réel découvert par cet audit** → corrigé v0.8 : job `core+datasets+integration` ajouté, `tsc \|\| true` silencieux remplacé par contrôle strict ; GPU/e2e actions = backlog | 🟠 corrigé |
 | `compliance/` (racine spec) | — | → voir `docs/compliance/` ci-dessus | — | 🟢 |
-| `local-deployment/` 12 scripts setup | 32 | compose minimal **11 services** (Orthanc, HAPI+PG16, otel-collector, vault, OHIF…) + hapi/ + ohif/ + orthanc.json + scripts (certs, secrets, SBOM) | Scripts setup 00-10 et packages offline `.tar` : 🔴 backlog (chronophage, valeur faible avant déploiement CHU réel) | 🟠 |
+| `local-deployment/` 12 scripts setup | 32 | compose minimal **11 services** + **séquence setup 00-10 idempotente** (v0.13 : prereqs→verify, 2 modes natif/docker, bilan bloquant) + **paquet offline air-gapped** (wheels + cache npm + images + SBOM + MANIFEST.sha256, installateur vérifié) | Livré v0.13 avec 10 tests verrou ; `DRY_RUN=1` testable | 🟢 |
 | `security/` | 19 | `compliance/security/hardening/` : Vault (compose+policies+init), PKI mTLS (script vérifié openssl), plan pentest ASVS, SBOM | — | 🟢 outillage ; exécution pentest externe 🔴 terrain |
 | `monitoring/` | 22 | otel collector, Prometheus (+ job OTel), alertes cliniques/IA, Grafana | — | 🟢 |
 | `packages/` | 14 | 46 f. : `medisuite_core` (JWT, TOTP, RBAC, audit chaîné, HL7 v2.5+MLLP, FHIR R4, HAPI, OTel, eCRF, GS1-UDI, seed) + `clinical-rules` (~90 scores) | **Largement au-delà de la spec** : la spec dispersait ces capacités par service ; réel = noyau certifiable | 🟢+ |
@@ -72,8 +72,10 @@ La quasi-totalité tombe dans trois mécanismes **conscients et documentés** :
    retient 1 compose + 1 CI + K8s/Helm (déploiement réel documenté).
 
 **Reste réellement manquant et utile** (honnêteté, non consolidable) :
-scripts setup local 00-10 + packages offline, mobile/desktop,
-~100 écrans spécialisés fins. **Livrés depuis cet audit** : model-cards
+~100 écrans spécialisés fins, GHCR/NetworkPolicy/overlays, mobile/desktop.
+**Livrés depuis cet audit** : model-cards ×26 (v0.10), i18n ar/es (v0.11),
+usabilité sommative (v0.11), e2e Playwright + k6 (v0.12), setup 00-10 +
+paquet offline (v0.13). **Livrés depuis cet audit** : model-cards
 ×26 (v0.10), i18n ar/es réel (v0.11), usabilité sommative (v0.11),
 e2e Playwright + charge k6 + actions CI GPU/e2e (v0.11-v0.12).
 Les model-cards formelles ×26 sont **livrées en v0.10**

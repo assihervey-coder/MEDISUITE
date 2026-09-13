@@ -2,7 +2,7 @@ ROOT_DIR   := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 PY         ?= python3
 PIP        := $(PY) -m pip install --break-system-packages -q
 
-.PHONY: help install install-core test test-rules test-services test-ai test-tools model-cards dev-up dev-down smoke tree stats
+.PHONY: help install install-core test test-rules test-services test-ai test-tools model-cards screens dev-up dev-down smoke tree stats setup-local setup-local-docker offline-bundle
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -50,3 +50,22 @@ stats: ## Statistiques du code
 	@echo "Fichiers Python : $$(find . -name '*.py' -not -path './.git/*' | wc -l)"
 	@echo "Lignes Python   : $$(find . -name '*.py' -not -path './.git/*' -exec cat {} + | wc -l)"
 	@echo "Fichiers TS/TSX : $$(find . \( -name '*.ts' -o -name '*.tsx' \) -not -path './.git/*' | wc -l)"
+
+setup-local: ## Assistant d'installation locale (mode natif : 00→04, 06, 10)
+	bash local-deployment/setup/00-prereqs.sh
+	bash local-deployment/setup/01-python.sh
+	bash local-deployment/setup/02-portal.sh
+	bash local-deployment/setup/03-env.sh
+	bash local-deployment/setup/04-certs.sh
+	bash local-deployment/setup/06-db.sh
+	bash local-deployment/setup/10-verify.sh
+
+setup-local-docker: ## Installation locale, suite mode conteneurs (07→10)
+	bash local-deployment/setup/07-images.sh
+	bash local-deployment/setup/08-up.sh
+	bash local-deployment/setup/05-secrets.sh
+	bash local-deployment/setup/09-smoke.sh
+	bash local-deployment/setup/10-verify.sh
+
+offline-bundle: ## Construit le paquet d'installation hors-ligne (.tar.gz)
+	bash local-deployment/offline/build-bundle.sh
