@@ -1,0 +1,64 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.db
+*.sqlite3
+
+# ---- Node ----
+node_modules/
+.next/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# ---- Données & artefacts ----
+data/
+ai/datasets/raw/
+ai/datasets/processed/
+ai/models/**/checkpoints/
+*.nii
+*.nii.gz
+*.dcm
+!testing/fixtures/**/*.dcm
+
+# ---- Secrets (JAMAIS de vrais secrets dans git) ----
+.env
+.env.*
+!.env.example
+secrets/production/
+secrets/staging/
+security/certificates/ca/ca.key
+security/certificates/tls/
+*.pem
+*.key
+
+# ---- Infrastructure ----
+terraform/.terraform/
+terraform/*.tfstate*
+kubernetes/overlays/**/secrets.yaml
+
+# ---- IDE / OS ----
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.DS_Store
+logs/
+tmp/
+vendor/
+
+# ---- ML ----
+mlruns/
+mlartifacts/
+wandb/
