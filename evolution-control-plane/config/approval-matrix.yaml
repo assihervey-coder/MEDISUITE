@@ -1,0 +1,22 @@
+# Qui approuve quoi (ISO 14155 : délégations tracées, séparations de rôles)
+roles:
+  - {id: maintainer,        label: "Maintenant technique"}
+  - {id: clinical_lead,     label: "Responsable clinique"}
+  - {id: safety_officer,    label: "Responsable sûreté (ISO 14971)"}
+  - {id: data_protection,   label: "DPO / protection des données"}
+  - {id: regulatory_affairs,label: "Affaires réglementaires (MDR)"}
+  - {id: security_officer,  label: "Responsable sécurité"}
+matrix:
+  P1: []
+  P2: []
+  P3: [maintainer]
+  P4: [maintainer, security_officer]
+  P5: [maintainer, data_protection]
+  P6: [maintainer, clinical_lead]
+  P7: [clinical_lead, safety_officer]
+  P8: [clinical_lead, safety_officer, security_officer]
+  P9: [regulatory_affairs, clinical_lead, safety_officer]
+rules:
+  - "Aucun approveur ne valide sa propre proposition (séparation des duties)"
+  - "committee = quorum complet de la liste"
+  - "dual = 2 rôles distincts requis"

@@ -1,0 +1,9 @@
+databases:
+  - {name: postgres-primary, tech: postgresql, adr: docs/adr/0008-postgres-primary-db.md,
+     owners: [patient-service, auth-service, laboratory-service, imaging-service, ecrf-service]}
+  - {name: sqlite-local, tech: sqlite, purpose: "setup local 00-10 / tests",
+     owners: [local-deployment]}
+policies:
+  migrations: expand_migrate_contract
+  phi_encryption_at_rest: required
+  audit_chain: sha256_append_only (ADR-0021)

@@ -1,0 +1,23 @@
+# Matrice de compatibilité — consommée par engines/compatibility-engine
+api:
+  v1: {status: STABLE, consumers: [web-portal, specialty-services], breaking_allowed: false}
+  v2: {status: PLANNED, consumers: []}
+database:
+  postgres-primary: {strategy: expand_migrate_contract, rollback: REQUIRED}
+events:
+  bus: medisuite_core.events (in-memory V1)
+  contracts: architecture/baseline/EVENTS.yaml
+fhir:
+  r4: {profiles: services/integration-service/fhir/profiles, status: STABLE}
+  r6: {scope: ecrf-service, status: ISOLATED, note: "ADR-0024 — profils IOP nationaux"}
+dicom:
+  sop_classes: {status: STABLE, gateway: dicom-gateway}
+hl7:
+  v2.5: {messages: [ORM^O01, ORU^R01], gateway: hl7-gateway}
+ai:
+  model_cards: {path: compliance/mdr/model-cards, drift_check: "tools/generate_model_cards.py --check"}
+clinical:
+  rules_package: {path: packages/clinical-rules, any_change: REVIEW_REQUIRED}
+configuration:
+  helm_values: infrastructure/kubernetes/helm/medisuite-core/values.yaml
+  feature_flags: feature-flags/

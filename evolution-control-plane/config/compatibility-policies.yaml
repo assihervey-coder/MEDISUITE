@@ -1,0 +1,16 @@
+# Compatibilité exigée par dimension, selon la classe de changement
+dimensions:
+  api:        {check: contract_diff,    breaking: REVIEW_REQUIRED}
+  database:   {check: schema_diff,      breaking: FAIL}
+  events:     {check: schema_diff,      breaking: REVIEW_REQUIRED}
+  fhir:       {check: profile_diff,     breaking: REVIEW_REQUIRED}
+  dicom:      {check: sop_class_diff,   breaking: FAIL}
+  hl7:        {check: segment_diff,     breaking: REVIEW_REQUIRED}
+  ai:         {check: model_card_diff,  drift: WARNING}
+  clinical:   {check: rules_diff,       any_change: REVIEW_REQUIRED}
+  configuration: {check: config_diff,  undocumented: WARNING}
+baseline_contracts:
+  api_dir: contracts/api
+  fhir_profiles: services/integration-service/fhir/profiles
+  events_dir: contracts/events
+  model_cards: compliance/mdr/model-cards

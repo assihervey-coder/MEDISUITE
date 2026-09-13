@@ -1,0 +1,19 @@
+# Liste exhaustive — miroir de services/registry.py (ne pas éditer à la main :
+# régénérer via engines/impact-engine/code_analyzer.py)
+services:
+  - {name: api-gateway, port: 8000, group: core}
+  - {name: auth-service, port: 8001, group: core}
+  - {name: patient-service, port: 8002, group: core}
+  - {name: imaging-service, port: 8003, group: core}
+  - {name: laboratory-service, port: 8004, group: core}
+  - {name: reporting-service, port: 8200, group: transverse}
+  - {name: notification-service, port: 8201, group: transverse}
+  - {name: audit-service, port: 8202, group: transverse}
+  - {name: integration-service, port: 8203, group: transverse}
+  - {name: analytics-service, port: 8204, group: transverse}
+  - {name: ecrf-service, port: 8205, group: transverse}
+  - {name: dicom-gateway, port: 8300, group: gateway}
+  - {name: hl7-gateway, port: 8301, group: gateway}
+  - {name: multimodal-gateway, port: 8302, group: gateway}
+  - {name: explainability-service, port: 8303, group: gateway}
+  - {name: specialty-x24, ports: 8100-8123, group: specialty, registry: services/registry.py}

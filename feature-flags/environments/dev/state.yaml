@@ -1,0 +1,5 @@
+# État des flags — environnement dev
+overrides:
+  patient_digital_twin: ON
+  ai_platform_router: ON
+  clinical_safety_gate: OFF  # activé seulement via décision P8

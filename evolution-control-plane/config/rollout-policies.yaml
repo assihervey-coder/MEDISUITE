@@ -1,0 +1,22 @@
+# Stratégies de déploiement progressif
+strategies:
+  direct:      {target: [dev],                        gates: [smoke]}
+  staged:      {target: [dev, staging],               gates: [smoke, regression]}
+  pilot:       {target: [dev, staging, pilot],        gates: [smoke, regression, clinical_signoff]}
+  canary:      {target: [dev, staging, pilot],        canary_steps: [1, 10, 25, 50, 100],
+                gates: [smoke, regression, metric_slo, clinical_signoff]}
+per_class:
+  P1: direct
+  P2: direct
+  P3: staged
+  P4: canary
+  P5: canary
+  P6: canary
+  P7: pilot
+  P8: canary
+  P9: canary
+slo_gates:
+  error_rate_max: 0.01
+  latency_p95_ms_max: 2000   # aligné testing/load k6 (EGSP p95 ≤ 2 s)
+  clinical_alert_rate_max: 0.001
+  soak_minutes_per_step: 30

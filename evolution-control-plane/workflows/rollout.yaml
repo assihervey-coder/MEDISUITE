@@ -1,0 +1,12 @@
+# Pipeline déclaratif « rollout » — orchestré par application/
+name: rollout
+trigger: state_machine
+steps:
+  - prepare_checkpoints
+  - start_rollout
+  - gate_check
+  - advance_step
+  - monitor_slo
+  - complete|pause
+  - emit.Rollout*
+on_failure: record_evidence_and_halt

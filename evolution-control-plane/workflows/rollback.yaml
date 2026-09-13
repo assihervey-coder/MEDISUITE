@@ -1,0 +1,11 @@
+# Pipeline déclaratif « rollback » — orchestré par application/
+name: rollback
+trigger: state_machine
+steps:
+  - detect_trigger
+  - freeze_rollout
+  - restore_checkpoints
+  - verify_smoke
+  - record_evidence
+  - emit.RollbackCompleted
+on_failure: record_evidence_and_halt

@@ -1,0 +1,37 @@
+id: PROP-XXXX
+version: 1
+title: ""
+status: DRAFT
+requested_by: ""
+summary: >-
+  Contexte, problème, bénéfice attendu.
+affected_domains: []
+breaking_change: false
+migration_required: false
+rollback_required: true
+human_approval_required: true
+type: AI
+priority: HIGH
+ai_impact: HIGH
+model_lineage:
+  model_id: ""
+  model_version: ""
+  checksum: ""
+  dataset_id: ""
+  dataset_version: ""
+  preprocessing_version: ""
+  prompt_version: ""
+  retrieval_version: ""
+  threshold_version: ""
+  calibration_version: ""
+  safety_policy_version: ""
+  clinical_rules_version: ""
+  evidence_version: ""
+evaluation:
+  retrospective_validation: REQUIRED
+  external_validation: RECOMMENDED
+  fairness_report: REQUIRED
+  explainability: REQUIRED
+monitoring:
+  drift_metrics: [psi, ks]
+  abstention_required: true

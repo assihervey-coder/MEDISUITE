@@ -1,0 +1,65 @@
+# ÉTAT ACTUEL — dérivé des sources de vérité (services/registry.py, datasets/registry.py,
+# ai/multimodal/configs/, infrastructure/kubernetes/). Généré pour le control plane V1.
+version: "0.15.0"
+generated_for: evolution-control-plane
+packages:
+  - {name: medisuite-core, path: packages/medisuite-core, tests: packages/medisuite-core/tests/}
+  - {name: clinical-rules, path: packages/clinical-rules, tests: packages/clinical-rules/tests/}
+services_core:
+  - {name: api-gateway, port: 8000, group: core, test: services/api-gateway/tests/}
+  - {name: auth-service, port: 8001, group: core, test: services/auth-service/tests/}
+  - {name: patient-service, port: 8002, group: core, test: services/patient-service/tests/}
+  - {name: imaging-service, port: 8003, group: core, test: services/imaging-service/tests/}
+  - {name: laboratory-service, port: 8004, group: core, test: services/laboratory-service/tests/}
+services_transverse:
+  - {name: reporting-service, port: 8200, test: services/reporting-service/tests/}
+  - {name: notification-service, port: 8201, test: services/notification-service/tests/}
+  - {name: audit-service, port: 8202, test: services/audit-service/tests/}
+  - {name: integration-service, port: 8203, test: services/integration-service/tests/}
+  - {name: analytics-service, port: 8204, test: services/analytics-service/tests/}
+  - {name: ecrf-service, port: 8205, test: services/ecrf-service/tests/}
+services_gateway:
+  - {name: dicom-gateway, port: 8300, test: services/dicom-gateway/tests/}
+  - {name: hl7-gateway, port: 8301, test: services/hl7-gateway/tests/}
+  - {name: multimodal-gateway, port: 8302, test: services/multimodal-gateway/tests/}
+  - {name: explainability-service, port: 8303, test: services/explainability-service/tests/}
+services_specialty:
+  count: 24
+  ports: 8100-8123
+  registry: services/registry.py
+  test_pattern: services/<slug>-service/tests/
+frontend:
+  - {name: web-portal, path: apps/web-portal, tests: "vitest + e2e Playwright (5 parcours)"}
+  - {name: CLI, path: apps/CLI}
+ai:
+  engine: ai/multimodal (fusion intermédiaire, gated, cross-attention, missing-modality)
+  backends: [numpy, torch]
+  configs: ai/multimodal/configs (26 spécialités)
+  explainability: ai/multimodal/explainability
+  mlops: [mlflow, kubeflow, airflow, feast, dvc, kserve]
+datasets:
+  registry: datasets/registry.py
+  manifest: datasets/manifest.json
+  specialties: 24
+  tests: datasets/tests/
+infrastructure:
+  kubernetes: [base, overlays/dev, overlays/staging, overlays/prod, gpu, helm/medisuite-core]
+  networkpolicy: default-deny ingress+egress + allowlist (DNS, intra-ns, gateway :8000)
+  gitops: [argocd app-of-apps, flux kustomization]
+  terraform: infrastructure/terraform
+  registries: ghcr.io/assihervey-coder/MEDISUITE/medisuite-<service>
+security:
+  keycloak: security/keycloak/realms/medisuite-realm.json
+  vault: security/hardening/vault
+  opa: security/policies/opa/clinical_access.rego
+  tls: security/hardening/tls (mTLS nginx)
+observability:
+  otel: monitoring/otel/collector.yaml (ADR-0025 sampling)
+  prometheus: monitoring/prometheus (+ alerts ai-models, clinical)
+compliance:
+  mdr: compliance/mdr (dossier technique, model-cards x26, clinical, submissions)
+  smq: compliance/smq (PROC-01..08 ISO 13485)
+  sbom: compliance/sbom/sbom.json
+e_cr_f:
+  service: ecrf-service (FHIR R6, lock M+18, extraction SAF)
+port_convention: "800x=cœur, 81xx=spécialités, 82xx=transverses, 83xx=passerelles, 8400=control plane"

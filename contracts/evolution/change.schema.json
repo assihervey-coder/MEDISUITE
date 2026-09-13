@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://medisuite.local/contracts/evolution/changeset.schema.json",
+  "title": "ChangeSet",
+  "type": "object",
+  "required": [
+    "id",
+    "proposal",
+    "baseline",
+    "modifications",
+    "affected_components"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^CHG-[0-9]{4}$"
+    },
+    "proposal": {
+      "type": "string"
+    },
+    "baseline": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "commit": {
+          "type": "string"
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "modifications": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "ADD",
+          "MODIFY",
+          "MIGRATE",
+          "REMOVE"
+        ]
+      }
+    },
+    "affected_components": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "migration_required": {
+      "type": "boolean"
+    },
+    "rollback_supported": {
+      "type": "boolean"
+    },
+    "immutable": {
+      "const": true
+    }
+  },
+  "additionalProperties": false
+}

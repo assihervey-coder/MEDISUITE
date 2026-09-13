@@ -1,0 +1,25 @@
+id: PROP-XXXX
+version: 1
+title: ""
+status: DRAFT
+requested_by: ""
+summary: >-
+  Contexte, problème, bénéfice attendu.
+affected_domains: []
+breaking_change: false
+migration_required: false
+rollback_required: true
+human_approval_required: true
+type: CLINICAL
+priority: HIGH
+clinical_impact: HIGH
+patient_safety_impact: HIGH
+clinical_assets:
+  rules_modified: []
+  contraindications: []
+  alerts: []
+  decision_support: []
+validation:
+  clinical_review: REQUIRED
+  safety_review: REQUIRED
+  retrospective_cohort: REQUIRED

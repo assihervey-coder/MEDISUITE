@@ -1,0 +1,10 @@
+# Pipeline déclaratif « implementation » — orchestré par application/
+name: implementation
+trigger: state_machine
+steps:
+  - create_change_set
+  - execute_units
+  - verify_units
+  - finalize
+  - emit.ImplementationCompleted
+on_failure: record_evidence_and_halt

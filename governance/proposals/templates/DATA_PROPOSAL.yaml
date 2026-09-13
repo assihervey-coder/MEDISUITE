@@ -1,0 +1,23 @@
+id: PROP-XXXX
+version: 1
+title: ""
+status: DRAFT
+requested_by: ""
+summary: >-
+  Contexte, problème, bénéfice attendu.
+affected_domains: []
+breaking_change: false
+migration_required: false
+rollback_required: true
+human_approval_required: true
+type: DATA
+priority: HIGH
+data_impact: HIGH
+migration:
+  strategy: expand_migrate_contract
+  backward_compatible: true
+  rollback_script: REQUIRED
+  phi_impact: NONE
+gdpr:
+  dpia_required: false
+  consent_impact: NONE

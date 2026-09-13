@@ -1,0 +1,12 @@
+# Pipeline déclaratif « impact-analysis » — orchestré par application/
+name: impact-analysis
+trigger: state_machine
+steps:
+  - parse_change_set
+  - scan_code
+  - scan_contracts
+  - scan_ai
+  - scan_clinical
+  - compute_blast_radius
+  - emit.ImpactAnalysisCompleted
+on_failure: record_evidence_and_halt

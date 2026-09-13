@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://medisuite.local/contracts/evolution/validation.schema.json",
+  "title": "Validation",
+  "type": "object",
+  "required": [
+    "change_set",
+    "plan",
+    "results"
+  ],
+  "properties": {
+    "change_set": {
+      "type": "string"
+    },
+    "plan": {
+      "type": "object",
+      "properties": {
+        "selected_tests": {
+          "type": "object"
+        },
+        "full_regression": {
+          "type": "boolean"
+        }
+      }
+    },
+    "results": {
+      "type": "object",
+      "properties": {
+        "technical": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        },
+        "compatibility": {
+          "enum": [
+            "PASS",
+            "WARNING",
+            "REVIEW_REQUIRED",
+            "FAIL",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "clinical": {
+          "enum": [
+            "PASS",
+            "REVIEW_REQUIRED",
+            "FAIL",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "safety": {
+          "enum": [
+            "PASS",
+            "REVIEW_REQUIRED",
+            "FAIL",
+            "NOT_APPLICABLE"
+          ]
+        }
+      }
+    },
+    "evidence_id": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

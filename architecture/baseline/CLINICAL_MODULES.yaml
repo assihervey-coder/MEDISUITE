@@ -1,0 +1,11 @@
+clinical_modules:
+  count: 26
+  rules_package: packages/clinical-rules (203 paramètres typés, ~90 scores cités)
+  specialties: [imaging, laboratory, oncology, tumor, ophthalmology, diabetes,
+    traumatology, cardiology, pneumology, obstetrics, gynecology, fertility,
+    neurology, psychiatry, pediatrics, nephrology, gastroenterology, dermatology,
+    ent, rheumatology, urology, nuclear-medicine, radiotherapy, anesthesia,
+    geriatrics, emergency]
+  lab_qc: {westgard: configs/clinical/westgard-rules.yaml, levey_jennings: true}
+  decision_support: "endpoints /scores par service spécialité"
+change_policy: P7 (CLINICAL) — approbation clinical_lead + safety_officer

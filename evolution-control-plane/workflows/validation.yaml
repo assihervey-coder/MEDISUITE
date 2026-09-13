@@ -1,0 +1,12 @@
+# Pipeline déclaratif « validation » — orchestré par application/
+name: validation
+trigger: state_machine
+steps:
+  - select_tests
+  - run_regression
+  - run_compatibility
+  - run_clinical_validation
+  - run_safety_validation
+  - generate_evidence
+  - emit.ValidationCompleted
+on_failure: record_evidence_and_halt

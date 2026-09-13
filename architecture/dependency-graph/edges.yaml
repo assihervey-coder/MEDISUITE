@@ -1,0 +1,23 @@
+edges:
+  - {from: web-portal, to: api-gateway, via: http}
+  - {from: api-gateway, to: auth-service, via: http/jwt}
+  - {from: api-gateway, to: patient-service, via: http}
+  - {from: api-gateway, to: imaging-service, via: http}
+  - {from: api-gateway, to: laboratory-service, via: http}
+  - {from: api-gateway, to: specialty-services, via: http}
+  - {from: api-gateway, to: ecrf-service, via: http}
+  - {from: patient-service, to: medisuite-core, via: import}
+  - {from: imaging-service, to: dicom-gateway, via: dicomweb}
+  - {from: dicom-gateway, to: orthanc, via: dicom}
+  - {from: laboratory-service, to: hl7-gateway, via: mllp}
+  - {from: hl7-gateway, to: openelis, via: hl7v2}
+  - {from: integration-service, to: hapi-fhir, via: fhir-r4}
+  - {from: specialty-services, to: clinical-rules, via: import}
+  - {from: multimodal-gateway, to: ai-multimodal, via: import}
+  - {from: ai-multimodal, to: datasets, via: training-data}
+  - {from: explainability-service, to: ai-multimodal, via: import}
+  - {from: auth-service, to: keycloak, via: oidc}
+  - {from: ecrf-service, to: medisuite-core, via: import}
+  - {from: audit-service, to: medisuite-core, via: audit_chain}
+  - {from: evolution-control-plane, to: architecture/baseline, via: read-only}
+  - {from: evolution-control-plane, to: governance/proposals/registry, via: read-write}

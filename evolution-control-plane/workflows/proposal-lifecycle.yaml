@@ -1,0 +1,11 @@
+# Pipeline déclaratif « proposal-lifecycle » — orchestré par application/
+name: proposal-lifecycle
+trigger: state_machine
+steps:
+  - intake.validate
+  - intake.classify
+  - analysis.impact
+  - analysis.risk
+  - decision.evaluate
+  - registry.update
+on_failure: record_evidence_and_halt

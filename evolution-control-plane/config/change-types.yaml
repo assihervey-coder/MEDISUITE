@@ -1,0 +1,20 @@
+# Classification P0..P9 —voir governance/evolution/CHANGE_CLASSIFICATION.md
+classes:
+  P0: {nature: interdit,        exemple: "violation sécurité/sûreté",              human_approval: always, full_regression: true}
+  P1: {nature: documentaire,    exemple: "README, commentaire",                    human_approval: no,     full_regression: false}
+  P2: {nature: maintenance,     exemple: "refactoring interne sans comportement",  human_approval: no,     full_regression: false}
+  P3: {nature: feature,         exemple: "nouveau module non-breaking",            human_approval: single, full_regression: false}
+  P4: {nature: architecture,    exemple: "nouveau service, nouveau contrat",       human_approval: single, full_regression: true}
+  P5: {nature: donnees,         exemple: "migration DB, changement de schéma",     human_approval: dual,   full_regression: true}
+  P6: {nature: ia,              exemple: "nouveau modèle, nouveau seuil",          human_approval: dual,   full_regression: true}
+  P7: {nature: clinique,        exemple: "nouvelle règle clinique, score",         human_approval: dual,   full_regression: true}
+  P8: {nature: securite_patient, exemple: "modification décisionnelle, safety gate", human_approval: committee, full_regression: true}
+  P9: {nature: reglementaire,   exemple: "changement affectant la conformité MDR", human_approval: committee, full_regression: true}
+detection_rules:
+  - {pattern: "packages/clinical-rules/**", class: P7}
+  - {pattern: "compliance/**", class: P9}
+  - {pattern: "ai/**", class: P6}
+  - {pattern: "migrations/**", class: P5}
+  - {pattern: "security/**", class: P8}
+  - {pattern: "contracts/**", class: P4}
+  - {pattern: "**/*.md", class: P1}

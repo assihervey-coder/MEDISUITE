@@ -1,0 +1,42 @@
+# Bus d'événements — medisuite_core.events (in-process V1, Kafka adaptateur prévu)
+event_bus:
+  implementation: packages/medisuite-core/medisuite_core/events.py
+  delivery: in_memory
+contracts:
+  - patient.created
+  - patient.consent.revoked
+  - imaging.study.indexed
+  - imaging.report.signed
+  - laboratory.result.critical
+  - laboratory.order.created
+  - ecrf.form.submitted
+  - ecrf.dataset.locked          # lock M+18 → extraction SAF
+  - ai.inference.completed
+  - ai.safety.alert
+  - audit.entry.appended
+  - notification.dispatched
+evolution_events:
+  - ProposalSubmitted
+  - ProposalValidated
+  - ProposalClassified
+  - ImpactAnalysisCompleted
+  - RiskAssessmentCompleted
+  - ApprovalRequested
+  - ProposalApproved
+  - ProposalRejected
+  - ChangeSetCreated
+  - ImplementationStarted
+  - ImplementationCompleted
+  - CompatibilityCheckCompleted
+  - ValidationStarted
+  - ValidationCompleted
+  - ClinicalValidationCompleted
+  - SafetyValidationCompleted
+  - ReleaseCandidateCreated
+  - RolloutStarted
+  - RolloutAdvanced
+  - RolloutPaused
+  - RollbackTriggered
+  - RollbackCompleted
+  - ReleaseCompleted
+  - EvolutionAccepted

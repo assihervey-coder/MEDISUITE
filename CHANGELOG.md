@@ -3,6 +3,50 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.16.0] — 2026-09-14
+
+### Control Plane d'évolution V1 (v0.16)
+- **Gouvernance greffée au-dessus de la plateforme** (jamais à la place) :
+  `governance/` (13 politiques — classification P0-P9, approbation, rollback,
+  compatibilité, politiques clinique/IA/données/sécurité/réglementaire ;
+  7 templates de propositions ; **registre seedé** PROP-0001..0011 dont le
+  Patient Digital Twin PROP-0027 ; ADR-0001 du control plane),
+  `architecture/baseline/` dérivée des sources de vérité réelles
+  (services/registry.py, datasets, 26 configs IA, k8s), graphe de
+  dépendances, `contracts/evolution/` (7 JSON Schema), `compatibility/`,
+  `migrations/` (expand→migrate→validate→contract), `feature-flags/`
+  (dev/staging/pilot/production), `validation/`, `evidence/`, `releases/`,
+  `audit/`.
+- **`evolution-control-plane/`** : machine à états stricte 24 états
+  (DRAFT→…→ACCEPTED, REJECTED/ROLLED_BACK terminaux, DEFERRED réactivable),
+  classification plancher non-abaissable (type + règles de chemins réels),
+  scoring de risque 0-100 pondéré ISO 14971 piloté par
+  `config/risk-levels.yaml`, blast radius, change sets immuables (checksum
+  SHA-256 + freeze), ordonnancement sans cycle, matrice d'approbation par
+  classe (séparation des devoirs : auto-approbation interdite), 5 moteurs
+  (impact ×8 analyseurs sur le vrai repo, risk, compatibility ×9 dimensions
+  PASS/WARNING/REVIEW_REQUIRED/FAIL, test-impact sur les suites réelles,
+  rollout avec gates + SLO p95 ≤ 2 s aligné k6/EGSP), rollback
+  (7 checkpoints obligatoires, déclencheurs, ordre de récupération flags
+  d'abord, vérification), **chaîne d'audit WORM SHA-256** (altération
+  détectée), dossiers de preuve EVD-* (13 sections), API REST FastAPI
+  `/api/v1/evolution/*` (27 routes, port 8400), 13 faïades services.
+- Pont d'import `ecp` pour l'arbre à tirets ; `evolution-control-plane/services/`
+  en namespace package (ne masque jamais le `services/` racine).
+- **75 tests verrouillants** (`evolution-control-plane/tests/`, étape CI
+  dédiée dans `packages-integration`) ; suite globale 196 verts + 39/39
+  services + idempotences model-cards/écrans.
+- Aliases roadmap : PROP-0004 ai-platform, PROP-0005 clinical-safety-gate,
+  PROP-0006 RAG, PROP-0007 multimodal v2, PROP-0008 pack cardiologie —
+  codage V2 via le cycle PROPOSITION→PREUVE (NO DIRECT CHANGE).
+
+### Correction CI (post-v0.15)
+- **Bit exécutable git** : 16 scripts shell (setup 00-10, bundle offline,
+  certs/vault) étaient committés en 644 — `test_01_setup_scripts` échouait
+  sur le runner (checkout restaure le mode de l'index) et `docker-publish`
+  restait skipped depuis v0.13.0 ; corrigé via `git update-index --chmod=+x`
+  (279af6a), CI et publication GHCR débloquées.
+
 ## [v0.15.0] — 2026-09-14
 
 ### Publication GHCR (v0.15)

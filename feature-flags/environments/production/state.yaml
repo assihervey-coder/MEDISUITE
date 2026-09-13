@@ -1,0 +1,5 @@
+# État des flags — environnement production
+overrides:
+  patient_digital_twin: OFF
+  ai_platform_router: OFF
+  clinical_safety_gate: OFF  # activé seulement via décision P8

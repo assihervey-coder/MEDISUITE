@@ -1,0 +1,244 @@
+# REGISTRE DES PROPOSITIONS — source de vérité (append-only, versions immuables)
+# Statuts acceptés : DRAFT, SUBMITTED, VALIDATED, CLASSIFIED, IMPACT_ANALYSIS,
+# RISK_ASSESSMENT, DECISION_PENDING, APPROVED, REJECTED, DEFERRED, CHANGE_PLANNED,
+# IMPLEMENTATION, TECHNICAL_VALIDATION, CLINICAL_VALIDATION, SAFETY_VALIDATION,
+# RELEASE_CANDIDATE, CANARY, PILOT, ROLLOUT, PAUSED, ROLLED_BACK, RELEASED,
+# MONITORED, ACCEPTED.
+proposals:
+  - id: PROP-0001
+    version: 1
+    title: "Setup local assisté 00-10 + paquet hors-ligne air-gapped"
+    status: ACCEPTED
+    type: ARCHITECTURE
+    priority: HIGH
+    requested_by: maintainer
+    affected_domains: [local-deployment, offline]
+    breaking_change: false
+    clinical_impact: NONE
+    patient_safety_impact: NONE
+    security_impact: LOW
+    data_impact: LOW
+    api_impact: NONE
+    ai_impact: NONE
+    migration_required: false
+    human_approval_required: false
+    rollback_required: false
+    outcome: {release: v0.13.0, commit: 81a5e39, evidence: EVD-0001}
+
+  - id: PROP-0002
+    version: 1
+    title: "96 écrans fins config-driven (24 modules × 4 gabarits) + écrans dédiés"
+    status: ACCEPTED
+    type: FEATURE
+    priority: HIGH
+    requested_by: maintainer
+    affected_domains: [web-portal, i18n]
+    breaking_change: false
+    clinical_impact: LOW
+    patient_safety_impact: NONE
+    security_impact: LOW
+    data_impact: LOW
+    api_impact: LOW
+    ai_impact: NONE
+    migration_required: false
+    human_approval_required: false
+    rollback_required: false
+    outcome: {release: v0.14.0, commit: 2cd794e, evidence: EVD-0002}
+
+  - id: PROP-0003
+    version: 1
+    title: "GHCR + NetworkPolicy default-deny + multi-env staging/prod"
+    status: ACCEPTED
+    type: ARCHITECTURE
+    priority: HIGH
+    requested_by: maintainer
+    affected_domains: [infrastructure, ci-cd, kubernetes]
+    breaking_change: false
+    clinical_impact: NONE
+    patient_safety_impact: NONE
+    security_impact: HIGH
+    data_impact: LOW
+    api_impact: NONE
+    ai_impact: NONE
+    migration_required: false
+    human_approval_required: false
+    rollback_required: false
+    outcome: {release: v0.15.0, commit: 18d2b4d, evidence: EVD-0003}
+
+  - id: PROP-0027
+    version: 1
+    title: "Ajout du Patient Digital Twin"
+    status: SUBMITTED
+    type: ARCHITECTURE
+    priority: HIGH
+    requested_by: system
+    affected_domains: [patient, clinical, laboratory, imaging, ai]
+    breaking_change: false
+    clinical_impact: HIGH
+    patient_safety_impact: HIGH
+    security_impact: MEDIUM
+    data_impact: HIGH
+    api_impact: MEDIUM
+    ai_impact: HIGH
+    migration_required: true
+    human_approval_required: true
+    rollback_required: true
+    strategy: >-
+      Ne pas modifier patient-service. Créer patient-context/ qui consomme
+      patient/laboratory/imaging/pharmacy + AI, puis progressivement :
+      existing systems → patient-context → digital twin.
+
+  - id: PROP-0004
+    version: 1
+    title: "Centralisation de l'IA — ai-platform (registry, router, inference)"
+    status: SUBMITTED
+    type: ARCHITECTURE
+    priority: HIGH
+    requested_by: maintainer
+    affected_domains: [ai, services]
+    breaking_change: false
+    clinical_impact: HIGH
+    patient_safety_impact: HIGH
+    security_impact: MEDIUM
+    data_impact: LOW
+    api_impact: LOW
+    ai_impact: HIGH
+    migration_required: false
+    human_approval_required: true
+    rollback_required: true
+    strategy: "On ne réécrit pas l'IA : adapters progressifs vers ai-platform/."
+
+  - id: PROP-0005
+    version: 1
+    title: "Clinical Safety Gate (gate.py, hazards, controls, degraded_mode, emergency_stop)"
+    status: SUBMITTED
+    type: SECURITY
+    priority: CRITICAL
+    requested_by: safety_officer
+    affected_domains: [ai, clinical]
+    breaking_change: false
+    clinical_impact: HIGH
+    patient_safety_impact: HIGH
+    security_impact: MEDIUM
+    data_impact: LOW
+    api_impact: LOW
+    ai_impact: HIGH
+    migration_required: false
+    human_approval_required: true
+    rollback_required: true
+    strategy: "existing AI → safety adapter → clinical safety gate → application."
+
+  - id: PROP-0006
+    version: 1
+    title: "Clinical Evidence Engine + RAG médical avec citations (ingestion→chunking→embeddings→retrieval→reranking→grounding→citation)"
+    status: DRAFT
+    type: AI
+    priority: HIGH
+    requested_by: maintainer
+    affected_domains: [ai, clinical]
+    breaking_change: false
+    clinical_impact: HIGH
+    patient_safety_impact: MEDIUM
+    security_impact: MEDIUM
+    data_impact: MEDIUM
+    api_impact: MEDIUM
+    ai_impact: HIGH
+    migration_required: false
+    human_approval_required: true
+    rollback_required: true
+
+  - id: PROP-0007
+    version: 1
+    title: "Multimodal Engine v2 — quality-aware, temporal fusion, contradiction engine"
+    status: DRAFT
+    type: AI
+    priority: MEDIUM
+    requested_by: maintainer
+    affected_domains: [ai]
+    breaking_change: false
+    clinical_impact: MEDIUM
+    patient_safety_impact: MEDIUM
+    security_impact: LOW
+    data_impact: LOW
+    api_impact: LOW
+    ai_impact: HIGH
+    migration_required: false
+    human_approval_required: true
+    rollback_required: true
+
+  - id: PROP-0008
+    version: 1
+    title: "1er Clinical Pack — CARDIOLOGY (ECG PTB-XL, écho segmenter, SCORE2, frontend cardiologue)"
+    status: DRAFT
+    type: CLINICAL
+    priority: MEDIUM
+    requested_by: clinical_lead
+    affected_domains: [cardiology, ai]
+    breaking_change: false
+    clinical_impact: HIGH
+    patient_safety_impact: HIGH
+    security_impact: LOW
+    data_impact: MEDIUM
+    api_impact: MEDIUM
+    ai_impact: HIGH
+    migration_required: false
+    human_approval_required: true
+    rollback_required: true
+
+  - id: PROP-0009
+    version: 1
+    title: "Industrialisation — K8s+Helm+ArgoCD, Terraform, monitoring, security hardening"
+    status: SUBMITTED
+    type: ARCHITECTURE
+    priority: MEDIUM
+    requested_by: maintainer
+    affected_domains: [infrastructure]
+    breaking_change: false
+    clinical_impact: NONE
+    patient_safety_impact: LOW
+    security_impact: HIGH
+    data_impact: LOW
+    api_impact: NONE
+    ai_impact: NONE
+    migration_required: false
+    human_approval_required: true
+    rollback_required: true
+
+  - id: PROP-0010
+    version: 1
+    title: "Expansion 26 spécialités — clinical packs par manifest, validation par pack"
+    status: DEFERRED
+    type: CLINICAL
+    priority: LOW
+    requested_by: clinical_lead
+    affected_domains: [all-specialties]
+    breaking_change: false
+    clinical_impact: HIGH
+    patient_safety_impact: HIGH
+    security_impact: LOW
+    data_impact: MEDIUM
+    api_impact: MEDIUM
+    ai_impact: HIGH
+    migration_required: false
+    human_approval_required: true
+    rollback_required: true
+
+  - id: PROP-0011
+    version: 1
+    title: "Applications mobile/desktop (offline-first)"
+    status: DEFERRED
+    type: FEATURE
+    priority: LOW
+    requested_by: product
+    affected_domains: [mobile, desktop, offline]
+    breaking_change: false
+    clinical_impact: LOW
+    patient_safety_impact: LOW
+    security_impact: MEDIUM
+    data_impact: MEDIUM
+    api_impact: LOW
+    ai_impact: NONE
+    migration_required: false
+    human_approval_required: true
+    rollback_required: true
+    note: "Repoussé v1+ (décision backlog)."

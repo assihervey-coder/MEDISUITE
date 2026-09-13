@@ -1,0 +1,10 @@
+# Registre des feature flags — chaque flag référence sa proposition
+flags:
+  - {key: patient_digital_twin, type: experiment, proposal: PROP-0027,
+     owner: maintainer, ttl_days: 90, default: OFF}
+  - {key: ai_platform_router, type: infrastructure, proposal: PROP-0004,
+     owner: maintainer, ttl_days: 90, default: OFF}
+  - {key: clinical_safety_gate, type: safety, proposal: PROP-0005,
+     owner: safety_officer, ttl_days: null, default: OFF,
+     note: "flag de sûreté : jamais supprimé sans décision P8"}
+progression: [OFF, DEV, STAGING, PILOT, CANARY, P10, P25, P50, P100]

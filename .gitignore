@@ -67,3 +67,7 @@ test-results/
 
 # ---- Local deployment (certificats dev générés) ----
 local-deployment/certs/
+
+# Control Plane — artefacts runtime
+audit/evolution/api-events.jsonl
+governance/proposals/registry/proposals-runtime.json

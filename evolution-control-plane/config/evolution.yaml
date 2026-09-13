@@ -1,0 +1,23 @@
+# Configuration maître du control plane (ADR governance/adr/accepted/ADR-0001)
+control_plane:
+  version: "1.0.0"
+  api_prefix: /api/v1/evolution
+  port: 8400
+state_machine:
+  strict: true            # toute transition non listée est refusée
+  immutable_history: true # les événements d'audit ne sont jamais réécrits
+id_prefixes:
+  proposal: PROP
+  change_set: CHG
+  release: REL
+  evidence: EVD
+  rollback: RBK
+storage:
+  backend: filesystem     # V1 : JSON/YAML sur disque ; Postgres en V2
+  proposals_dir: governance/proposals/registry
+  audit_dir: audit/evolution
+  evidence_dir: evidence/evolution
+  releases_dir: releases/manifests
+baseline:
+  architecture_file: architecture/baseline/CURRENT_STATE.yaml
+  dependency_graph: architecture/dependency-graph

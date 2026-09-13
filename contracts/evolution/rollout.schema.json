@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://medisuite.local/contracts/evolution/rollout.schema.json",
+  "title": "Rollout",
+  "type": "object",
+  "required": [
+    "release",
+    "strategy",
+    "stages"
+  ],
+  "properties": {
+    "release": {
+      "type": "string",
+      "pattern": "^REL-[0-9]{4}$"
+    },
+    "strategy": {
+      "enum": [
+        "direct",
+        "staged",
+        "pilot",
+        "canary"
+      ]
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "status"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "PENDING",
+              "ACTIVE",
+              "PASSED",
+              "FAILED",
+              "SKIPPED"
+            ]
+          },
+          "started_at": {
+            "type": "string"
+          },
+          "metrics": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "current_stage": {
+      "type": "string"
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

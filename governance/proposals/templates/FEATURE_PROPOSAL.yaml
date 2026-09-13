@@ -1,0 +1,17 @@
+id: PROP-XXXX
+version: 1
+title: ""
+status: DRAFT
+requested_by: ""
+summary: >-
+  Contexte, problème, bénéfice attendu.
+affected_domains: []
+breaking_change: false
+migration_required: false
+rollback_required: true
+human_approval_required: true
+type: FEATURE
+priority: MEDIUM
+product_impact: MEDIUM
+api_impact: LOW
+ui_screens_affected: []

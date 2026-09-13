@@ -1,0 +1,20 @@
+# Rollback préparé AVANT le déploiement (jamais improvisé)
+required_checkpoints:
+  - previous_version
+  - database_checkpoint
+  - configuration_snapshot
+  - model_versions
+  - feature_flag_state
+  - deployment_manifest
+  - evidence_snapshot
+triggers:
+  error_rate:            {threshold: 0.01, window: 5m}
+  latency_p95:           {threshold_ms: 2000, window: 10m}
+  clinical_safety:       {on_alert: true, immediate: true}
+  model_drift:           {metric: psi, threshold: 0.2}
+  performance_degradation: {metric: throughput_drop_pct, threshold: 20}
+  critical_alert:        {on_alert: true, immediate: true}
+  human_decision:        {allowed: true}
+verification:
+  post_rollback_smoke: true
+  evidence_record: true   # chaque rollback produit une preuve EVD-*

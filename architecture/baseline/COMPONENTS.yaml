@@ -1,0 +1,17 @@
+components:
+  - {id: portal, kind: frontend, owns: [apps/web-portal]}
+  - {id: core-api, kind: gateway, owns: [services/api-gateway]}
+  - {id: identity, kind: service, owns: [services/auth-service, security/keycloak]}
+  - {id: patient-context, kind: domain, owns: [services/patient-service]}
+  - {id: imaging, kind: domain, owns: [services/imaging-service, services/dicom-gateway, docs/PACS-ORTHANC.md]}
+  - {id: laboratory, kind: domain, owns: [services/laboratory-service, docs/OpenELIS]}
+  - {id: ecrf, kind: domain, owns: [services/ecrf-service, docs/E-CRF.md]}
+  - {id: clinical-rules, kind: library, owns: [packages/clinical-rules]}
+  - {id: core-lib, kind: library, owns: [packages/medisuite-core]}
+  - {id: ai-fusion, kind: ai, owns: [ai/multimodal, services/multimodal-gateway]}
+  - {id: explainability, kind: ai, owns: [services/explainability-service]}
+  - {id: integration, kind: interop, owns: [services/integration-service, services/hl7-gateway]}
+  - {id: analytics, kind: platform, owns: [services/analytics-service, services/reporting-service]}
+  - {id: audit, kind: platform, owns: [services/audit-service, packages/medisuite-core/medisuite_core/audit_chain.py]}
+  - {id: notification, kind: platform, owns: [services/notification-service]}
+  - {id: specialties, kind: domain, owns: [services/registry.py], count: 24}

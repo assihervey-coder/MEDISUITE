@@ -1,0 +1,6 @@
+policy:
+  max_jump: 1_step
+  soak_minutes_per_step: 30
+  auto_halt_on: [error_rate, latency_p95, clinical_safety]
+  promotion_requires: evidence_step_precedent
+  rollback_first_action: flags_to_OFF

@@ -1,0 +1,18 @@
+id: PROP-XXXX
+version: 1
+title: ""
+status: DRAFT
+requested_by: ""
+summary: >-
+  Contexte, problème, bénéfice attendu.
+affected_domains: []
+breaking_change: false
+migration_required: false
+rollback_required: true
+human_approval_required: true
+type: ARCHITECTURE
+priority: HIGH
+services_added: []
+services_modified: []
+contracts_affected: []
+infrastructure_impact: MEDIUM

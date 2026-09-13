@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://medisuite.local/contracts/evolution/assessment.schema.json",
+  "title": "Assessment",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "impact",
+    "blast_radius",
+    "risk"
+  ],
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "pattern": "^PROP-[0-9]{4}$"
+    },
+    "impact": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "services": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "databases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "apis": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ai_models": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "clinical_rules": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tests": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "blast_radius": {
+      "enum": [
+        "NONE",
+        "LOCAL",
+        "MODERATE",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "risk": {
+      "type": "object",
+      "properties": {
+        "score": {
+          "type": "number"
+        },
+        "level": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH",
+            "CRITICAL"
+          ]
+        }
+      }
+    },
+    "breaking_changes_detected": {
+      "type": "boolean"
+    },
+    "migration_required": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

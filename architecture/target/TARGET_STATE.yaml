@@ -1,0 +1,7 @@
+# État cible de la PROCHAINE baseline — alimenté par les propositions acceptées.
+version: "0.16.0"
+pending_from_proposals:
+  - {proposal: PROP-0004, add: [services/ai-platform], rationale: "centralisation IA via adapters"}
+  - {proposal: PROP-0027, add: [services/patient-context], rationale: "digital twin sans toucher patient-service"}
+  - {proposal: PROP-0005, add: [clinical-safety/gate], rationale: "safety gate devant sorties IA"}
+rule: "TARGET_STATE n'est modifié QUE par un change set approuvé (architecture-diff génère le before/after)."

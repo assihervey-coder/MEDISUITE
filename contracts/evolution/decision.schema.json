@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://medisuite.local/contracts/evolution/decision.schema.json",
+  "title": "Decision",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "outcome",
+    "approvers",
+    "reason"
+  ],
+  "properties": {
+    "proposal_id": {
+      "type": "string"
+    },
+    "outcome": {
+      "enum": [
+        "APPROVED",
+        "REJECTED",
+        "DEFERRED"
+      ]
+    },
+    "approvers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "role",
+          "actor"
+        ],
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "decided_at": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "reason": {
+      "type": "string"
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_id": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

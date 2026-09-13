@@ -1,0 +1,9 @@
+apis:
+  - {id: gateway-http, kind: rest, port: 8000, auth: jwt-keycloak, description: "proxy + fanout santé"}
+  - {id: fhir-r4, kind: fhir, base: /fhir, server: hapi, profiles: services/integration-service/fhir/profiles, adr: docs/adr/0005-fhir-r4-interop.md}
+  - {id: fhir-r6-ecrf, kind: fhir, service: ecrf-service, note: "eCRF FHIR R6 (dérive maîtrisée, ADR-0024)"}
+  - {id: dicomweb-ps318, kind: dicomweb, service: dicom-gateway, ops: [STOW, QIDO, WADO], adr: docs/adr/0002-dicomweb-standard.md}
+  - {id: hl7v2-mllp, kind: hl7, service: hl7-gateway, ops: [ORM^O01, ORU^R01]}
+  - {id: fusion-inference, kind: rest, service: multimodal-gateway, models: ai/multimodal}
+  - {id: evolution-control-plane, kind: rest, port: 8400, base: /api/v1/evolution}
+compatibility_policy: contracts/evolution + config/compatibility-policies.yaml

@@ -1,0 +1,11 @@
+ai_models:
+  engine: ai/multimodal (MONAI/torch, ADR-0003/0022/0023)
+  per_specialty_configs: ai/multimodal/configs/*.yaml (26)
+  fusion: {kinds: [intermediate, gated, cross_attention], missing_modality: ADR-0018,
+           multi_task: ADR-0019, trainable_torch: ADR-0023}
+  explainability: {grad_cam: true, modality_importance: ai/multimodal/explainability, ADR: 0015}
+  registry: core/registry.py
+  lineage_requirements: config template AI_PROPOSAL.yaml (model/dataset/preprocessing/
+    prompt/retrieval/threshold/calibration/safety_policy/clinical_rules/evidence versions)
+  model_cards: compliance/mdr/model-cards/MC-01..26 (verrou idempotence CI)
+  metrics_state: "R6-R8 terrain — verrou M+18 (aucune métrique de perf annoncée avant)"

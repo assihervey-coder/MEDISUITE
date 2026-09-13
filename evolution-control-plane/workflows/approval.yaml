@@ -1,0 +1,10 @@
+# Pipeline déclaratif « approval » — orchestré par application/
+name: approval
+trigger: state_machine
+steps:
+  - load_approval_matrix
+  - request_approvers
+  - collect_decisions
+  - quorum_check
+  - emit.ProposalApproved|ProposalRejected
+on_failure: record_evidence_and_halt

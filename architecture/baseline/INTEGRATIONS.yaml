@@ -1,0 +1,11 @@
+integrations:
+  - {name: orthanc-pacs, kind: dicom, docs: docs/PACS-ORTHANC.md, adr: 0006}
+  - {name: hapi-fhir, kind: fhir, docs: docs/FHIR-HAPI.md, adr: 0005}
+  - {name: openelis-lis, kind: hl7v2, adr: 0007}
+  - {name: keycloak, kind: iam, config: security/keycloak/realms/medisuite-realm.json, adr: 0009}
+  - {name: vault, kind: secrets, dir: security/hardening/vault, adr: 0010}
+  - {name: otel-collector, kind: observability, config: monitoring/otel/collector.yaml, adr: 0025}
+  - {name: prometheus, kind: observability, config: monitoring/prometheus/prometheus.yml}
+  - {name: ohif-viewer, kind: viewer, docs: docs/OHIF-VIEWER.md}
+  - {name: ghcr, kind: registry, images: "ghcr.io/assihervey-coder/MEDISUITE/medisuite-*"}
+interoperability_roadmap: [IHE profiles, DICOMweb QIDO-RS étendu, FHIR subscriptions]

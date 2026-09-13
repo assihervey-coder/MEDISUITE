@@ -1,0 +1,28 @@
+# Niveaux de risque (ISO 14971 — cohérent avec compliance/mdr/technical-documentation/03)
+levels:
+  LOW:
+    score: [0, 15]
+    max_change_class: P3
+    required_gates: [technical_validation]
+  MEDIUM:
+    score: [16, 39]
+    max_change_class: P6
+    required_gates: [technical_validation, compatibility_review]
+  HIGH:
+    score: [40, 69]
+    max_change_class: P8
+    required_gates: [technical_validation, compatibility_review, safety_review]
+  CRITICAL:
+    score: [70, 100]
+    max_change_class: P9
+    required_gates: [technical_validation, compatibility_review, safety_review,
+                     clinical_review, regulatory_review]
+scoring:
+  weights:
+    patient_safety: 35
+    clinical: 20
+    data: 15
+    ai: 10
+    security: 10
+    regulatory: 10
+  impact_values: {NONE: 0, LOW: 1, MEDIUM: 2, HIGH: 3}

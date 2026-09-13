@@ -1,0 +1,28 @@
+nodes:
+  - {id: api-gateway, kind: gateway}
+  - {id: auth-service, kind: service}
+  - {id: patient-service, kind: service}
+  - {id: imaging-service, kind: service}
+  - {id: laboratory-service, kind: service}
+  - {id: ecrf-service, kind: service}
+  - {id: integration-service, kind: service}
+  - {id: audit-service, kind: service}
+  - {id: analytics-service, kind: service}
+  - {id: reporting-service, kind: service}
+  - {id: notification-service, kind: service}
+  - {id: dicom-gateway, kind: gateway}
+  - {id: hl7-gateway, kind: gateway}
+  - {id: multimodal-gateway, kind: gateway}
+  - {id: explainability-service, kind: gateway}
+  - {id: specialty-services, kind: group, count: 24, ports: 8100-8123}
+  - {id: medisuite-core, kind: library}
+  - {id: clinical-rules, kind: library}
+  - {id: ai-multimodal, kind: ai}
+  - {id: web-portal, kind: frontend}
+  - {id: datasets, kind: data}
+  - {id: keycloak, kind: external}
+  - {id: orthanc, kind: external}
+  - {id: hapi-fhir, kind: external}
+  - {id: openelis, kind: external}
+  - {id: vault, kind: external}
+  - {id: evolution-control-plane, kind: control}

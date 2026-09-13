@@ -1,0 +1,23 @@
+id: PROP-XXXX
+version: 1
+title: ""
+status: DRAFT
+requested_by: ""
+summary: >-
+  Contexte, problème, bénéfice attendu.
+affected_domains: []
+breaking_change: false
+migration_required: false
+rollback_required: true
+human_approval_required: true
+type: REGULATORY
+priority: CRITICAL
+regulatory_impact: HIGH
+affected_submissions:
+  - {name: "Technique MDR (TD-*)", impacted: true}
+  - {name: "CER MEDDEV 2.7/1 rev4", impacted: false}
+  - {name: "ANOC / PACTR", impacted: false}
+  - {name: "EUDAMED / notifié (R9)", impacted: false}
+note: >-
+  Toute proposition affectant l'usage prévu, la classification ou la sécurité
+  déclenche une revue réglementaire complète (gate P9).

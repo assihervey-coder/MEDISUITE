@@ -1,0 +1,17 @@
+# Dernière baseline connue (v0.15.0) — point de restauration de référence
+release: REL-0015
+version: medisuite-0.15.0
+commit: 18d2b4d
+components:
+  services: 39            # 5 cœur + 6 transverses + 4 passerelles + 24 spécialités
+  packages: [medisuite-core, clinical-rules]
+  ai_engine: ai/multimodal (26 configs)
+  datasets: 26 specialties
+  portal: apps/web-portal (96 écrans fins)
+images:
+  ghcr: "ghcr.io/assihervey-coder/MEDISUITE/medisuite-{api-gateway,auth-service,patient-service,imaging-service,laboratory-service,ecrf-service}:0.15.0"
+rollback:
+  previous_version: medisuite-0.14.0
+  database_checkpoint: "pg_dump pré-déploiement (procédure 10-verify)"
+  configuration_snapshot: infrastructure/kubernetes/overlays/
+  feature_flag_state: feature-flags/environments/

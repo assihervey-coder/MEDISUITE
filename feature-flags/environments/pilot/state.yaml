@@ -1,0 +1,5 @@
+# État des flags — environnement pilot
+overrides:
+  patient_digital_twin: PILOT
+  ai_platform_router: PILOT
+  clinical_safety_gate: OFF  # activé seulement via décision P8

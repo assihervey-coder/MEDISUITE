@@ -1,0 +1,5 @@
+# État des flags — environnement staging
+overrides:
+  patient_digital_twin: CANARY
+  ai_platform_router: CANARY
+  clinical_safety_gate: OFF  # activé seulement via décision P8

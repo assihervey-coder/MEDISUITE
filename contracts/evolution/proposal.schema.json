@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://medisuite.local/contracts/evolution/proposal.schema.json",
+  "title": "Proposal",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "title",
+    "status",
+    "type",
+    "priority"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^PROP-[0-9]{4}$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5
+    },
+    "status": {
+      "enum": [
+        "DRAFT",
+        "SUBMITTED",
+        "VALIDATED",
+        "CLASSIFIED",
+        "IMPACT_ANALYSIS",
+        "RISK_ASSESSMENT",
+        "DECISION_PENDING",
+        "APPROVED",
+        "REJECTED",
+        "DEFERRED",
+        "CHANGE_PLANNED",
+        "IMPLEMENTATION",
+        "TECHNICAL_VALIDATION",
+        "CLINICAL_VALIDATION",
+        "SAFETY_VALIDATION",
+        "RELEASE_CANDIDATE",
+        "CANARY",
+        "PILOT",
+        "ROLLOUT",
+        "PAUSED",
+        "ROLLED_BACK",
+        "RELEASED",
+        "MONITORED",
+        "ACCEPTED"
+      ]
+    },
+    "type": {
+      "enum": [
+        "FEATURE",
+        "ARCHITECTURE",
+        "AI",
+        "CLINICAL",
+        "DATA",
+        "SECURITY",
+        "REGULATORY"
+      ]
+    },
+    "priority": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "requested_by": {
+      "type": "string"
+    },
+    "affected_domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "breaking_change": {
+      "type": "boolean"
+    },
+    "clinical_impact": {
+      "$ref": "#/definitions/impact"
+    },
+    "patient_safety_impact": {
+      "$ref": "#/definitions/impact"
+    },
+    "security_impact": {
+      "$ref": "#/definitions/impact"
+    },
+    "data_impact": {
+      "$ref": "#/definitions/impact"
+    },
+    "api_impact": {
+      "$ref": "#/definitions/impact"
+    },
+    "ai_impact": {
+      "$ref": "#/definitions/impact"
+    },
+    "migration_required": {
+      "type": "boolean"
+    },
+    "human_approval_required": {
+      "type": "boolean"
+    },
+    "rollback_required": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "impact": {
+      "enum": [
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    }
+  }
+}
