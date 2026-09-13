@@ -72,9 +72,11 @@ La quasi-totalité tombe dans trois mécanismes **conscients et documentés** :
    retient 1 compose + 1 CI + K8s/Helm (déploiement réel documenté).
 
 **Reste réellement manquant et utile** (honnêteté, non consolidable) :
-model-cards formelles ×26 (R6, avec l'entraînement réel), scripts setup local
-00-10 + packages offline, e2e Playwright/charge k6, mobile/desktop,
-i18n ar/es, ~100 écrans spécialisés fins, actions CI GPU/e2e.
+scripts setup local 00-10 + packages offline, e2e Playwright/charge k6,
+mobile/desktop, i18n ar/es, ~100 écrans spécialisés fins, actions CI GPU/e2e.
+Les model-cards formelles ×26 sont **livrées en v0.10**
+(`compliance/mdr/model-cards/`, générées par outil — métriques 🔴 R6 avec
+l'entraînement réel).
 
 ## 4. Le contenu « réel fonctionnel » — preuves, pas intentions
 

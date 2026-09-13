@@ -5,7 +5,7 @@
 >
 > *De l'IMagerie DIgital à la fusion IA — conçu pour les CHU d'Abidjan, les hôpitaux régionaux et les centres de santé ruraux.*
 
-![status](https://img.shields.io/badge/statut-v0.9.0_alpha-2d7ab3) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
+![status](https://img.shields.io/badge/statut-v0.10.0_alpha-2d7ab3) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
 
 ---
 
@@ -85,6 +85,7 @@ traçabilité IEC 81001-5-1 sans la complexité d'une blockchain (décision ADR-
 | v0.7.0 | **eCRF FHIR opérationnel (R6)** : service dédié + [écran portal offline-first](docs/E-CRF.md) (saisie → signature → requêtes SDV → export DSMB), **mode offline du portal** ([SW + file IndexedDB idempotente](docs/OFFLINE-PORTAL.md)), **UDI-EID GS1 codifiable** ([GTIN/AIs/Digital Link](docs/UDI-GS1.md)) + rôles GCP eCRF | ✅ |
 | v0.8.0 | **Couverture de l'arborescence initiale** ([audit mesuré](docs/COUVERTURE-ARBRE-INITIAL.md)), **instruments terrain R6** : [monitoring A4 + registre déviations](compliance/mdr/clinical/monitoring/plan-monitoring.md), [checklists ANOC-CI/PACTR/Ministère-DPIA](compliance/mdr/submissions/00-index-soumissions.md), **verrou de base M+18 + extraction SAF data manager** (checksum contenu, alarme intégrité), **ADR-0025 sampling OTel** déterministe parent-based | ✅ |
 | v0.9.0 | **Écran promoteur « study status/lock »** (timeline R5-R8, verrou M+18 pilotable à l'écran — confirmation typée + 2 témoins, agrégats DSMB), **ADR-0026 rapport clinique MEDDEV 2.7/1 rev 4** + [squelette CER TD-11](compliance/mdr/technical-documentation/11-rapport-evaluation-clinique-meddev-271.md), **kit de signatures terrain R5** (page v1.0, registre investigateurs, journal de délégation ISO 14155 F.4.3), idempotence locale des suites (BDD fraîche par run) | ✅ cette release |
+| v0.10.0 | **Model-cards formelles ×26** ([index](compliance/mdr/model-cards/00-index-model-cards.md)) générées par `tools/generate_model_cards.py` depuis les sources de vérité du dépôt (registry, configs IA, audit 26 modules) — 6 tests verrouillants + idempotence CI (`--check`) ; métriques 🔴 R6-R8 (verrou M+18 → SAP → CER TD-11) | ✅ |
 | v1.0.0 | Dossier de marquage CE (MDR IIb) complet, évaluation clinique multicentrique CHU, SMQ ISO 13485 | 📋 — plan `compliance/mdr/technical-documentation/08-plan-validation-v1.0.0.md` |
 
 ## 🤝 Contribution

@@ -3,6 +3,31 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.10.0] — 2026-09-14
+
+### Model-cards formelles ×26 — fermeture du bloc 🔴 de l'audit de couverture
+- `tools/generate_model_cards.py` (stdlib + pyyaml) : génère les 26 model-cards
+  MDR (`compliance/mdr/model-cards/MC-01…MC-26` + index) **depuis les sources
+  de vérité du dépôt** — `datasets/registry.py` (features/labels), configs IA
+  (tâche, modalités, backends ADR-0022/0023, ADR-0018 modalités manquantes,
+  explicabilité), `docs/_audit_data.json` (preuves d'implémentation), méta
+  clinique alignée `docs/MODULES.md` ; 13 sections par fiche (usage prévu,
+  hors champ, données, architecture, performances, explicabilité, évaluation
+  clinique, risques FMEA RM-01…RM-10, limites, supervision humaine, PMS/PMCF,
+  traçabilité) ; sortie **déterministe** (aucune date courante) + mode
+  `--check` (idempotence, échec CI sur dérive).
+- **Honnêteté verrouillée par tests** : aucune métrique de performance
+  publiée avant verrou M+18 — toutes les fiches portent « 🔴 R6-R8 » et le
+  pipeline ADR-0026 (eCRF → verrou → SAF → SAP → adjudication → CER TD-11) ;
+  données = 🟠 synthétiques (manifest) ; usage prévu = aide à la décision,
+  jamais diagnostic autonome (règle 11 IIb).
+- 6 tests verrouillants (`tools/tests/test_model_cards.py`) : déterminisme,
+  fiches committées == régénération, complétude des 13 sections, alignement
+  registry/configs/service, absence de métriques avant verrou, index complet.
+- Raccords : Makefile (`test-tools`, `model-cards`), CI (job
+  packages-integration : tests + `--check`), index TD (ligne 6b — Annexe II
+  §4), GAP-ANALYSIS v0.10, README roadmap, COUVERTURE-ARBRE-INITIAL §3.
+
 ## [v0.9.0] — 2026-09-14
 
 ### Écran promoteur « Study Status / Lock » (portal, v0.9)

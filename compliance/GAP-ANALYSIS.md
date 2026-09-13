@@ -1,5 +1,13 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.10.0** : model-cards formelles ×26 (`compliance/mdr/model-cards/`,
+> MC-01…MC-26 + index) générées par outil depuis les sources de vérité du dépôt
+> (datasets/registry.py, configs IA, audit 26 modules) — 6 tests verrouillants
+> (déterminisme, complétude, alignement sources, honnêteté des métriques) et
+> idempotence CI (`--check`). Le bloc 🔴 « model-cards » de l'audit de
+> couverture est fermé au niveau structure ; les métriques restent 🔴 R6-R8
+> (verrou M+18 → SAP → CER TD-11).
+
 > **Mise à jour v0.9.0** : écran promoteur « study status/lock » (portal,
 > endpoints eCRF v0.8 — verrou M+18 pilotable à l'écran avec confirmation
 > typée + 2 témoins), ADR-0026 (rapport clinique MEDDEV 2.7/1 rev 4) +

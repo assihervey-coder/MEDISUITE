@@ -28,6 +28,10 @@ jobs:
         run: python -m pytest packages/medisuite-core/tests/ datasets/tests/ -q
       - name: Tests d'intégration (HAPI FHIR / OTel / IOP)
         run: python -m pytest services/integration-service/tests/ -q
+      - name: Outils transverses (model-cards)
+        run: python -m pytest tools/tests/ -q
+      - name: Idempotence des model-cards (dérive = échec)
+        run: python tools/generate_model_cards.py --check
 
   services:
     runs-on: ubuntu-latest
