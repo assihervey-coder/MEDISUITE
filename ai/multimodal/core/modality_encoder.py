@@ -36,12 +36,20 @@ class BaseEncoder:
     def _to_tokens(self, payload) -> np.ndarray:
         raise NotImplementedError
 
+    def project(self, tokens: np.ndarray) -> np.ndarray:
+        """Projection (seq, feature_dim) → (seq, d_model).
+
+        Point d'injection des backends entraînables (torch/monai — ADR 0022) :
+        la projection statique déterministe ``tokens @ self.P`` reste le
+        comportement par défaut, reproductible sans dépendances lourdes."""
+        return tokens @ self.P
+
     def encode(self, payload) -> tuple[np.ndarray, np.ndarray]:
         """→ (tokens projetés (seq, d_model), présence (seq,) — 1 partout ici)."""
         tokens = self._to_tokens(payload).reshape(-1)[:self.seq_len * self.feature_dim]
         tokens = np.pad(tokens, (0, self.seq_len * self.feature_dim - len(tokens)))
         tokens = tokens.reshape(self.seq_len, self.feature_dim)
-        return tokens @ self.P, np.ones(self.seq_len)
+        return self.project(tokens), np.ones(self.seq_len)
 
 class TabularEncoder(BaseEncoder):
     """Données cliniques/biologiques : vecteur plat normalisé min-max."""

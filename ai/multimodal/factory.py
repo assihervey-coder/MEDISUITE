@@ -11,14 +11,25 @@ CONFIG_DIR = Path(__file__).resolve().parent / "configs"
 
 
 def engine_from_config(config_path: str | Path) -> FusionEngine:
-    """Construit un moteur depuis un YAML de module (01_imaging.yaml … 26_emergency)."""
+    """Construit un moteur depuis un YAML de module (01_imaging.yaml … 26_emergency).
+
+    Clé optionnelle ``backend:`` (ADR 0022) : 'numpy' (défaut, aucune
+    dépendance lourde), 'torch' (projection nn.Linear entraînable) ou 'monai'
+    (prétraitement MONAI des images + projection torch). Lève ImportError
+    documentée si le backend demandé n'est pas installé.
+    """
     with open(config_path, encoding="utf-8") as fh:
         cfg = yaml.safe_load(fh)
-    return FusionEngine(
+    engine = FusionEngine(
         d_model=int(cfg.get("d_model", 32)),
         task=cfg.get("task", "classification"),
         seed=int(cfg.get("seed", 42)),
     )
+    backend = str(cfg.get("backend", "numpy")).lower()
+    if backend != "numpy":
+        from .core.backends import attach_backend
+        attach_backend(engine, backend)
+    return engine
 
 
 def engine_for_module(module_no: int) -> FusionEngine:

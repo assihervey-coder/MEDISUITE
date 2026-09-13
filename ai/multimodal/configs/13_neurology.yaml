@@ -3,6 +3,7 @@
 task: binary
 d_model: 32
 seed: 42
+backend: numpy              # ADR 0022 : numpy | torch | monai
 modalities:
   attendues: ['imaging_3d', 'tabulaire', 'texte']
   politique_modalites_manquantes: degrade_elegamment  # ADR-0018
