@@ -13,7 +13,7 @@
 | 0 | Finalité du dispositif | `intended-purpose.md` (v0.1) | 🟢 |
 | 1 | Identification du dispositif (Annexe II §1.1) + UDI | `01-identification-classification.md` | 🟠 |
 | 1b | Classification (Annexe VIII, règle 11) | `01-identification-classification.md` | 🟠 |
-| 2 | Informations à fournir à l'utilisateur (IFU, étiquetage) | `intended-purpose.md` + IFU par module | 🔴 IFU |
+| 2 | Informations à fournir à l'utilisateur (IFU, étiquetage) | `intended-purpose.md` + `ifu/` (4 profils + étiquetage UDI, v0.5) | 🟠 IFU rédigées, à valider usabilité |
 | 3 | Conception & fabrication (spécifications, SPP) | `02-gspr-annexe-I.md` | 🟠 |
 | 4 | Exigences générales de sécurité et de performance (EGSP, Annexe I) | `02-gspr-annexe-I.md` | 🟠 |
 | 5 | Gestion des risques (ISO 14971, Annexe I §3) | `03-analyse-risques-iso14971.md` | 🟠 |
@@ -21,7 +21,7 @@
 | 7 | Ingénierie d'usage (IEC 62366-1) | `05-iec-62366-usabilite.md` | 🔴 |
 | 8 | Évaluation clinique (Annexe XIV) + investigation (Annexe XV) | `06-evaluation-clinique.md` | 🔴 |
 | 9 | Surveillance après commercialisation & vigilance | `07-pms-vigilance.md` | 🔴 |
-| 10 | SMQ (ISO 13485) — preuves de processus | `09-smq-iso13485.md` | 🔴 |
+| 10 | SMQ (ISO 13485) — preuves de processus | `../smq/` (8 procédures PROC-01…08, v0.5) | 🟠 rédigées, audit interne 🔴 |
 | 11 | Plan de mise en conformité, jalons v1.0.0 | `08-plan-validation-v1.0.0.md` | 🟢 |
 
 ## Traçabilité avec le dépôt

@@ -3,6 +3,54 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.5.0] — 2026-09-14
+
+### Jalons réglementaires R1-R4 (dossier CE v1.0.0)
+- **R1 — SMQ ISO 13485** : `compliance/smq/` — index (engagement direction,
+  cartographie) + 8 procédures (maîtrise documentaire, gestion des risques,
+  revue de conception/V&V, incidents/CAPA, fournisseurs, formation,
+  libération, audit interne/revue de direction), chacune avec finalité,
+  flux, enregistrements et indicateurs.
+- **R2 — IFU** : `compliance/mdr/technical-documentation/ifu/` — 4 notices
+  (clinicien, technicien, administrateur, patient) avec avertissements
+  critiques, tableaux de tâches/écrans, limites + étiquetage UDI (Basic
+  UDI-DI, règles de version, écarts déclarés).
+- **R3 — Usabilité formative** : protocole IEC 62366 prêt à passer
+  (5 scénarios critiques avec critères chiffrés, NASA-TLX, automation bias)
+  + grille de passation par participant.
+- **R4 — Durcissement** : `security/hardening/` — Vault (service compose
+  DEV + policy HCL moindre privilège + script d'initialisation), mTLS
+  (générateur PKI de test vérifié, config NGINX mTLS HAPI, checklist
+  ASVS), plan de tests d'intrusion (ASVS V2-V5, OWASP API Top 10, scénarios
+  métier rtPA/extraction) ; **générateur SBOM CycloneDX stdlib**
+  (8 composants, 141 références composant→service) + snapshot réglementaire.
+
+### ADR-0024 — profils FHIR nationaux IOP-CI candidats
+- `services/integration-service/fhir/profiles/` : StructureDefinition
+  Patient-CI-IOP (identifiant national OID obligatoire, CNAM secondaire,
+  extension région sanitaire), Observation-CI-IOP (LOINC/UCUM), CodeSystem/
+  ValueSet identifiants, exemple patient, implementation-guide.
+- `medisuite_core/iop.py` : validateurs purs (identifiant national
+  `^[A-Z0-9]{10,16}$`, CNAM 10 chiffres, région — liste partielle assumée
+  fail-closed), mapping `patient_to_iop`, catalogue des profils.
+- Hub : `GET /api/v1/fhir/profiles` + `POST /api/v1/fhir/server/patients/iop`
+  (RBAC `patient.write`, 422 sur non-conformité, événement bus) — validation
+  côté hub + validation HAPI : défense en profondeur.
+
+### Banc de performance d'inférence (critère EGSP p95 ≤ 2 s)
+- `tools/bench/bench_fusion.py` : charge synthétique reproductible (seed
+  42), backends numpy/torch, scénario dégradé `--missing-ratio`, p50/p95/
+  p99 + débit, verdict PASS/FAIL (exit 1), JSON horodaté versionné.
+- Référentiels réels CPU (module 8) : numpy **p95 0,32 ms** (3 535 req/s),
+  torch 2.14+cpu **p95 0,79 ms** (1 481 req/s), 30 % modalités manquantes
+  **0,65 ms** — PASS ; méthodologie + protocole GPU CHU dans
+  `docs/BENCHMARK-GPU.md`.
+
+### Tests
+- integration-service **15/15** (3 tests IOP : validateurs + 6 cas
+  invalides, catalogue 4 profils, création IOP avec profil/meta/région +
+  RBAC 403 + 422 non-conformité) ; packages 81/81 ; 38/38 suites services.
+
 ## [v0.4.0] — 2026-09-14
 
 ### Serveur FHIR R4 réel — HAPI JPA

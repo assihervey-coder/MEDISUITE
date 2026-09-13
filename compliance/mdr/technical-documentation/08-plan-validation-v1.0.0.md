@@ -12,15 +12,16 @@
 | v0.2.0 | écrans BI-RADS/code AVC, backends torch/MONAI (ADR 0022), PACS Orthanc réel | 31/31 tests IA, 12/12 imaging |
 | v0.3.0 | OHIF v3 sur /dicom-web, fusion torch ENTRAÎNABLE (ADR 0023) | 16 tests torch fusion, chaîne STOW→OHIF |
 | v0.4.0 | HAPI FHIR R4 réel, OTel stdlib + collector, K8s GPU time-slicing | 12/12 integration, 81/81 packages |
+| v0.5.0 | R1-R4 : SMQ 8 procédures, IFU 4 profils, usabilité formative, Vault/mTLS/SBOM/pentest-plan, ADR-0024 profils IOP-CI, banc perf EGSP | 15/15 integration, 81/81 packages |
 
 ## 2. Jalons réglementaires restants (vers v1.0.0)
 
 | # | Livrable | Section dossier | Priorité | Estimation |
 |---|---|---|---|---|
-| R1 | SMQ ISO 13485 : cartographie processus, procédures documentées (libération, incidents, qualité fournisseurs) | `09-smq-iso13485.md` | haute | M+0 → M+4 |
-| R2 | IFU complètes (4 profils) + étiquetage + UDI/EID (GS1) | Annexe II §2 | haute | M+1 → M+3 |
-| R3 | Usabilité summative (IEC 62366) | `05-iec-62366-usabilite.md` | haute | M+2 → M+6 |
-| R4 | Banc de performance analytique + SBOM + pentest + Vault/mTLS | EGSP §15, RGPD 32 | haute | M+1 → M+5 |
+| R1 | SMQ ISO 13485 : cartographie processus, procédures documentées (libération, incidents, qualité fournisseurs) | `../smq/` PROC-01…08 ✅ rédigées v0.5 | haute — **audit interne + auditeur externe 🔴** | M+0 → M+4 |
+| R2 | IFU complètes (4 profils) + étiquetage + UDI/EID (GS1) | `ifu/` ✅ rédigées v0.5 | haute — **UDI-EID émission + écran À propos 🔴** | M+1 → M+3 |
+| R3 | Usabilité formative (IEC 62366) | `usability/` protocole + grilles ✅ prêts v0.5 | haute — **exécution avec participants CHU 🔴** | M+2 → M+6 |
+| R4 | Durcissement : Vault/mTLS/SBOM + pentest + banc perf | `security/hardening/` + `tools/bench/` ✅ outillage v0.5 | haute — **exécution pentest externe + campagne GPU CHU 🔴** | M+1 → M+5 |
 | R5 | Protocole investigation multicentrique + accords CHU + comité d'éthique | `06-evaluation-clinique.md` | critique | M+2 → M+6 |
 | R6 | Exécution investigation (inclusions, monitoring DSMB) | Annexe XV | critique | M+6 → M+18 |
 | R7 | Rapport évaluation clinique (MEDDEV 2.7/1 rev 4) + bénéfice-risque final | Annexe XIV | critique | M+18 → M+21 |
