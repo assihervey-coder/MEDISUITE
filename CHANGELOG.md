@@ -3,6 +3,61 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.4.0] — 2026-09-14
+
+### Serveur FHIR R4 réel — HAPI JPA
+- **Référentiel central d'interopérabilité** : `hapiproject/hapi` sur
+  PostgreSQL 16 dans `docker-compose.minimal.yml` (9 → 11 services),
+  configuration `local-deployment/hapi/application.yaml` (FHIR R4 4.0.1,
+  validation serveur REQUIRE, JSON par défaut, rest-hook activé).
+- `medisuite_core/hapi_client.py` : client REST FHIR R4 stdlib
+  (metadata/ping/create/read/search/transaction), injection d'opener pour
+  les tests, **dégradation gracieuse** (serveur hors ligne → reachable=false,
+  jamais d'exception vers le clinicien).
+- integration-service : 5 endpoints `/api/v1/fhir/server/*` (status,
+  metadata, recherche patients, création Patient) avec **RBAC fail-closed**
+  (`patient.read`/`patient.write`) + événement bus `fhir.patient.created` ;
+  documentation `docs/FHIR-HAPI.md`.
+
+### Télémétrie OpenTelemetry native (stdlib)
+- `medisuite_core/observability.py` : propagation **W3C Trace Context**
+  (traceparent parse/émission, headers invalides ignorés), spans serveur,
+  **export OTLP/HTTP JSON** vers un collecteur par lots (thread daemon,
+  tampon 2 048 spans, back-off silencieux) — télémétrie sans dépendance ni
+  risque pour le service.
+- **Point d'instrumentation unique** : middleware dans
+  `medisuite_core.http.create_service_app` — les 38 services produisent
+  désormais des spans (méthode, route, statut, durée, request_id) sans
+  modification de code.
+- `monitoring/otel/collector.yaml` : otel-collector-contrib 0.109.0
+  (OTLP/gRPC 4317 + OTLP/HTTP 4318 → métriques Prometheus 8889 + debug) ;
+  job Prometheus `otel` ; documentation `docs/OTEL.md`.
+
+### Déploiement Kubernetes GPU
+- Overlay `infrastructure/kubernetes/gpu/` : RuntimeClass nvidia, device
+  plugin v0.16.2 avec **time-slicing ×2** (coût GPU ÷2 pour l'inférence),
+  PriorityClass, Deployment `multimodal-gateway` (`nvidia.com/gpu: 1`,
+  runAsNonRoot, probes), Service + **HPA cpu 70 % 2→6**, kustomization ;
+  compromis d'ingénierie documentés dans `docs/K8S-GPU.md`.
+
+### Démarrage du dossier de marquage CE (jalon v1.0.0)
+- `compliance/mdr/technical-documentation/` : **dossier technique MDR
+  2017/745 Annexe II/III structuré et partiellement rédigé** — index avec
+  états (🟢/🟠/🔴), identification + classification règle 11 (IIb
+  justifié), EGSP Annexe I (exigence↔preuve↔test), FMEA ISO 14971 (10
+  risques cliniques RM-01…RM-10 avec mesures et RPN), IEC 62304 classe C
+  (mapping processus↔preuves 373+ tests), plan IEC 62366 (5 scénarios
+  critiques d'usage), stratégie d'évaluation clinique multicentrique CHU
+  (design, endpoints, tailles), plan PMS/vigilance/PMCF, cartographie SMQ
+  ISO 13485, **plan de mise en conformité v1.0.0** (jalons R1-R9 datés).
+
+### Tests et validation
+- integration-service 12/12 (5 tests HAPI : hors ligne, metadata, search,
+  création + RBAC auditeur 403, payload FHIR envoyé ; 3 tests OTel :
+  traceparent roundtrip + 5 invalides, span middleware + propagation,
+  payload OTLP conforme).
+- packages 81/81 verts (core, clinical-rules, fusion IA).
+
 ## [v0.3.0] — 2026-09-13
 
 ### Visualiseur OHIF v3 branché sur /dicom-web

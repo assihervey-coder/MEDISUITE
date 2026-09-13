@@ -5,7 +5,7 @@
 >
 > *De l'IMagerie DIgital à la fusion IA — conçu pour les CHU d'Abidjan, les hôpitaux régionaux et les centres de santé ruraux.*
 
-![status](https://img.shields.io/badge/statut-v0.3.0_alpha-2d7ab3) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
+![status](https://img.shields.io/badge/statut-v0.4.0_alpha-2d7ab3) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
 
 ---
 
@@ -78,9 +78,9 @@ traçabilité IEC 81001-5-1 sans la complexité d'une blockchain (décision ADR-
 |---|---|---|
 | v0.1.0 | Socle fonctionnel : services, règles cliniques, fusion NumPy, web-portal, infra locale | ✅ |
 | v0.2.0 | Écrans BI-RADS + code AVC, backends torch/monai (ADR 0022), PACS Orthanc réel | ✅ |
-| v0.3.0 | Visualiseur OHIF v3 sur /dicom-web, fusion torch ENTRAÎNABLE de bout en bout (ADR 0023) | ✅ cette release |
-| v0.4.0 | FHIR R4 server complet (HAPI), télémétrie OTel, déploiement K8s GPU | 📋 |
-| v1.0.0 | Dossier de marquage CE (MDR IIb), validation clinique multicentrique CHU | 📋 |
+| v0.3.0 | Visualiseur OHIF v3 sur /dicom-web, fusion torch ENTRAÎNABLE de bout en bout (ADR 0023) | ✅ |
+| v0.4.0 | Serveur FHIR R4 réel (HAPI JPA), télémétrie OpenTelemetry (W3C + OTLP + collector), déploiement K8s GPU time-slicing, **démarrage du dossier CE MDR IIb** (dossier technique Annexe II/III) | ✅ cette release |
+| v1.0.0 | Dossier de marquage CE (MDR IIb) complet, évaluation clinique multicentrique CHU, SMQ ISO 13485 | 📋 — plan `compliance/mdr/technical-documentation/08-plan-validation-v1.0.0.md` |
 
 ## 🤝 Contribution
 
