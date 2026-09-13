@@ -1,16 +1,21 @@
-# MEDISUITE — stack minimale locale (38 services Python + PACS + observabilité)
+# MEDISUITE — stack minimale locale v0.2 (services cœur + PACS Orthanc réel + observabilité)
 # Usage : docker compose -f local-deployment/docker-compose.minimal.yml up
+# Le PACS est un Orthanc OSS réel (image orthancteam, plugin DICOMweb PS3.18)
+# configuré par local-deployment/orthanc/orthanc.json — voir docs/PACS-ORTHANC.md.
 name: medisuite
 
 x-service: &service
   build:
     context: ..
     dockerfile: local-deployment/Dockerfile.service
-    args: {SERVICE_DIR: services/${SERVICE_NAME}}
+    args: {SERVICE_DIR: "services/${SERVICE_NAME}"}
   restart: unless-stopped
+  depends_on: [orthanc-pacs]
   environment: &env
     MEDISUITE_ENV: local
-  volumes: [msk-data:/app/data]
+    MEDISUITE_ORTHANC_URL: http://orthanc-pacs:8042
+    MEDISUITE_ORTHANC_USER: medisuite
+    MEDISUITE_ORTHANC_PASSWORD: medisuite-dev
 
 services:
   api-gateway: {<<: *service, ports: ["8000:8000"], environment: {<<: *env, SERVICE_NAME: api-gateway, SERVICE_PORT: 8000, SERVICE_MODULE: src.main:app}}
@@ -19,16 +24,25 @@ services:
   imaging-service: {<<: *service, ports: ["8003:8003"], environment: {<<: *env, SERVICE_NAME: imaging-service, SERVICE_PORT: 8003, SERVICE_MODULE: src.main:app}}
   laboratory-service: {<<: *service, ports: ["8004:8004"], environment: {<<: *env, SERVICE_NAME: laboratory-service, SERVICE_PORT: 8004, SERVICE_MODULE: src.main:app}}
 
+  # PACS réel — Orthanc OSS + DICOMweb (QIDO/WADO/STOW) + stockage persistant
   orthanc-pacs:
     image: orthancteam/orthanc:24.9
-    ports: ["8042:8042"]
-    environment: {ORTHANC__NAME: MEDISUITE-PACS}
+    restart: unless-stopped
+    ports: ["8042:8042", "4242:4242"]
+    volumes:
+      - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
+      - orthanc-data:/var/lib/orthanc/db
+
   prometheus:
     image: prom/prometheus:v2.54.0
+    restart: unless-stopped
     ports: ["9090:9090"]
     volumes: ["../monitoring/prometheus:/etc/prometheus:ro"]
+
   grafana:
     image: grafana/grafana:11.2.0
+    restart: unless-stopped
     ports: ["3000:3000"]
 
-volumes: {msk-data: {}}
+volumes:
+  orthanc-data: {}

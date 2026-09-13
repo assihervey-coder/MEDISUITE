@@ -64,3 +64,115 @@ def test_workflow_compte_rendu():
 def test_connecteurs():
     r = client.get("/api/v1/integrations").json()
     assert "orthanc" in r and "ohif" in r
+
+
+# ── v0.2 : client PACS Orthanc réel (opener factice, aucun serveur requis) ──
+import json as _json
+import urllib.error as _urlerror
+
+import orthanc_client
+from orthanc_client import OrthancClient, OrthancError
+
+
+def _fake_opener(pages: dict):
+    """urlopen factice : sert `pages` par chemin d'URL ('/system', '/studies'…)."""
+
+    class _Resp:
+        def __init__(self, payload):
+            self._raw = _json.dumps(payload).encode()
+
+        def read(self):
+            return self._raw
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+    def _open(req, timeout=None):
+        path = "/" + req.full_url.split("/", 3)[3]
+        if path not in pages:
+            raise _urlerror.URLError(f"404 : {path}")
+        return _Resp(pages[path])
+
+    return _open
+
+
+def test_orthanc_client_system():
+    oc = OrthancClient(url="http://pacs-fake:8042", user="u", password="p",
+                       opener=_fake_opener({"/system": {"Version": "1.12.4",
+                                                        "Name": "MEDISUITE-PACS"}}))
+    assert oc.system()["Version"] == "1.12.4"
+    assert oc.ping() is True
+
+
+def test_orthanc_client_ping_hors_ligne():
+    def _down(req, timeout=None):
+        raise _urlerror.URLError("connexion refusée")
+
+    oc = OrthancClient(url="http://127.0.0.1:1", timeout=0.1, opener=_down)
+    assert oc.ping() is False
+
+
+def test_orthanc_client_studies_expansion():
+    pages = {
+        "/studies": ["sid1", "sid2"],
+        "/studies/sid1": {"MainDicomTags": {"StudyInstanceUID": "1.2.3",
+                                            "StudyDate": "20260913",
+                                            "StudyDescription": "MG bilatérale"},
+                          "PatientMainDicomTags": {"PatientID": "pat0007",
+                                                   "PatientName": "TRAORE Awa"},
+                          "Series": ["s1", "s2", "s3"]},
+        "/studies/sid2": {"MainDicomTags": {}, "PatientMainDicomTags": {},
+                          "Series": []},
+    }
+    oc = OrthancClient(url="http://pacs-fake:8042", opener=_fake_opener(pages))
+    rows = oc.studies(limit=5)
+    assert rows[0]["patient_nom"] == "TRAORE Awa"
+    assert rows[0]["series"] == 3
+    assert rows[1]["orthanc_id"] == "sid2"
+
+
+def test_orthanc_client_qido_relay():
+    qido = [{"0020000D": {"vr": "UI", "Value": ["1.2.3"]}}]
+    oc = OrthancClient(url="http://pacs-fake:8042",
+                       opener=_fake_opener({"/dicom-web/studies?limit=10&Modality=MG": qido}))
+    assert oc.dicomweb_studies("limit=10&Modality=MG")[0]["0020000D"]["Value"][0] == "1.2.3"
+
+
+def test_pacs_status_hors_ligne_ne_crash_pas(monkeypatch):
+    import main
+    monkeypatch.setattr(main._oc, "OrthancClient",
+                        lambda: OrthancClient(url="http://127.0.0.1:1", timeout=0.1))
+    r = client.get("/api/v1/pacs/status")
+    assert r.status_code == 200
+    assert r.json()["reachable"] is False
+
+
+def test_pacs_status_avec_pacs(monkeypatch):
+    import main
+
+    class _Stub:
+        url = "http://orthanc-fake:8042"
+
+        def system(self):
+            return {"Version": "1.12.4", "Name": "MEDISUITE-PACS",
+                    "DicomAet": "MEDISUITE", "PatientCount": 3, "StudyCount": 7}
+
+    monkeypatch.setattr(main._oc, "OrthancClient", lambda: _Stub())
+    body = client.get("/api/v1/pacs/status").json()
+    assert body["reachable"] is True
+    assert body["version"] == "1.12.4"
+    assert body["etudes"] == 7
+
+
+def test_pacs_studies_502_si_injoignable(monkeypatch):
+    import main
+
+    class _Down:
+        def studies(self, limit=20):
+            raise OrthancError("PACS down")
+
+    monkeypatch.setattr(main._oc, "OrthancClient", lambda: _Down())
+    assert client.get("/api/v1/pacs/studies").status_code == 502

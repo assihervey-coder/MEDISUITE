@@ -25,6 +25,13 @@ from medisuite_core.events import bus
 from medisuite_core.http import create_service_app
 from medisuite_core.rbac import can
 
+# Connecteur PACS réel (v0.2) — import bi-mode : paquet (uvicorn src.main:app)
+# ou plat (tests : sys.path inclut src/).
+try:
+    from . import orthanc_client as _oc
+except ImportError:  # mode plat
+    import orthanc_client as _oc
+
 app: FastAPI = create_service_app(
     "imaging-service", "Imagerie Médicale (PACS/DICOMweb)",
     "DICOMweb PS3.18 : QIDO-RS, WADO-RS, STOW-RS + worklist UPS + comptes-rendus "
@@ -281,7 +288,51 @@ async def stow(request: Request) -> dict:
 @app.get("/api/v1/integrations", tags=["intégrations"])
 def integrations() -> dict:
     """État des connecteurs PACS (ADR-0006) : Orthanc par défaut."""
-    return {"orthanc": {"url": "http://orthanc:8042", "actif": False,
-                         "note": "docker compose up orthanc pour activer"},
+    live = _oc.OrthancClient().ping()
+    return {"orthanc": {"url": _oc.OrthancClient().url,
+                         "actif": live,
+                         "note": "docker compose -f local-deployment/"
+                                 "docker-compose.minimal.yml up orthanc-pacs"},
             "ohif": {"mode": "extension dicom-viewer/apps/dicom-viewer"},
             "dcm4chee": {"url": None, "actif": False}}
+
+
+# ── PACS réel (v0.2) : statut + relais QIDO vers Orthanc ─────────────────────
+
+@app.get("/api/v1/pacs/status", tags=["PACS Orthanc (v0.2)"])
+def pacs_status() -> dict:
+    """Santé du PACS Orthanc réel. Jamais 5xx : reachable=false si hors ligne."""
+    oc = _oc.OrthancClient()
+    try:
+        sysinfo = oc.system()
+        return {"reachable": True, "url": oc.url,
+                "version": sysinfo.get("Version"),
+                "nom": sysinfo.get("Name"),
+                "dicom_aet": sysinfo.get("DicomAet"),
+                "patients": sysinfo.get("PatientCount"),
+                "etudes": sysinfo.get("StudyCount"),
+                "dicomweb": "/api/v1/pacs/studies"}
+    except _oc.OrthancError as exc:
+        return {"reachable": False, "url": oc.url, "erreur": str(exc),
+                "note": "imagerie locale consultable ; vérifier "
+                        "docker compose up orthanc-pacs"}
+
+
+@app.get("/api/v1/pacs/studies", tags=["PACS Orthanc (v0.2)"])
+def pacs_studies(limit: int = 20) -> list[dict]:
+    """Fiches d'études du PACS réel (expansion Orthanc /studies)."""
+    oc = _oc.OrthancClient()
+    try:
+        return oc.studies(limit=limit)
+    except _oc.OrthancError as exc:
+        raise HTTPException(502, f"PACS Orthanc injoignable : {exc}")
+
+
+@app.get("/api/v1/pacs/qido", tags=["PACS Orthanc (v0.2)"])
+def pacs_qido(query: str = "limit=20") -> list[dict]:
+    """Relais QIDO-RS DICOMweb vers Orthanc (PS3.18), attributs DICOM JSON."""
+    oc = _oc.OrthancClient()
+    try:
+        return oc.dicomweb_studies(query)
+    except _oc.OrthancError as exc:
+        raise HTTPException(502, f"PACS Orthanc injoignable : {exc}")

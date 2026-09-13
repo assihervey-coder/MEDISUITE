@@ -1,0 +1,39 @@
+{
+  "Name": "MEDISUITE-PACS",
+  "DicomAet": "MEDISUITE",
+  "DicomCheckCalledAet": false,
+  "DicomPort": 4242,
+  "HttpPort": 8042,
+  "RemoteAccessAllowed": true,
+  "AuthenticationEnabled": true,
+  "RegisteredUsers": {
+    "medisuite": "medisuite-dev"
+  },
+  "DicomModalities": {
+    "SIMULATEUR": ["SIMULATEUR", "localhost", 4242],
+    "MODALITE-CT": ["MODALITE-CT", "localhost", 4242],
+    "MODALITE-MG": ["MODALITE-MG", "localhost", 4242]
+  },
+  "DicomWeb": {
+    "Enable": true,
+    "Root": "/dicom-web/",
+    "EnableWado": true,
+    "WadoRoot": "/wado/",
+    "Host": "",
+    "Ssl": false,
+    "StudiesMetadata": "MainDicomTags",
+    "SeriesMetadata": "Full"
+  },
+  "StorageDirectory": "/var/lib/orthanc/db",
+  "IndexDirectory": "/var/lib/orthanc/db",
+  "MaximumPatientCount": 0,
+  "LimitFindResults": 0,
+  "LimitFindInstances": 0,
+  "LogExportedResources": false,
+  "KeepAlive": true,
+  "Timeout": 60,
+  "TempDirectory": "/tmp/orthanc",
+  "ConcurrentJobs": 8,
+  "OverwriteInstance": false,
+  "Labels": ["medisuite-local"]
+}
