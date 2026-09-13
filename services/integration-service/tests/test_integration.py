@@ -1,15 +1,61 @@
-"""Tests integration-service : HL7 roundtrip, MLLP, FHIR."""
-import pathlib, sys
+"""Tests integration-service : HL7 roundtrip, MLLP, FHIR, serveur HAPI (v0.4), OTel."""
+import json
+import pathlib
+import sys
+import urllib.error
+import urllib.request
+
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 for p in ("packages/medisuite-core", str(ROOT / "services" / "integration-service" / "src")):
     sys.path.insert(0, p)
 from fastapi.testclient import TestClient
-from main import app
+from main import app, JWT_SECRET, hapi as hapi_singleton
+from medisuite_core import security
+from medisuite_core import observability
 client = TestClient(app)
+
+_token = security.jwt_encode({"sub": "dr-yao", "role": "medecin",
+                              "nom": "Dr Yao"}, JWT_SECRET)
+HDR = {"Authorization": f"Bearer {_token}"}
+_auditeur = security.jwt_encode({"sub": "aud-1", "role": "auditeur"}, JWT_SECRET)
+HDR_AUDITEUR = {"Authorization": f"Bearer {_auditeur}"}
 
 PATIENT = {"numero_dossier": "MS-2026-00042", "nom": "KOUASSI", "prenoms": "Yao",
            "date_naissance": "1985-04-12", "sexe": "M", "telephone": "+225 07 00 00 00 00"}
 
+CAPABILITY = {"resourceType": "CapabilityStatement", "status": "active",
+              "fhirVersion": "4.0.1", "format": ["application/fhir+json"]}
+
+
+def _fake_hapi_opener(pages: dict, capture: list | None = None):
+    """urlopen factice : sert `pages` par chemin d'URL ('/metadata', '/Patient'…)."""
+
+    class _Resp:
+        def __init__(self, payload):
+            self._raw = json.dumps(payload).encode()
+
+        def read(self):
+            return self._raw
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+    def _open(req, timeout=None):
+        if capture is not None:
+            capture.append(req)
+        path = req.full_url.split("/fhir", 1)[1] or "/"
+        for prefix, payload in pages.items():
+            if req.full_url.endswith(prefix) or path.startswith(prefix):
+                return _Resp(payload)
+        raise urllib.error.HTTPError(req.full_url, 404, "not found", {}, None)
+
+    return _open
+
+
+# ── HL7 / MLLP (v0.1) ─────────────────────────────────────────────────────────
 
 def test_routes():
     assert "ADT" in client.get("/api/v1/routes").json()["routes"]
@@ -32,3 +78,134 @@ def test_mllp_hex_roundtrip():
 def test_fhir_bundle():
     b = client.get("/api/v1/fhir/patients", params={"n": 4}).json()
     assert b["resourceType"] == "Bundle" and b["total"] == 4
+
+
+# ── Serveur FHIR HAPI (v0.4) ──────────────────────────────────────────────────
+
+def test_fhir_server_status_requires_auth():
+    assert client.get("/api/v1/fhir/server/status").status_code == 403
+
+
+def test_fhir_server_status_hors_ligne():
+    def _down(req, timeout=None):
+        raise urllib.error.URLError("connexion refusée")
+
+    hapi_singleton._opener = _down
+    hapi_singleton.timeout = 0.1
+    try:
+        r = client.get("/api/v1/fhir/server/status", headers=HDR)
+        body = r.json()
+        assert r.status_code == 200
+        assert body["reachable"] is False and body["fhir_version"] is None
+    finally:
+        hapi_singleton._opener = None
+
+
+def test_fhir_server_metadata_relay():
+    hapi_singleton._opener = _fake_hapi_opener({"/metadata": CAPABILITY})
+    try:
+        r = client.get("/api/v1/fhir/server/metadata", headers=HDR)
+        assert r.status_code == 200
+        assert r.json()["fhirVersion"] == "4.0.1"
+    finally:
+        hapi_singleton._opener = None
+
+
+def test_fhir_server_search_bundle():
+    bundle = {"resourceType": "Bundle", "type": "searchset", "total": 1,
+              "entry": [{"resource": {"resourceType": "Patient", "id": "p1"}}]}
+    hapi_singleton._opener = _fake_hapi_opener({"/Patient": bundle})
+    try:
+        r = client.get("/api/v1/fhir/server/patients", params={"family": "KOUASSI"},
+                       headers=HDR)
+        assert r.status_code == 200
+        assert r.json()["entry"][0]["resource"]["id"] == "p1"
+    finally:
+        hapi_singleton._opener = None
+
+
+def test_fhir_server_create_patient():
+    capture: list = []
+    created = {"resourceType": "Patient", "id": "abc123",
+               "meta": {"versionId": "1"}}
+    hapi_singleton._opener = _fake_hapi_opener({"/Patient": created}, capture)
+    try:
+        r = client.post("/api/v1/fhir/server/patients", json=PATIENT, headers=HDR)
+        assert r.status_code == 201
+        body = r.json()
+        assert body["id"] == "abc123" and body["resourceType"] == "Patient"
+        # la ressource envoyée est bien un FHIR Patient (mapping médisuite→R4)
+        payload = json.loads(capture[0].data.decode())
+        assert payload["resourceType"] == "Patient"
+        assert payload["name"][0]["family"] == "KOUASSI"
+        # RBAC : auditeur (pas de patient.write) → 403 fail-closed
+        ra = client.post("/api/v1/fhir/server/patients", json=PATIENT,
+                         headers=HDR_AUDITEUR)
+        assert ra.status_code == 403
+    finally:
+        hapi_singleton._opener = None
+
+
+# ── OpenTelemetry (v0.4) ──────────────────────────────────────────────────────
+
+def test_traceparent_roundtrip():
+    tp = observability.format_traceparent("a" * 32, "b" * 16)
+    ctx = observability.parse_traceparent(tp)
+    assert ctx == {"trace_id": "a" * 32, "parent_span_id": "b" * 16, "flags": "01"}
+    # headers invalides → None (résilience W3C)
+    assert observability.parse_traceparent(None) is None
+    assert observability.parse_traceparent("") is None
+    assert observability.parse_traceparent("01-abc") is None
+    assert observability.parse_traceparent("00-" + "0" * 32 + "-" + "b" * 16 + "-01") is None
+    assert observability.parse_traceparent("00-" + "g" * 32 + "-" + "b" * 16 + "-01") is None
+
+
+def test_middleware_creates_span_and_propagates():
+    tracer = observability.get_tracer("integration-service")
+    before = tracer.snapshot()["pending_spans"]
+    tp_in = observability.format_traceparent("c" * 32, "d" * 16)
+    r = client.get("/health", headers={"traceparent": tp_in})
+    assert r.status_code == 200
+    # le middleware poursuit la trace entrante (même trace_id)
+    tp_out = r.headers.get("traceparent", "")
+    assert tp_out.startswith("00-" + "c" * 32 + "-")
+    # et un span a été enregistré
+    after = tracer.snapshot()["pending_spans"]
+    assert after == before + 1
+
+
+def test_otlp_export_payload():
+    capture: list = []
+
+    class _Resp:
+        def read(self):
+            return b"{}"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+    def _open(req, timeout=None):
+        capture.append(req)
+        return _Resp()
+
+    tracer = observability.Tracer("test-svc", endpoint="http://otel-fake:4318/v1/traces")
+    tracer._opener = _open
+    s1 = tracer.start_server_span("HTTP GET /x", traceparent=None)
+    s1.set_attribute("http.status_code", 200)
+    s1.end(ok=True)
+    s2 = tracer.start_server_span("HTTP POST /y")
+    s2.end(ok=False)
+    tracer.record(s1)
+    tracer.record(s2)
+    assert tracer.export_now() == 2
+    payload = json.loads(capture[0].data.decode())
+    rs = payload["resourceSpans"][0]
+    svc = [a for a in rs["resource"]["attributes"] if a["key"] == "service.name"]
+    assert svc[0]["value"]["stringValue"] == "test-svc"
+    spans = rs["scopeSpans"][0]["spans"]
+    assert len(spans) == 2
+    assert spans[0]["traceId"] == s1.trace_id and len(spans[0]["traceId"]) == 32
+    assert spans[1]["status"]["code"] == "STATUS_CODE_ERROR"

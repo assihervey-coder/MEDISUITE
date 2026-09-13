@@ -110,3 +110,63 @@ def fhir_patients(n: int = 5) -> dict:
 @app.post("/api/v1/fhir/patient", tags=["FHIR R4"])
 def fhir_patient(patient: dict) -> dict:
     return fhir_mod.patient_to_fhir(patient)
+
+
+# ── Serveur FHIR central (HAPI JPA, v0.4) ─────────────────────────────────────
+# Le hub relaie les opérations REST FHIR R4 vers le référentiel HAPI
+# (MEDISUITE_FHIR_BASE). Écriture protégée par RBAC patient.write,
+# lecture par patient.read — fail-closed via medisuite_core.rbac.
+
+from medisuite_core import hapi_client as hapi_mod
+from medisuite_core import rbac as rbac_mod
+
+hapi = hapi_mod.HapiClient()
+
+
+@app.get("/api/v1/fhir/server/status", tags=["FHIR serveur"])
+def fhir_server_status(user: dict = Depends(current_user)) -> dict:
+    """Statut du référentiel HAPI : version R4, joignabilité, base configurée."""
+    if not rbac_mod.can(user["role"], "patient.read"):
+        raise HTTPException(403, "permission patient.read requise")
+    return {"reachable": hapi.ping(), "base": hapi.base,
+            "fhir_version": "4.0.1" if hapi.ping() else None}
+
+
+@app.get("/api/v1/fhir/server/metadata", tags=["FHIR serveur"])
+def fhir_server_metadata(user: dict = Depends(current_user)) -> dict:
+    """CapabilityStatement du serveur HAPI (ressources, opérations, recherche)."""
+    if not rbac_mod.can(user["role"], "patient.read"):
+        raise HTTPException(403, "permission patient.read requise")
+    try:
+        return hapi.capabilities()
+    except hapi_mod.FhirError as exc:
+        raise HTTPException(502, str(exc))
+
+
+@app.get("/api/v1/fhir/server/patients", tags=["FHIR serveur"])
+def fhir_server_search(family: str | None = None, identifier: str | None = None,
+                       n: int = 20, user: dict = Depends(current_user)) -> dict:
+    """Recherche Patient sur HAPI (Bundle searchset) — relais QIDO-like."""
+    if not rbac_mod.can(user["role"], "patient.read"):
+        raise HTTPException(403, "permission patient.read requise")
+    try:
+        return hapi.search_patients(family=family, identifier=identifier,
+                                    count=max(1, min(n, 100)))
+    except hapi_mod.FhirError as exc:
+        raise HTTPException(502, str(exc))
+
+
+@app.post("/api/v1/fhir/server/patients", tags=["FHIR serveur"], status_code=201)
+def fhir_server_create(patient: dict,
+                       user: dict = Depends(current_user)) -> dict:
+    """Création d'un Patient FHIR R4 sur le référentiel central (RBAC patient.write)."""
+    if not rbac_mod.can(user["role"], "patient.write"):
+        raise HTTPException(403, "permission patient.write requise")
+    resource = fhir_mod.patient_to_fhir(patient)
+    try:
+        created = hapi.create("Patient", resource)
+    except hapi_mod.FhirError as exc:
+        raise HTTPException(502, str(exc))
+    bus.publish("fhir.patient.created",
+                {"fhir_id": created["id"], "dossier": patient.get("numero_dossier", "")})
+    return created

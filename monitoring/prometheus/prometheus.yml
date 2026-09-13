@@ -10,3 +10,6 @@ scrape_configs:
   - job_name: pacs
     static_configs:
       - targets: ['orthanc-pacs:8042']
+  - job_name: otel
+    static_configs:
+      - targets: ['otel-collector:8889']

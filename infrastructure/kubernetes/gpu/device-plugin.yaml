@@ -1,0 +1,69 @@
+# MEDISUITE v0.4 — NVIDIA GPU device plugin avec time-slicing
+# Partage de chaque GPU physique entre 2 pods d'inférence (2 replicas/GPU) :
+# coût GPU divisé par deux pour des charges d'inférence médicale modestes
+# (fusion multimodale, scores IA) — compromis documenté dans docs/K8S-GPU.md.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nvidia-device-plugin-config
+  namespace: kube-system
+data:
+  time-slicing.yaml: |
+    version: v1
+    sharing:
+      timeSlicing:
+        renameByDefault: true
+        resources:
+          - name: nvidia.com/gpu
+            replicas: 2
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvidia-device-plugin-daemonset
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/part-of: medisuite
+spec:
+  selector:
+    matchLabels:
+      name: nvidia-device-plugin-ds
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: nvidia-device-plugin-ds
+    spec:
+      priorityClassName: system-node-critical
+      nodeSelector:
+        nvidia.com/gpu.present: "true"
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: nvidia-device-plugin-ctr
+          image: nvcr.io/nvidia/k8s-device-plugin:v0.16.2
+          args: ["--config-file=/etc/nvidia-plugin/time-slicing.yaml"]
+          env:
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: all
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: "utility,compute"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: device-plugin
+              mountPath: /var/lib/kubelet/device-plugins
+            - name: config
+              mountPath: /etc/nvidia-plugin
+      volumes:
+        - name: device-plugin
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+        - name: config
+          configMap:
+            name: nvidia-device-plugin-config

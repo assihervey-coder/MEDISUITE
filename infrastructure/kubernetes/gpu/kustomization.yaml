@@ -1,0 +1,13 @@
+# MEDISUITE v0.4 — overlay GPU (kustomize)
+# kubectl apply -k infrastructure/kubernetes/gpu/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - runtimeclass.yaml
+  - device-plugin.yaml
+  - fusion-inference.yaml
+labels:
+  - includeSelectors: false
+    pairs:
+      app.kubernetes.io/part-of: medisuite
+      medisuite.io/version: 0.4.0

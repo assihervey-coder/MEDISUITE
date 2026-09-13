@@ -1,0 +1,118 @@
+# MEDISUITE v0.4 — Déploiement d'inférence GPU (moteur de fusion multimodale)
+# Le pod demande explicitement 1 GPU (resource nvidia.com/gpu) : le scheduler
+# Kubernetes ne le place que sur un nœud avec GPU disponible, via la
+# RuntimeClass nvidia et les taints nvidia.com/gpu.
+#
+# Pré-requis : runtimeclass.yaml + device-plugin.yaml appliqués,
+# NVIDIA GPU Operator ou drivers + nvidia-container-toolkit sur les nœuds.
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: medisuite-gpu-inference
+value: 100000
+globalDefault: false
+description: "Inférence clinique MEDISUITE — à ne préempter qu'en dernier recours."
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multimodal-gateway
+  namespace: medisuite
+  labels:
+    app: multimodal-gateway
+    app.kubernetes.io/part-of: medisuite
+    medisuite.io/tier: ai
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxUnavailable: 0, maxSurge: 1}
+  selector:
+    matchLabels:
+      app: multimodal-gateway
+  template:
+    metadata:
+      labels:
+        app: multimodal-gateway
+        medisuite.io/tier: ai
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8022"
+    spec:
+      runtimeClassName: nvidia
+      priorityClassName: medisuite-gpu-inference
+      nodeSelector:
+        nvidia.com/gpu.present: "true"
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: gateway
+          image: ghcr.io/assihervey-coder/medisuite/multimodal-gateway:0.4.0
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 8022, name: http}]
+          env:
+            - name: SERVICE_NAME
+              value: multimodal-gateway
+            - name: MEDISUITE_ENV
+              value: production
+            - name: MEDISUITE_OTEL_ENDPOINT
+              value: http://otel-collector.observability.svc:4318/v1/traces
+            - name: MEDISUITE_TORCH_DEVICE
+              value: cuda
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "2Gi"
+              nvidia.com/gpu: 1
+            limits:
+              cpu: "2"
+              memory: "8Gi"
+              nvidia.com/gpu: 1
+          readinessProbe:
+            httpGet: {path: /ready, port: http}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities: {drop: ["ALL"]}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multimodal-gateway
+  namespace: medisuite
+  labels: {app: multimodal-gateway}
+spec:
+  selector: {app: multimodal-gateway}
+  ports:
+    - name: http
+      port: 8022
+      targetPort: http
+---
+# Autoscaling sur charge CPU : le scaler CPU agit quand les GPU slices
+# saturent (time-slicing répartit la charge) ; limité par les GPU réels.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: multimodal-gateway
+  namespace: medisuite
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: multimodal-gateway
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: {type: Utilization, averageUtilization: 70}

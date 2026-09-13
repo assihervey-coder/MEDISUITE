@@ -16,6 +16,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from . import observability
+
 _STARTED_AT = time.time()
 
 
@@ -48,11 +50,32 @@ def create_service_app(
     async def _request_context(request: Request, call_next: Callable):
         request_id = request.headers.get("X-Request-ID") or uuid.uuid4().hex[:16]
         start = time.perf_counter()
-        response = await call_next(request)
+        # Télémétrie OTel (v0.4) : span serveur par requête, propagation W3C.
+        tracer = observability.get_tracer(name)
+        span = tracer.start_server_span(
+            f"HTTP {request.method} {request.url.path}",
+            traceparent=request.headers.get("traceparent"))
+        span.set_attribute("http.method", request.method)
+        span.set_attribute("http.route", request.url.path)
+        span.set_attribute("medisuite.request_id", request_id)
+        status_ok = True
+        try:
+            response = await call_next(request)
+        except Exception:
+            status_ok = False
+            span.end(ok=False)
+            tracer.record(span)
+            raise
         elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
+        span.set_attribute("http.status_code", response.status_code)
+        span.set_attribute("http.duration_ms", elapsed_ms)
+        span.end(ok=status_ok and response.status_code < 500)
+        tracer.record(span)
         response.headers["X-Request-ID"] = request_id
         response.headers["X-Service-Name"] = name
         response.headers["X-Elapsed-Ms"] = str(elapsed_ms)
+        response.headers["traceparent"] = observability.format_traceparent(
+            span.trace_id, span.span_id)
         return response
 
     @app.exception_handler(Exception)

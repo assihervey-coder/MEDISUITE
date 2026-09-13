@@ -1,0 +1,53 @@
+# HAPI FHIR JPA Server — configuration MEDISUITE (v0.4)
+# Monté dans le conteneur hapiproject/hapi:latest via docker-compose.
+# Base exposée : /fhir — UI FHIR embarquée (HAPI FHIR Testpage) sur / .
+server:
+  port: 8080
+
+spring:
+  application:
+    name: medisuite-fhir
+  datasource:
+    url: "jdbc:postgresql://postgres-hapi:5432/hapi"
+    username: hapi
+    password: hapi-dev
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        search:
+          default:
+            directory_provider: filesystem
+            indexBase: /data/lucene
+        hibernate.search.default.directory_provider: filesystem
+        hibernate.search.default.indexBase: /data/lucene
+    hibernate:
+      ddl-auto: update
+  flyway:
+    enabled: false
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+hapi:
+  fhir:
+    # Version FHIR imposée : R4 (MEDISUITE cible HL7 FHIR R4, ADR-0005)
+    fhir_version: R4
+    default_encoding: json
+    default_pretty_print: true
+    # Validation des ressources entrantes (profils de base HL7)
+    validation:
+      enabled: true
+      request_level: REQUIRE
+    # Recherche et pagination
+    allow_multiple_delete: true
+    allow_cascading_deletes: false
+    expire_search_results_after_minutes: 60
+    cors:
+      allow_origin: "*"
+    narrative_enabled: true
+    subscription:
+      resthook_enabled: true   # notifications rest-hook pour les flux ADT/ORM
+      websocket_enabled: false

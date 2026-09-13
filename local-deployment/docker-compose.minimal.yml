@@ -1,7 +1,11 @@
-# MEDISUITE — stack minimale locale v0.2 (services cœur + PACS Orthanc réel + observabilité)
+# MEDISUITE — stack minimale locale v0.4 (services cœur + PACS + OHIF + FHIR HAPI + OTel)
 # Usage : docker compose -f local-deployment/docker-compose.minimal.yml up
 # Le PACS est un Orthanc OSS réel (image orthancteam, plugin DICOMweb PS3.18)
 # configuré par local-deployment/orthanc/orthanc.json — voir docs/PACS-ORTHANC.md.
+# Le référentiel central FHIR R4 est un HAPI JPA réel configuré par
+# local-deployment/hapi/application.yaml — voir docs/FHIR-HAPI.md.
+# La télémétrie OTel part vers un collecteur otel-collector-contrib —
+# voir monitoring/otel/collector.yaml et docs/OTEL.md.
 name: medisuite
 
 x-service: &service
@@ -16,6 +20,8 @@ x-service: &service
     MEDISUITE_ORTHANC_URL: http://orthanc-pacs:8042
     MEDISUITE_ORTHANC_USER: medisuite
     MEDISUITE_ORTHANC_PASSWORD: medisuite-dev
+    MEDISUITE_FHIR_BASE: http://hapi-fhir:8080/fhir
+    MEDISUITE_OTEL_ENDPOINT: http://otel-collector:4318/v1/traces
 
 services:
   api-gateway: {<<: *service, ports: ["8000:8000"], environment: {<<: *env, SERVICE_NAME: api-gateway, SERVICE_PORT: 8000, SERVICE_MODULE: src.main:app}}
@@ -43,6 +49,37 @@ services:
     ports: ["3001:80"]
     depends_on: [orthanc-pacs]
 
+  # Référentiel FHIR R4 central (v0.4) — HAPI JPA réel sur PostgreSQL.
+  # UI FHIR : http://localhost:8090 — API : http://localhost:8090/fhir/metadata
+  hapi-fhir:
+    image: hapiproject/hapi:latest
+    restart: unless-stopped
+    ports: ["8090:8080"]
+    depends_on: [postgres-hapi]
+    volumes:
+      - ./hapi/application.yaml:/app/application.yaml:ro
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xmx1g"
+
+  postgres-hapi:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hapi
+      POSTGRES_USER: hapi
+      POSTGRES_PASSWORD: hapi-dev
+    volumes: ["hapi-data:/var/lib/postgresql/data"]
+
+  # Collecteur OpenTelemetry (v0.4) — reçoit les spans OTLP/HTTP des 38
+  # services et les expose en métriques Prometheus + log de debug.
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.109.0
+    restart: unless-stopped
+    command: ["--config=/etc/otel/collector.yaml"]
+    ports: ["4317:4317", "4318:4318", "8889:8889"]
+    volumes:
+      - ../monitoring/otel/collector.yaml:/etc/otel/collector.yaml:ro
+
   prometheus:
     image: prom/prometheus:v2.54.0
     restart: unless-stopped
@@ -56,3 +93,4 @@ services:
 
 volumes:
   orthanc-data: {}
+  hapi-data: {}
