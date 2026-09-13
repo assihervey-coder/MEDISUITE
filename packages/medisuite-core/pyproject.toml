@@ -1,0 +1,6 @@
+[project]
+name = "medisuite-core"
+version = "0.1.0"
+description = "Noyau transverse MEDISUITE : sécurité, RBAC, audit chaîné, HL7 v2, FHIR R4"
+requires-python = ">=3.11"
+dependencies = ["fastapi>=0.110", "sqlalchemy>=2.0"]

@@ -1,0 +1,6 @@
+[project]
+name = "medisuite-rules"
+version = "0.1.0"
+description = "Moteur de règles cliniques MEDISUITE — scores validés, source unique de vérité"
+requires-python = ">=3.11"
+dependencies = []
