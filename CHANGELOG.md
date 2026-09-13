@@ -3,6 +3,56 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.7.0] — 2026-09-14
+
+### R6 — eCRF FHIR opérationnel (saisie → signature → monitoring → DSMB)
+- **Noyau** `medisuite_core/ecrf.py` : domaine pur de l'investigation
+  MEDISUITE-CI-01 — codes sujets pseudonymes (CI01-<SITE>-NNNNN),
+  formulaires F01-F06 (annexe A1) avec contrôles de cohérence §8,
+  dérivations SAP (éligibilité §4.2/§4.3, délai P3, détection SAE),
+  idempotence (clé SHA-256 payload canonique), mapping FHIR R4 vers les
+  profils IOP (Patient-CI-IOP + Observation-CI-IOP par champ) — 20 tests.
+- **RBAC v0.7** : permissions `ecrf.read/write/sign/monitor/export/adjudicate`
+  + rôles GCP `investigateur`, `moniteur`, `adjudicateur`, `data_manager`,
+  `promoteur` ; `medecin` saisit et signe. Séparation fail-closed : le
+  comité d'adjudication (aveugle) ne saisit QUE le F05.
+- **Service** `services/ecrf-service` (:8205, 39ᵉ suite) : sujets, saisie
+  validée 422-détaillée, signature verrouillante ISO 14155 §4.8,
+  amendements versionnés (original intact), requêtes SDV
+  (moniteur ouvre / site clôture), sync offline par lots ≤ 200 avec
+  résultat par item, export DSMB agrégé sans PHI (EI/SAE, médiane P3,
+  adhésion), audit chaîné SHA-256 persisté (rechargé au démarrage),
+  poussée FHIR optionnelle vers HAPI (statuts gracieux) — 18 tests.
+- **web-portal** : écran `/ecrf` opérationnel (catalogue piloté par les
+  définitions du noyau, saisie offline-first, signatures) + api `submitWithQueue`.
+
+### Mode offline du web-portal
+- Service worker `public/sw.js` (PROD) : navigations et GET /api/* en
+  réseau-d'abord avec repli cache ; non-GET jamais interceptés.
+- File IndexedDB (`src/offline/`) : empilement FIFO, rejeu idempotent
+  (`Idempotency-Key` + dédoublonnage serveur par clé calculée → zéro
+  doublon), dead-letter pour rejets 4xx, back-off 1 s→30 s, bannière
+  d'état `OfflineBanner`, boucle de sync (online + 30 s) — 5 tests vitest.
+- Vite dev proxy `/api/ecrf` avec rewrite (comportement identique au
+  proxy api-gateway).
+
+### UDI-EID GS1 (volet codifiable)
+- `medisuite_core/gs1_udi.py` : GTIN-13/14 (clé mod-10), Basic UDI-DI
+  (indicateur 0), dates YYMMDD (jour 00 = fin de mois), AIs
+  01/10/11/17/21 avec jeu fail-closed, élément-string DataMatrix (FNC1),
+  GS1 Digital Link → EID, `label_payload`/`verify_label_payload` — 17 tests.
+- `labeling.json` v0.7.0 : bloc `gs1` (émetteur GS1 CI proposé, statut
+  adhésion 🔴 R8) ; `docs/UDI-GS1.md` (chemin d'attribution réel).
+- Écran « À propos » : données GS1 servies par `GET /api/v1/about`.
+
+### Infrastructure & docs
+- `services/registry.py` : ecrf-service (:8205) ; REGISTRY api-gateway
+  enrichie ; proxy Vite.
+- Docs : `docs/E-CRF.md`, `docs/OFFLINE-PORTAL.md`, `docs/UDI-GS1.md` ;
+  compliance : plan R6 outillage ✅, protocole §8 note eCRF 🟢, GAP note.
+- Validation : 80 tests packages+ecrf-service, 39/39 suites services,
+  portal tsc strict + build + vitest verts.
+
 ## [v0.6.0] — 2026-09-14
 
 ### R5 — Protocole d'investigation clinique multicentrique détaillé

@@ -1,11 +1,19 @@
 {
   "produit": "MEDISUITE — Plateforme d'aide à la décision clinique",
   "fabricant": "ASSI Herve — Abidjan, Côte d'Ivoire",
-  "version": "v0.6.0",
+  "version": "v0.7.0",
   "date_liberation": "2026-09-14",
   "basic_udi_di": "MEDISUITE-PLTF-AIDE-DECISION",
-  "basic_udi_di_statut": "à confirmer par émission GS1",
-  "udi_eid": "non attribué (agence émettrice à désigner — jalon R8)",
+  "basic_udi_di_statut": "à confirmer par émission GS1 (préfixe de démonstration calculable — voir docs/UDI-GS1.md)",
+  "udi_eid": "GS1 Côte d'Ivoire (organisme émetteur proposé) — adhésion 🔴 terrain, jalon R8",
+  "gs1": {
+    "emetteur": "GS1 Côte d'Ivoire (proposé)",
+    "statut": "adhésion 🔴 terrain (jalon R8) — préfixe de démonstration 260 non productible",
+    "application_identifiers": {"01": "GTIN", "10": "lot", "11": "date production", "17": "date expiration", "21": "numéro de série"},
+    "digital_link": "https://id.gs1.org/01/{gtin}/10/{lot}/21/{serie}",
+    "basic_udi_di_calcule": "02600000000017",
+    "note": "composition et vérification implémentées dans medisuite_core/gs1_udi.py (17 tests)"
+  },
   "classe_mdr": "IIb (règle 11, Annexe VIII MDR 2017/745)",
   "marquage_ce": false,
   "marquage_ce_texte": "NON CE — usage clinique interdit hors cadre pilote recherche (voir dossier technique)",

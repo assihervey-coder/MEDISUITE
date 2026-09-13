@@ -25,7 +25,7 @@ interface Labeling {
 const FALLBACK: Labeling = {
   produit: "MEDISUITE — Plateforme d'aide à la décision clinique",
   fabricant: "ASSI Herve — Abidjan, Côte d'Ivoire",
-  version: import.meta.env.VITE_APP_VERSION ?? "v0.6.0",
+  version: import.meta.env.VITE_APP_VERSION ?? "v0.7.0",
   date_liberation: "2026-09-14",
   basic_udi_di: "MEDISUITE-PLTF-AIDE-DECISION",
   udi_eid: "non attribué (jalon R8)",

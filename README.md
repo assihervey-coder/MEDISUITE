@@ -5,7 +5,7 @@
 >
 > *De l'IMagerie DIgital à la fusion IA — conçu pour les CHU d'Abidjan, les hôpitaux régionaux et les centres de santé ruraux.*
 
-![status](https://img.shields.io/badge/statut-v0.6.0_alpha-2d7ab3) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
+![status](https://img.shields.io/badge/statut-v0.7.0_alpha-2d7ab3) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
 
 ---
 
@@ -81,7 +81,8 @@ traçabilité IEC 81001-5-1 sans la complexité d'une blockchain (décision ADR-
 | v0.3.0 | Visualiseur OHIF v3 sur /dicom-web, fusion torch ENTRAÎNABLE de bout en bout (ADR 0023) | ✅ |
 | v0.4.0 | Serveur FHIR R4 réel (HAPI JPA), télémétrie OpenTelemetry (W3C + OTLP + collector), déploiement K8s GPU time-slicing, **démarrage du dossier CE MDR IIb** (dossier technique Annexe II/III) | ✅ |
 | v0.5.0 | Jalons R1-R4 (SMQ 8 procédures, IFU 4 profils, usabilité formative, Vault/mTLS/SBOM/pentest-plan), **ADR-0024 profils FHIR nationaux IOP-CI candidats**, banc de performance EGSP (p95 ≤ 2 s : PASS) | ✅ |
-| v0.6.0 | **Protocole d'investigation multicentrique R5 détaillé** (MEDISUITE-CI-01, ISO 14155), écran « À propos » UDI (`/api/v1/about` + web), datasets synthétiques des 26 modules + tests, [audit des 26 modules](docs/audit-26-modules.md) | ✅ cette release |
+| v0.6.0 | **Protocole d'investigation multicentrique R5 détaillé** (MEDISUITE-CI-01, ISO 14155), écran « À propos » UDI (`/api/v1/about` + web), datasets synthétiques des 26 modules + tests, [audit des 26 modules](docs/audit-26-modules.md) | ✅ |
+| v0.7.0 | **eCRF FHIR opérationnel (R6)** : service dédié + [écran portal offline-first](docs/E-CRF.md) (saisie → signature → requêtes SDV → export DSMB), **mode offline du portal** ([SW + file IndexedDB idempotente](docs/OFFLINE-PORTAL.md)), **UDI-EID GS1 codifiable** ([GTIN/AIs/Digital Link](docs/UDI-GS1.md)) + rôles GCP eCRF | ✅ cette release |
 | v1.0.0 | Dossier de marquage CE (MDR IIb) complet, évaluation clinique multicentrique CHU, SMQ ISO 13485 | 📋 — plan `compliance/mdr/technical-documentation/08-plan-validation-v1.0.0.md` |
 
 ## 🤝 Contribution

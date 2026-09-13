@@ -15,6 +15,9 @@ PERMISSIONS = [
     "audit.read", "audit.verify",
     "admin.users", "admin.config",
     "appointment.manage", "billing.manage",
+    # Investigation MEDISUITE-CI-01 (eCRF, protocole R5/R6 — v0.7)
+    "ecrf.read", "ecrf.write", "ecrf.sign", "ecrf.monitor",
+    "ecrf.export", "ecrf.adjudicate",
 ]
 
 ROLES: dict[str, set[str]] = {
@@ -34,7 +37,16 @@ ROLES: dict[str, set[str]] = {
                         "patient.read"},
     "auditeur": {"audit.read", "audit.verify"},
     "patient": set(),  # portail patient : accès géré par consentement explicite
+    # --- Investigation MEDISUITE-CI-01 (protocole R5 §8, v0.7) ---------------
+    "investigateur": {"ecrf.read", "ecrf.write", "ecrf.sign", "patient.read"},
+    "moniteur": {"ecrf.read", "ecrf.monitor"},              # indépendant, contrat
+    "adjudicateur": {"ecrf.read", "ecrf.adjudicate"},       # comité aveugle §3.3
+    "data_manager": {"ecrf.read", "ecrf.write", "ecrf.export", "audit.read"},
+    "promoteur": {"ecrf.read", "ecrf.monitor", "ecrf.export", "audit.read"},
 }
+# Les cliniciens investigateurs de terrain sont des `medecin` : ils saisissent
+# et signent l'eCRF (le rôle dédié `investigateur` est contractuel).
+ROLES["medecin"] = ROLES["medecin"] | {"ecrf.read", "ecrf.write", "ecrf.sign"}
 
 
 def can(role: str, permission: str) -> bool:

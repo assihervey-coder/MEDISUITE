@@ -222,6 +222,13 @@ cette ligne ; `06-evaluation-clinique.md` sera mis à jour à la clôture R5
 - **eCRF** : formulaires basés sur les profils FHIR IOP (ADR-0024) ingérés
   par le hub HAPI du site ; contrôles de cohérence à la saisie ; audit
   chaîné SHA-256 natif ; extraction verrouillée par data manager + témoins.
+  > **Mise à jour v0.7.0** : l'eCRF est OPÉRATIONNEL 🟢 —
+  > `services/ecrf-service` (F01-F06 validés par `medisuite_core/ecrf.py`,
+  > signatures investigateur + amendements versionnés, requêtes SDV,
+  > synchronisation offline idempotente, export DSMB agrégé sans PHI,
+  > poussée HAPI IOP) et écran `/ecrf` du web-portal (saisie hors-ligne).
+  > Voir `docs/E-CRF.md`. L'exécution (inclusions, visites de monitoring)
+  > reste 🔴 jusqu'au feu vert R6.
 - **Déviations et amendements** : toute modification du protocole =
   version amendée + ANOC + ré-information ; registre des déviations.
 - **Audit qualité** : audit interne SMQ (PROC-08) de l'investigation à M+9 ;

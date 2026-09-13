@@ -13,4 +13,4 @@ Modules :
 - events       : bus d'événements interne (topics, sink JSONL)
 - seed         : données de démonstration ivoiriennes (CNAM, FCFA, Abidjan)
 """
-__version__ = "0.4.0"
+__version__ = "0.7.0"

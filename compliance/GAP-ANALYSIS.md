@@ -1,5 +1,12 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.7.0** : eCRF FHIR opérationnel (`services/ecrf-service`
+> + écran portal offline-first — jalon R6 volet outillage 🟢), mode
+> offline du web-portal (SW + file idempotente), UDI-EID GS1 volet
+> codifiable (`medisuite_core/gs1_udi.py`). La validité clinique des
+> sorties IA reste 🔴 **par conception** jusqu'à l'exécution de
+> l'investigation (R6-R8).
+
 > **Mise à jour v0.6.0** : protocole d'investigation R5 rédigé
 > (`10-protocole-…-R5.md`, MEDISUITE-CI-01), écran « À propos » UDI livré
 > (`/api/v1/about` + web-portal), datasets synthétiques 26 modules + audit

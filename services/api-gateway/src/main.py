@@ -44,6 +44,7 @@ REGISTRY: dict[str, str] = {
     "audit": "http://localhost:8202",
     "integration": "http://localhost:8203",
     "analytics": "http://localhost:8204",
+    "ecrf": "http://localhost:8205",
     "dicom": "http://localhost:8300",
     "hl7": "http://localhost:8301",
     "multimodal": "http://localhost:8302",

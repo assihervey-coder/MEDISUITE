@@ -10,6 +10,8 @@ import StrokeCode from "./features/neurology/StrokeCode";
 import FusionViewer from "./features/multimodal/FusionViewer";
 import AuditLog from "./features/admin/AuditLog";
 import About from "./features/about/About";
+import Ecrf from "./features/ecrf/Ecrf";
+import OfflineBanner from "./components/OfflineBanner";
 import { useAuth } from "./store/authStore";
 import ClinicalPanel from "./components/ClinicalPanel";
 import { MODULE_NAV } from "./features/modules-nav";
@@ -24,6 +26,7 @@ const NAV_MAIN = [
   { to: "/code-avc", label: "🧠 Code AVC (stroke)" },
   { to: "/multimodal", label: "🧠 Fusion multimodale" },
   { to: "/audit", label: "🔐 Audit (chaîné)" },
+  { to: "/ecrf", label: "📋 eCRF (CI-01)" },
   { to: "/about", label: "ℹ️ À propos (UDI)" },
 ];
 
@@ -33,6 +36,7 @@ export default function App() {
 
   return (
     <div className="layout">
+      <OfflineBanner />
       <aside className="sidebar">
         <h2>🏥 MEDISUITE</h2>
         {NAV_MAIN.map((n) => (
@@ -65,6 +69,7 @@ export default function App() {
           <Route path="/code-avc" element={<StrokeCode />} />
           <Route path="/multimodal" element={<FusionViewer />} />
           <Route path="/audit" element={<AuditLog />} />
+          <Route path="/ecrf" element={<Ecrf />} />
           <Route path="/about" element={<About />} />
           {MODULE_NAV.map((n) => (
             <Route

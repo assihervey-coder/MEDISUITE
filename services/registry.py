@@ -27,6 +27,8 @@ SERVICES: list[dict] = [
      "module": "src.main:app", "group": "transverse"},
     {"name": "analytics-service", "dir": "services/analytics-service", "port": 8204,
      "module": "src.main:app", "group": "transverse"},
+    {"name": "ecrf-service", "dir": "services/ecrf-service", "port": 8205,
+     "module": "src.main:app", "group": "transverse"},
     # --- passerelles spécialisées
     {"name": "dicom-gateway", "dir": "services/dicom-gateway", "port": 8300,
      "module": "src.main:app", "group": "gateway"},
