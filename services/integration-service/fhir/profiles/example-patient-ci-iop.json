@@ -1,0 +1,37 @@
+{
+  "resourceType": "Patient",
+  "id": "exemple-ci-iop-001",
+  "meta": {
+    "profile": ["http://medisuite.ci/fhir/StructureDefinition/Patient-CI-IOP"]
+  },
+  "identifier": [
+    {
+      "system": "urn:oid:2.16.840.1.113883.2.8.8.10.10",
+      "value": "CI2026AB1234",
+      "use": "official"
+    },
+    {
+      "system": "urn:medisuite:cnam",
+      "value": "1234567890"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "family": "KOUASSI",
+      "given": ["Yao", "Michel"]
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1985-04-12",
+  "address": [
+    {
+      "city": "Abidjan",
+      "district": "Treichville",
+      "country": "CI"
+    }
+  ],
+  "telecom": [
+    {"system": "phone", "value": "+225 07 00 00 00 00"}
+  ]
+}

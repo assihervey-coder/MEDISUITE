@@ -146,6 +146,78 @@ def test_fhir_server_create_patient():
         hapi_singleton._opener = None
 
 
+# ── Profils nationaux IOP-CI (ADR-0024, v0.5) ─────────────────────────────────
+
+from medisuite_core import iop as iop_mod
+
+PATIENT_IOP = {"identifiant_national": "CI2026AB1234", "nom": "KOUASSI",
+               "prenoms": "Yao", "date_naissance": "1985-04-12", "sexe": "M",
+               "cnam": "1234567890", "region": "Abidjan",
+               "telephone": "+225 07 00 00 00 00"}
+
+
+def test_iop_validators():
+    assert iop_mod.validate_national_id("ci2026ab1234") == "CI2026AB1234"
+    assert iop_mod.validate_cnam("1234567890") == "1234567890"
+    assert iop_mod.validate_region("Abidjan") == "Abidjan"
+    for bad in ("", "ABC", "MS-2026-00042", "a" * 17, "CI2026 0000", "0000"):
+        try:
+            iop_mod.validate_national_id(bad)
+            assert False, f"devait rejeter {bad!r}"
+        except iop_mod.IopValidationError:
+            pass
+    for bad_cnam in ("12345", "12345678901", "abcdefghij"):
+        try:
+            iop_mod.validate_cnam(bad_cnam)
+            assert False, f"CNAM devait rejeter {bad_cnam!r}"
+        except iop_mod.IopValidationError:
+            pass
+    try:
+        iop_mod.validate_region("Bretagne")
+        assert False
+    except iop_mod.IopValidationError:
+        pass
+
+
+def test_iop_profiles_catalog():
+    r = client.get("/api/v1/fhir/profiles")
+    body = r.json()
+    assert body["adr"] == "0024" and body["count"] == 4
+    ids = {p["id"] for p in body["profiles"]}
+    assert {"Patient-CI-IOP", "Observation-CI-IOP"} <= ids
+
+
+def test_fhir_server_create_iop():
+    capture: list = []
+    created = {"resourceType": "Patient", "id": "iop42",
+               "meta": {"versionId": "1"}}
+    hapi_singleton._opener = _fake_hapi_opener({"/Patient": created}, capture)
+    try:
+        r = client.post("/api/v1/fhir/server/patients/iop", json=PATIENT_IOP,
+                        headers=HDR)
+        assert r.status_code == 201 and r.json()["id"] == "iop42"
+        payload = json.loads(capture[0].data.decode())
+        # profil national référencé + identifiant national en tête
+        assert payload["meta"]["profile"] == [iop_mod.PROFILE_PATIENT]
+        ident = payload["identifier"][0]
+        assert ident["system"] == iop_mod.NATIONAL_OID
+        assert ident["value"] == "CI2026AB1234" and ident["use"] == "official"
+        # CNAM secondaire + région sanitaire (extension)
+        assert payload["identifier"][1]["value"] == "1234567890"
+        assert any(e["valueString"] == "Abidjan" for e in payload["extension"])
+        # RBAC : auditeur → 403
+        ra = client.post("/api/v1/fhir/server/patients/iop", json=PATIENT_IOP,
+                         headers=HDR_AUDITEUR)
+        assert ra.status_code == 403
+        # non-conformité : identifiant national avec tirets (dossier local)
+        bad = dict(PATIENT_IOP, identifiant_national="MS-2026-00042")
+        rb = client.post("/api/v1/fhir/server/patients/iop", json=bad,
+                         headers=HDR)
+        assert rb.status_code == 422 and "CI-IOP" in rb.json()["detail"]
+    finally:
+        hapi_singleton._opener = None
+
+
 # ── OpenTelemetry (v0.4) ──────────────────────────────────────────────────────
 
 def test_traceparent_roundtrip():

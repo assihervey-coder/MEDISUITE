@@ -170,3 +170,46 @@ def fhir_server_create(patient: dict,
     bus.publish("fhir.patient.created",
                 {"fhir_id": created["id"], "dossier": patient.get("numero_dossier", "")})
     return created
+
+
+# ── Profils nationaux IOP-CI (ADR-0024, v0.5) ────────────────────────────────
+# Les StructureDefinition candidates CI-IOP gouvernent l'identifiant national
+# de santé (OID 2.16.840.1.113883.2.8.8.10.10), le CNAM et la région
+# sanitaire. Validation CÔTÉ HUB avant tout POST vers HAPI (défense en
+# profondeur : HAPI valide aussi côté serveur).
+
+from medisuite_core import iop as iop_mod
+
+
+@app.get("/api/v1/fhir/profiles", tags=["FHIR serveur"])
+def fhir_profiles() -> dict:
+    """Catalogue des profils nationaux candidats servis par le hub (ADR-0024)."""
+    return {"adr": "0024", "status": "draft-candidate",
+            "count": len(iop_mod.PROFILES), "profiles": iop_mod.catalog()}
+
+
+@app.post("/api/v1/fhir/server/patients/iop", tags=["FHIR serveur"],
+          status_code=201)
+def fhir_server_create_iop(patient: dict,
+                           user: dict = Depends(current_user)) -> dict:
+    """Création d'un Patient conforme au profil national CI-IOP (RBAC patient.write).
+
+    Contraintes appliquées : identifiant national obligatoire
+    (^[A-Z0-9]{10,16}$), CNAM 10 chiffres si fourni, région sanitaire
+    validée — toute non-conformité → 422 avec détail par champ.
+    """
+    if not rbac_mod.can(user["role"], "patient.write"):
+        raise HTTPException(403, "permission patient.write requise")
+    try:
+        resource = iop_mod.patient_to_iop(patient)
+    except iop_mod.IopValidationError as exc:
+        raise HTTPException(422, f"profil CI-IOP : {exc}")
+    try:
+        created = hapi.create("Patient", resource)
+    except hapi_mod.FhirError as exc:
+        raise HTTPException(502, str(exc))
+    bus.publish("fhir.patient.created.iop",
+                {"fhir_id": created["id"],
+                 "identifiant_national": patient.get("identifiant_national",
+                                                      patient.get("numero_dossier", ""))})
+    return created

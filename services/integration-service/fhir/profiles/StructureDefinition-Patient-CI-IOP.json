@@ -1,0 +1,114 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "Patient-CI-IOP",
+  "url": "http://medisuite.ci/fhir/StructureDefinition/Patient-CI-IOP",
+  "version": "0.5.0",
+  "name": "PatientCIIOP",
+  "title": "Patient Côte d'Ivoire — IOP (candidat ADR-0024)",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-09-14",
+  "publisher": "MEDISUITE (candidat cadre national IOP)",
+  "description": "Profil Patient pour l'interopérabilité nationale ivoirienne : identifiant national de santé obligatoire, CNAM secondaire, région sanitaire. Candidat en attente de publication officielle.",
+  "fhirVersion": "4.0.1",
+  "kind": "resource",
+  "abstract": false,
+  "type": "Patient",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Patient",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Patient.identifier",
+        "path": "Patient.identifier",
+        "min": 1,
+        "slicing": {
+          "discriminator": [{"type": "pattern", "path": "system"}],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "Patient.identifier:national",
+        "path": "Patient.identifier",
+        "sliceName": "national",
+        "min": 1,
+        "max": "1",
+        "mustSupport": true
+      },
+      {
+        "id": "Patient.identifier:national.system",
+        "path": "Patient.identifier.system",
+        "min": 1,
+        "fixedUri": "urn:oid:2.16.840.1.113883.2.8.8.10.10"
+      },
+      {
+        "id": "Patient.identifier:national.value",
+        "path": "Patient.identifier.value",
+        "min": 1,
+        "constraint": [
+          {
+            "key": "ci-national-id",
+            "severity": "error",
+            "human": "L'identifiant national est alphanumérique (10-16), sans séparateur",
+            "expression": "matches('^[A-Z0-9]{10,16}$')"
+          }
+        ]
+      },
+      {
+        "id": "Patient.identifier:cnam",
+        "path": "Patient.identifier",
+        "sliceName": "cnam",
+        "min": 0,
+        "max": "1"
+      },
+      {
+        "id": "Patient.identifier:cnam.system",
+        "path": "Patient.identifier.system",
+        "min": 1,
+        "fixedUri": "urn:medisuite:cnam"
+      },
+      {
+        "id": "Patient.name",
+        "path": "Patient.name",
+        "min": 1,
+        "max": "1"
+      },
+      {
+        "id": "Patient.name.family",
+        "path": "Patient.name.family",
+        "min": 1
+      },
+      {
+        "id": "Patient.name.given",
+        "path": "Patient.name.given",
+        "min": 1
+      },
+      {
+        "id": "Patient.gender",
+        "path": "Patient.gender",
+        "min": 1
+      },
+      {
+        "id": "Patient.birthDate",
+        "path": "Patient.birthDate",
+        "min": 1
+      },
+      {
+        "id": "Patient.address",
+        "path": "Patient.address",
+        "max": "1",
+        "mustSupport": true
+      },
+      {
+        "id": "Patient.extension:regionSanitaire",
+        "path": "Patient.extension",
+        "sliceName": "regionSanitaire",
+        "min": 0,
+        "max": "1",
+        "type": [{"code": "Extension",
+                  "profile": ["http://medisuite.ci/fhir/StructureDefinition/region-sanitaire"]}],
+        "mustSupport": true
+      }
+    ]
+  }
+}

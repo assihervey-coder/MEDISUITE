@@ -1,0 +1,35 @@
+{
+  "resourceType": "CodeSystem",
+  "url": "http://medisuite.ci/fhir/CodeSystem/CI-identifiants",
+  "version": "0.5.0",
+  "name": "CIIIdentifiants",
+  "title": "Systèmes d'identifiants nationaux Côte d'Ivoire (candidat ADR-0024)",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-09-14",
+  "publisher": "MEDISUITE",
+  "description": "Codes des systèmes d'identification utilisés dans les profils nationaux CI-IOP. OID nationaux plausibles, à confirmer par l'autorité (ADR-0024).",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "national-health-id",
+      "display": "Identifiant national de santé",
+      "definition": "Identifiant unique de santé attribué par le registre national (OID 2.16.840.1.113883.2.8.8.10.10)"
+    },
+    {
+      "code": "cnam",
+      "display": "Numéro d'affilié CNAM",
+      "definition": "Caisse Nationale d'Assurance Maladie — couverture maladie universelle"
+    },
+    {
+      "code": "dossier-medisu",
+      "display": "Numéro de dossier MEDISUITE",
+      "definition": "Identifiant local d'établissement (MS-AAAA-NNNNN)"
+    },
+    {
+      "code": "passeport",
+      "display": "Passeport ivoirien",
+      "definition": "Document d'identité utilisé à défaut d'identifiant national"
+    }
+  ]
+}

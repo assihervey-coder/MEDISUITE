@@ -1,0 +1,78 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "Observation-CI-IOP",
+  "url": "http://medisuite.ci/fhir/StructureDefinition/Observation-CI-IOP",
+  "version": "0.5.0",
+  "name": "ObservationCIIOP",
+  "title": "Observation laboratoire Côte d'Ivoire — IOP (candidat ADR-0024)",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-09-14",
+  "publisher": "MEDISUITE (candidat cadre national IOP)",
+  "description": "Profil Observation pour les résultats de laboratoire nationaux : code LOINC obligatoire, unité UCUM, sujet Patient-CI-IOP, statut final/preliminary.",
+  "fhirVersion": "4.0.1",
+  "kind": "resource",
+  "abstract": false,
+  "type": "Observation",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Observation",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Observation.status",
+        "path": "Observation.status",
+        "min": 1,
+        "binding": {
+          "strength": "required",
+          "description": "statut restreint aux flux labo nationaux",
+          "valueSet": "http://hl7.org/fhir/ValueSet/observation-status"
+        }
+      },
+      {
+        "id": "Observation.code",
+        "path": "Observation.code",
+        "min": 1,
+        "mustSupport": true,
+        "binding": {
+          "strength": "preferred",
+          "description": "LOINC préféré pour l'interopérabilité DHIS2/CNAM",
+          "valueSet": "http://hl7.org/fhir/ValueSet/observation-codes"
+        }
+      },
+      {
+        "id": "Observation.code.coding.system",
+        "path": "Observation.code.coding.system",
+        "min": 1
+      },
+      {
+        "id": "Observation.subject",
+        "path": "Observation.subject",
+        "min": 1,
+        "type": [{"code": "Reference",
+                  "targetProfile": ["http://medisuite.ci/fhir/StructureDefinition/Patient-CI-IOP"]}]
+      },
+      {
+        "id": "Observation.effectiveDateTime",
+        "path": "Observation.effectiveDateTime",
+        "min": 1
+      },
+      {
+        "id": "Observation.valueQuantity",
+        "path": "Observation.valueQuantity",
+        "mustSupport": true
+      },
+      {
+        "id": "Observation.valueQuantity.system",
+        "path": "Observation.valueQuantity.system",
+        "min": 1,
+        "fixedUri": "http://unitsofmeasure.org"
+      },
+      {
+        "id": "Observation.referenceRange",
+        "path": "Observation.referenceRange",
+        "max": "1",
+        "mustSupport": true
+      }
+    ]
+  }
+}

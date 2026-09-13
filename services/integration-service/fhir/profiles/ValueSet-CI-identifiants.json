@@ -1,0 +1,25 @@
+{
+  "resourceType": "ValueSet",
+  "url": "http://medisuite.ci/fhir/ValueSet/CI-identifiants",
+  "version": "0.5.0",
+  "name": "CIIIdentifiantsVS",
+  "title": "ValueSet systèmes d'identifiants CI-IOP",
+  "status": "draft",
+  "experimental": true,
+  "date": "2026-09-14",
+  "publisher": "MEDISUITE",
+  "description": "Systèmes d'identifiants acceptés dans les profils nationaux (slicing identifier).",
+  "compose": {
+    "include": [
+      {
+        "system": "http://medisuite.ci/fhir/CodeSystem/CI-identifiants",
+        "concept": [
+          {"code": "national-health-id", "display": "Identifiant national de santé"},
+          {"code": "cnam", "display": "Numéro d'affilié CNAM"},
+          {"code": "dossier-medisu", "display": "Numéro de dossier MEDISUITE"},
+          {"code": "passeport", "display": "Passeport ivoirien"}
+        ]
+      }
+    ]
+  }
+}
