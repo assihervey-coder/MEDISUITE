@@ -5,7 +5,7 @@
 >
 > *De l'IMagerie DIgital à la fusion IA — conçu pour les CHU d'Abidjan, les hôpitaux régionaux et les centres de santé ruraux.*
 
-![status](https://img.shields.io/badge/statut-v0.1.0_alpha-blue) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
+![status](https://img.shields.io/badge/statut-v0.2.0_alpha-2d7ab3) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
 
 ---
 
