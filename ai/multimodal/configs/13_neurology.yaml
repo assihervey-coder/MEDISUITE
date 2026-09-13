@@ -1,0 +1,16 @@
+# Module 13 — neurology
+# Fusion multimodale : AVC ischémique vs hémorragique (CT + clinique)
+task: binary
+d_model: 32
+seed: 42
+modalities:
+  attendues: ['imaging_3d', 'tabulaire', 'texte']
+  politique_modalites_manquantes: degrade_elegamment  # ADR-0018
+heads:
+  shared_trunk: true      # ADR-0019 : multi-tâches sur tronc partagé
+losses:
+  weighting: uncertainty  # pondération par incertitude
+explainability:
+  modality_importance: true
+  attention_viz: true
+  shap_multimodal: v0.2

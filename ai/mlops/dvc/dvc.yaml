@@ -1,0 +1,20 @@
+# DVC — versionnement des données et pipelines reproductibles (ADR-0012/0013)
+stages:
+  prepare:
+    cmd: python scripts/ml/prepare_datasets.py
+    deps: [ai/datasets/raw]
+    outs: [ai/datasets/processed]
+  train_fusion:
+    cmd: python scripts/ml/train-multimodal.py --config ${config}
+    deps: [ai/datasets/processed, ai/multimodal/configs/${config}]
+    params: [config]
+    outs: [ai/models/fusion/checkpoints]
+    metrics: [ai/models/fusion/metrics.json]
+    plots: [ai/models/fusion/plots]
+  evaluate:
+    cmd: python scripts/ml/evaluate-model.py --threshold-gate 0.85
+    deps: [ai/models/fusion/checkpoints]
+    metrics: [ai/models/fusion/eval.json]
+  register:
+    cmd: python scripts/ml/register-model.py --stage staging
+    deps: [ai/models/fusion/eval.json]

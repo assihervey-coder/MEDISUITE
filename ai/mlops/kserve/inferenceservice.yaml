@@ -1,0 +1,18 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: fusion-multimodal
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+spec:
+  predictor:
+    minReplicas: 2
+    maxReplicas: 8
+    containers:
+      - name: kserve-container
+        image: ghcr.io/assihervey-coder/medisuite-ai:0.1.0
+        args: ["--model_dir=/mnt/models/fusion", "--task=classification"]
+        resources:
+          requests: {cpu: "2", memory: 4Gi}
+          limits: {cpu: "4", memory: 8Gi, nvidia.com/gpu: "1"}
+        readinessProbe: {httpGet: {path: /v2/health/ready, port: 8080}}

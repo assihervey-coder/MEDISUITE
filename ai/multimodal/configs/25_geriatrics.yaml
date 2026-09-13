@@ -1,0 +1,16 @@
+# Module 25 — geriatrics
+# Fusion multimodale : Fragilité à 12 mois (Fried augmenté)
+task: binary
+d_model: 32
+seed: 42
+modalities:
+  attendues: ['tabulaire', 'imaging_2d', 'texte']
+  politique_modalites_manquantes: degrade_elegamment  # ADR-0018
+heads:
+  shared_trunk: true      # ADR-0019 : multi-tâches sur tronc partagé
+losses:
+  weighting: uncertainty  # pondération par incertitude
+explainability:
+  modality_importance: true
+  attention_viz: true
+  shap_multimodal: v0.2

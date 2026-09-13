@@ -1,0 +1,6 @@
+project: medisuite
+provider: local
+registry: data/feast/registry.db
+online_store: {path: data/feast/online.db, type: sqlite}
+offline_store: {type: file}
+entity_key_serialization_version: 2

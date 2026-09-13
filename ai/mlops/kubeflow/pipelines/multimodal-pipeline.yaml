@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: medisuite-multimodal-
+spec:
+  entrypoint: fusion-pipeline
+  templates:
+    - name: fusion-pipeline
+      dag:
+        tasks:
+          - {name: prepare, template: prepare}
+          - {name: train, template: train, dependencies: [prepare]}
+          - {name: evaluate, template: evaluate, dependencies: [train]}
+          - {name: serve, template: serve, dependencies: [evaluate]}
+    - name: prepare
+      container:
+        image: ghcr.io/assihervey-coder/medisuite-ai:0.1.0
+        command: [python, scripts/ml/prepare_datasets.py]
+    - name: train
+      container:
+        image: ghcr.io/assihervey-coder/medisuite-ai:0.1.0
+        resources: {limits: {nvidia.com/gpu: "1"}}
+        command: [python, scripts/ml/train-multimodal.py]
+    - name: evaluate
+      container:
+        image: ghcr.io/assihervey-coder/medisuite-ai:0.1.0
+        command: [python, scripts/ml/evaluate-model.py, "--gate", "0.85"]
+    - name: serve
+      container:
+        image: ghcr.io/assihervey-coder/medisuite-ai:0.1.0
+        command: [python, scripts/ml/deploy-kserve.py]

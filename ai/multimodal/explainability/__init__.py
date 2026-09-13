@@ -1,0 +1,1 @@
+"""Explicabilite de la fusion."""

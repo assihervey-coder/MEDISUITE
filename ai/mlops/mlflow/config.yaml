@@ -1,0 +1,10 @@
+# MLflow — tracking des expériences et registry des modèles (ADR-0012)
+tracking_uri: http://mlflow:5000
+artifact_root: /mlflow/artifacts
+experiment_prefix: medisuite
+registered_models:
+  - fusion-multimodal-{module}
+  - encoder-{modality}
+stages: [staging, production, archived]
+governance:
+  transition_requires: validation_clinique  # aucune promotion manuelle
