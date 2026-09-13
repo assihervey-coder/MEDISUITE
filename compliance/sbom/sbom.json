@@ -1,0 +1,703 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-09-13T16:56:17.948174+00:00",
+    "component": {
+      "type": "application",
+      "bom-ref": "medisuite",
+      "name": "medisuite",
+      "version": "git-6cd940170933",
+      "purl": "pkg:generic/medisuite"
+    },
+    "properties": [
+      {
+        "name": "medisuite:purpose",
+        "value": "SBOM réglementaire (MDR/EGSP §15, ASVS 14) — jalon R4"
+      },
+      {
+        "name": "medisuite:generator",
+        "value": "tools/sbom/generate_sbom.py (stdlib)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "pypi:fastapi",
+      "name": "fastapi",
+      "version": "0.128.0",
+      "purl": "pkg:pypi/fastapi@0.128.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "medisuite:required-as",
+          "value": "fastapi>=0.110"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "monorepo"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/analytics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/anesthesia-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/api-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/audit-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/auth-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/cardiology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/dermatology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/diabetes-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/dicom-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/emergency-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/ent-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/explainability-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/fertility-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/gastroenterology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/geriatrics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/gynecology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/hl7-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/imaging-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/integration-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/laboratory-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/multimodal-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/nephrology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/neurology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/notification-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/nuclear-medicine-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/obstetrics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/oncology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/ophthalmology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/patient-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/pediatrics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/pneumology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/psychiatry-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/radiotherapy-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/reporting-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/rheumatology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/traumatology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/tumor-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/urology-service"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pypi:httpx",
+      "name": "httpx",
+      "version": "0.28.1",
+      "purl": "pkg:pypi/httpx@0.28.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "medisuite:required-as",
+          "value": "httpx>=0.27"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "monorepo"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/analytics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/api-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/audit-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/auth-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/dicom-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/explainability-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/hl7-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/imaging-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/integration-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/laboratory-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/multimodal-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/notification-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/patient-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/reporting-service"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pypi:numpy",
+      "name": "numpy",
+      "version": "2.1.3",
+      "purl": "pkg:pypi/numpy@2.1.3",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "medisuite:required-as",
+          "value": "numpy>=1.26"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "monorepo"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pypi:pydantic",
+      "name": "pydantic",
+      "version": "2.12.5",
+      "purl": "pkg:pypi/pydantic@2.12.5",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "medisuite:required-as",
+          "value": "pydantic>=2.6"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "monorepo"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/api-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/auth-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/imaging-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/laboratory-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/patient-service"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pypi:pytest",
+      "name": "pytest",
+      "version": "9.0.2",
+      "purl": "pkg:pypi/pytest@9.0.2",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "medisuite:required-as",
+          "value": "pytest>=8.0"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "monorepo"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pypi:pyyaml",
+      "name": "pyyaml",
+      "version": "6.0.3",
+      "purl": "pkg:pypi/pyyaml@6.0.3",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "medisuite:required-as",
+          "value": "pyyaml>=6.0"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "monorepo"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pypi:sqlalchemy",
+      "name": "sqlalchemy",
+      "version": "2.0.52",
+      "purl": "pkg:pypi/sqlalchemy@2.0.52",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "medisuite:required-as",
+          "value": "sqlalchemy>=2.0"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "monorepo"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/analytics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/anesthesia-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/api-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/audit-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/auth-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/cardiology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/dermatology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/diabetes-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/dicom-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/emergency-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/ent-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/explainability-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/fertility-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/gastroenterology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/geriatrics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/gynecology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/hl7-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/imaging-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/integration-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/laboratory-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/multimodal-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/nephrology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/neurology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/notification-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/nuclear-medicine-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/obstetrics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/oncology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/ophthalmology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/patient-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/pediatrics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/pneumology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/psychiatry-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/radiotherapy-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/reporting-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/rheumatology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/traumatology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/tumor-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/urology-service"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pypi:uvicorn",
+      "name": "uvicorn",
+      "version": "0.44.0",
+      "purl": "pkg:pypi/uvicorn@0.44.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "medisuite:required-as",
+          "value": "uvicorn>=0.29"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "monorepo"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/analytics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/anesthesia-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/api-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/audit-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/auth-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/cardiology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/dermatology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/diabetes-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/dicom-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/emergency-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/ent-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/explainability-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/fertility-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/gastroenterology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/geriatrics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/gynecology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/hl7-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/imaging-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/integration-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/laboratory-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/multimodal-gateway"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/nephrology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/neurology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/notification-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/nuclear-medicine-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/obstetrics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/oncology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/ophthalmology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/patient-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/pediatrics-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/pneumology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/psychiatry-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/radiotherapy-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/reporting-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/rheumatology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/traumatology-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/tumor-service"
+        },
+        {
+          "name": "medisuite:used-by",
+          "value": "services/urology-service"
+        }
+      ]
+    }
+  ]
+}

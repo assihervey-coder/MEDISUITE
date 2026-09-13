@@ -80,6 +80,17 @@ services:
     volumes:
       - ../monitoring/otel/collector.yaml:/etc/otel/collector.yaml:ro
 
+  # Vault (jalon R4) — DEV ONLY (mode dev non persistant, à migrer en
+  # cluster HA avant production) ; voir security/hardening/vault/README.md
+  vault:
+    image: hashicorp/vault:1.17
+    restart: unless-stopped
+    cap_add: [IPC_LOCK]
+    ports: ["9000:8200"]
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: medisuite-dev-root-token
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+
   prometheus:
     image: prom/prometheus:v2.54.0
     restart: unless-stopped
