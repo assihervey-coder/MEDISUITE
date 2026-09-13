@@ -1,0 +1,5 @@
+apiVersion: v2
+name: medisuite-core
+description: Cœur MEDISUITE (gateway, auth, patients, imagerie, labo)
+version: 0.1.0
+appVersion: 0.1.0

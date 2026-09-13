@@ -1,0 +1,8 @@
+# Règles de Westgard (laboratory-service) — source clinique de lab_qc.westgard
+rules:
+  1_3s: {action: rejet, cause: erreur_aléatoire}
+  2_2s: {action: rejet, cause: biais_systématique}
+  R_4s: {action: rejet, cause: dispersion}
+  4_1s: {action: rejet, cause: biais_moyen}
+  10x:  {action: rejet, cause: dérive}
+warning: 1_2s

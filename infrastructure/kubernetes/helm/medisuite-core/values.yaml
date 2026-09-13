@@ -1,0 +1,6 @@
+replicaCount: 2
+image: {repository: ghcr.io/assihervey-coder/medisuite, tag: 0.1.0}
+resources:
+  requests: {cpu: 100m, memory: 128Mi}
+  limits: {cpu: 500m, memory: 512Mi}
+autoscaling: {enabled: true, minReplicas: 2, maxReplicas: 10, targetCPUUtilizationPercentage: 70}

@@ -1,0 +1,13 @@
+groups:
+  - name: clinical
+    rules:
+      - alert: ValeurCritiqueNonNotifiee
+        expr: increase(medisuite_critical_results_total[5m]) > 0 and on() increase(medisuite_notifications_sent_total[5m]) == 0
+        for: 2m
+        labels: {severity: critical}
+        annotations: {summary: "Valeur critique de labo non notifiée sous 5 min (SCC 2021 bundle)"}
+      - alert: TriageBacklog
+        expr: medisuite_waiting_patients > 20
+        for: 10m
+        labels: {severity: warning}
+        annotations: {summary: "Afflux aux urgences — activer le plan blanc"}

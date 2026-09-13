@@ -1,0 +1,12 @@
+global: {scrape_interval: 15s}
+scrape_configs:
+  - job_name: medisuite-services
+    static_configs:
+      - targets: ['api-gateway:8000', 'auth-service:8001', 'patient-service:8002',
+                  'imaging-service:8003', 'laboratory-service:8004']
+  - job_name: specialty-modules
+    static_configs:
+      - targets: ['oncology-service:8100', 'cardiology-service:8105', 'emergency-service:8123']
+  - job_name: pacs
+    static_configs:
+      - targets: ['orthanc-pacs:8042']

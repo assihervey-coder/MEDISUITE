@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: {name: medisuite-root, namespace: argocd}
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/assihervey-coder/MEDISUITE.git
+    targetRevision: main
+    path: infrastructure/kubernetes/overlays/dev
+  destination: {server: https://kubernetes.default.svc, namespace: medisuite-dev}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true}
+    syncOptions: [CreateNamespace=true]

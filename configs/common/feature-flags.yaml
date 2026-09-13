@@ -1,0 +1,5 @@
+flags:
+  multimodal_inference: {enabled: true, rollout: 100}
+  federated_learning: {enabled: false, reason: "v0.2 — ADR-0014"}
+  dicom_gateway_cstore: {enabled: false, reason: "pynetdicom v0.2"}
+  hl7_mllp_listener: {enabled: false, reason: "socket natif v0.2"}

@@ -1,0 +1,14 @@
+{
+  "realm": "medisuite",
+  "enabled": true,
+  "registrationAllowed": false,
+  "sslRequired": "external",
+  "roles": {
+    "realm": [{"name": "medecin"}, {"name": "radiologue"}, {"name": "biologiste"},
+               {"name": "infirmier"}, {"name": "pharmacien"}, {"name": "administrateur"}]
+  },
+  "users": [
+    {"username": "admin", "enabled": true, "realmRoles": ["administrateur"]}
+  ],
+  "attributes": {"note": "définition complète en production — ADR-0009"}
+}

@@ -1,0 +1,13 @@
+groups:
+  - name: ai-models
+    rules:
+      - alert: FusionLatencyHigh
+        expr: medisuite_multimodal_inference_seconds_p99 > 2
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Inférence fusion multimodale > 2 s (p99)"}
+      - alert: MissingModalityRateHigh
+        expr: rate(medisuite_missing_modality_total[1h]) > 0.6
+        for: 15m
+        labels: {severity: warning}
+        annotations: {summary: ">60 % d'inférences avec modalités manquantes — runbook rb-010"}

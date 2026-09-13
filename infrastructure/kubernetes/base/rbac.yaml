@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ServiceAccount
+metadata: {name: medisuite-sa, namespace: medisuite}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: medisuite-reader, namespace: medisuite}
+rules:
+  - apiGroups: ["", "apps"]
+    resources: [pods, services, deployments]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: medisuite-rb, namespace: medisuite}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: medisuite-reader}
+subjects: [{kind: ServiceAccount, name: medisuite-sa, namespace: medisuite}]
