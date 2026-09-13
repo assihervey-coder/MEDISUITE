@@ -1,0 +1,26 @@
+{
+  "fr": {
+    "app": "MEDISUITE — Portail Clinique",
+    "dashboard": "Tableau de bord",
+    "patients": "Dossiers patients",
+    "imaging": "Imagerie",
+    "laboratory": "Laboratoire",
+    "emergency": "Urgences",
+    "consent_ia": "Consentement à l'utilisation de l'IA",
+    "consent_recherche": "Consentement à la recherche",
+    "critical": "CRITIQUE — notification envoyée",
+    "logout": "Déconnexion"
+  },
+  "en": {
+    "app": "MEDISUITE — Clinical Portal",
+    "dashboard": "Dashboard",
+    "patients": "Patient records",
+    "imaging": "Imaging",
+    "laboratory": "Laboratory",
+    "emergency": "Emergency",
+    "consent_ia": "AI usage consent",
+    "consent_recherche": "Research consent",
+    "critical": "CRITICAL — notification sent",
+    "logout": "Sign out"
+  }
+}
