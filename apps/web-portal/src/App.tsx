@@ -11,6 +11,7 @@ import FusionViewer from "./features/multimodal/FusionViewer";
 import AuditLog from "./features/admin/AuditLog";
 import About from "./features/about/About";
 import Ecrf from "./features/ecrf/Ecrf";
+import StudyStatus from "./features/study/StudyStatus";
 import OfflineBanner from "./components/OfflineBanner";
 import { useAuth } from "./store/authStore";
 import ClinicalPanel from "./components/ClinicalPanel";
@@ -27,6 +28,7 @@ const NAV_MAIN = [
   { to: "/multimodal", label: "🧠 Fusion multimodale" },
   { to: "/audit", label: "🔐 Audit (chaîné)" },
   { to: "/ecrf", label: "📋 eCRF (CI-01)" },
+  { to: "/study", label: "📈 Promoteur — CI-01" },
   { to: "/about", label: "ℹ️ À propos (UDI)" },
 ];
 
@@ -70,6 +72,7 @@ export default function App() {
           <Route path="/multimodal" element={<FusionViewer />} />
           <Route path="/audit" element={<AuditLog />} />
           <Route path="/ecrf" element={<Ecrf />} />
+          <Route path="/study" element={<StudyStatus />} />
           <Route path="/about" element={<About />} />
           {MODULE_NAV.map((n) => (
             <Route

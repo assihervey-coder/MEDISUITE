@@ -1,5 +1,13 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.9.0** : écran promoteur « study status/lock » (portal,
+> endpoints eCRF v0.8 — verrou M+18 pilotable à l'écran avec confirmation
+> typée + 2 témoins), ADR-0026 (rapport clinique MEDDEV 2.7/1 rev 4) +
+> squelette normatif TD-11 mappé aux sources du dépôt, kit de signatures
+> terrain R5 (page v1.0, registre investigateurs, journal de délégation
+> ISO 14155 F.4.3). Reste 🔴 : exécutions terrain (signatures réelles,
+> soumissions ANOC/PACTR, inclusions R6, contenu CER R7).
+
 > **Mise à jour v0.8.0** : couverture de l'arborescence initiale mesurée
 > (`docs/COUVERTURE-ARBRE-INITIAL.md`), instruments terrain R6 rédigés
 > (monitoring A4, registre déviations), checklists de soumission

@@ -3,6 +3,15 @@ import pathlib, sys
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 for p in ("packages/medisuite-core", str(ROOT / "services" / "audit-service" / "src")):
     sys.path.insert(0, p)
+
+# BDD fraîche par run (principe v0.1 « idempotence ») : la chaîne d'audit
+# persiste (ADR-0021) — une chaîne de dev pré-existante fausserait les
+# comptages/re-vérifications. En CI le fichier n'existe pas.
+for _suffix in ("", "-wal", "-shm"):
+    _db = ROOT / "data" / f"audit-service.db{_suffix}"
+    if _db.exists():
+        _db.unlink()
+
 from fastapi.testclient import TestClient
 from main import app, _chain, _loaded
 client = TestClient(app)

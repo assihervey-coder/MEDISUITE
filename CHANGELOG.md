@@ -3,6 +3,63 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.9.0] — 2026-09-14
+
+### Écran promoteur « Study Status / Lock » (portal, v0.9)
+- `apps/web-portal/src/features/study/StudyStatus.tsx` (route `/study`) :
+  cockpit de pilotage de MEDISUITE-CI-01 fondé sur les endpoints eCRF v0.8
+  **sans modification backend** — timeline R5→R8 du plan de validation
+  (phase active dérivée de l'état réel : base ouverte → R6, verrou posé →
+  R7), cartes verrou/checksum/témoins/sujets/entrées/requêtes SDV, agrégats
+  DSMB sans PHI (sujets par site/scénario, EI/SAE + règle d'arrêt, médiane
+  P3), références du dossier d'investigation.
+- **Action de verrouillage M+18 pilotable à l'écran** (rôle promoteur) :
+  ≥ 2 témoins distincts + confirmation typée « VERROU MEDISUITE-CI-01 » ;
+  les préconditions sont affichées AVANT l'action (`lockReadiness`,
+  réplique exacte des gardes serveur) et la garde serveur reste
+  fail-closed (422/409/403). Lecture réseau vivante : rien n'est mis en
+  cache offline (les indicateurs de pilotage ne survivent pas à une
+  coupure) — 14 tests vitest (`status-logic.ts` pur) ; 19/19 au total.
+
+### ADR-0026 — rapport d'évaluation clinique MEDDEV 2.7/1 rev 4 (R7)
+- `docs/adr/0026-rapport-clinique-meddev-271.md` : le CER sera rédigé selon
+  MEDDEV 2.7/1 rev 4, alimenté uniquement par des sources versionnées —
+  pipeline figé **eCRF → verrou M+18 → extraction SAF → analyse SAP →
+  adjudication → CER → bénéfice-risque final** ; état de l'art par requêtes
+  reproductibles (PubMed/AJO, log en annexe) ; équivalence **non
+  revendiquée** ; alternatives écartées argumentées (CER littérature seule
+  irrecevable pour un IIb S1-S5 ; pas d'analyse hors verrou).
+- **Squelette normatif TD-11**
+  (`compliance/mdr/technical-documentation/11-rapport-evaluation-clinique-meddev-271.md`)
+  : les 9 sections MEDDEV mappées à leur source réelle du dépôt, état
+  🟢 structure / 🔴 contenu (R7, post-verrou) — auditable dès maintenant en
+  revue interne (PROC-08) AVANT le démarrage de R6. Index TD mis à jour.
+
+### Kit de signatures terrain R5 (`compliance/mdr/clinical/signatures/`)
+- **Page de signatures du protocole v1.0** (7 signataires : promoteur,
+  coordonnateur, RC, statisticien indépendant, data manager, DSMB, moniteur
+  — déclarations de conflits jointes, amendements versionnés A1…, blocage
+  d'inclusion sans chaîne complète).
+- **Registre des investigateurs par site** (COC/TRI/YOP/BOU) : chaque site
+  signe la version exacte exécutée, re-signature obligatoire à chaque
+  amendement, vérifications du moniteur consignées au rapport A4.
+- **Journal de délégation CSV** (ISO 14155 F.4.3) : tâches T3/T5/T6/T8 par
+  site, signatures délégué + PI.
+- Raccords : protocole §11 pointe vers le kit ; index des soumissions lie
+  le kit à la ligne « accords de site » ; plan 08 (R5 outillage 🟢, R7
+  structure 🟢) ; GAP-ANALYSIS note v0.9 ; `docs/E-CRF.md` documente
+  l'écran promoteur.
+
+### Qualité — idempotence locale des suites (défaut latent v0.8 corrigé)
+- Le verrou M+18 étant **irréversible par conception**, la base de dev
+  `data/ecrf-service.db` persistait entre les runs : toute ré-exécution
+  locale de la suite eCRF échouait en 409 (la CI passait car le runner
+  démarre vierge). Correctif « **BDD fraîche par run** » (principe v0.1)
+  appliqué avant import dans les suites **ecrf / auth / patient / audit**
+  (résidus équivalents : MFA enrôlé, utilisateurs créés, chaîne d'audit
+  persistée) — idempotence prouvée par double run ; 39/39 suites services,
+  127/127 packages+datasets, 47/47 IA.
+
 ## [v0.8.0] — 2026-09-14
 
 ### Couverture de l'arborescence initiale (audit mesuré)

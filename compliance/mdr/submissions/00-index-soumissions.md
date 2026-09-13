@@ -14,7 +14,7 @@
 | Autorisation Ministère Santé (+ MPRH si pertinent) | Ministère | M+3 → M+4 | 🔴 non soumis | `checklist-ministere-dpia.md` | inclusions |
 | Enregistrement public | PACTR (Pan African Clinical Trial Registry, ICTRP/OMS) | M+3 — **avant 1ʳᵉ inclusion** (ICMJE) | 🔴 non enregistré | `checklist-PACTR.md` | publication, inclusions |
 | Protection des données | DPIA — loi ivoirienne n° 2013-450 | M+4 | 🔴 à finaliser | `checklist-ministere-dpia.md` §DPIA | traitement données |
-| Accords de site | CHU-Cocody / Treichville / Bouaké | M+2 → M+5 | 🔴 non signés | protocole §10 + annexe A6 | inclusion site |
+| Accords de site | CHU-Cocody / Treichville / Bouaké | M+2 → M+5 | 🔴 non signés | protocole §10 + annexe A6 + **kit de signatures** (`../clinical/signatures/` : page v1.0, registre investigateurs, journal de délégation) | inclusion site |
 | Assurance / indemnisation | contrat assurance sujet | M+4 | 🔴 devis en cours | protocole §9.2 | inclusions |
 
 **Cadence de pilotage** : checklist relue hebdomadairement ; chaque item

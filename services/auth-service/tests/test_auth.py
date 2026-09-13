@@ -6,6 +6,15 @@ ROOT = pathlib.Path(__file__).resolve().parents[3]
 for p in ("packages/medisuite-core", str(ROOT / "services" / "auth-service" / "src")):
     sys.path.insert(0, p)
 
+# BDD fraîche par run (principe v0.1 « idempotence ») : les tests mutent
+# l'état persistant (MFA enrôlé, utilisateurs créés) — une base de dev
+# polluée casserait toute ré-exécution locale. Le seed de démo se rejoue
+# seul au boot sur une base vide ; en CI le fichier n'existe pas.
+for _suffix in ("", "-wal", "-shm"):
+    _db = ROOT / "data" / f"auth-service.db{_suffix}"
+    if _db.exists():
+        _db.unlink()
+
 from fastapi.testclient import TestClient
 
 from main import app, JWT_SECRET

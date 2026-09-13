@@ -1,0 +1,17 @@
+id_d delegation,site,institution,tache_ref (protocole),description_tache,date_debut,date_fin,investigateur_signataire,delegue_nom,delegue_fonction,date_signature_delegue,date_signature_pi,commentaire
+DEL-001,COC,CHU de Cocody,T3,inclusion/eligibilite des sujets (eCRF F01),,,,,,,,exemple de ligne - SUPPRIMER avant usage
+DEL-002,COC,CHU de Cocody,T5,saisie formulaires F02/F03,,,,,,,,
+DEL-003,COC,CHU de Cocody,T6,signature des entrees eCRF (ISO 14155 4.8),,,,,,,,
+DEL-004,COC,CHU de Cocody,T8,notification SAE (24 h) au promoteur,,,,,,,,
+DEL-005,TRI,CHU de Treichville,T3,inclusion/eligibilite des sujets (eCRF F01),,,,,,,,
+DEL-006,TRI,CHU de Treichville,T5,saisie formulaires F02/F03,,,,,,,,
+DEL-007,TRI,CHU de Treichville,T6,signature des entrees eCRF,,,,,,,,
+DEL-008,TRI,CHU de Treichville,T8,notification SAE (24 h),,,,,,,
+DEL-009,YOP,CHU de Yopougon,T3,inclusion/eligibilite des sujets (eCRF F01),,,,,,,,
+DEL-010,YOP,CHU de Yopougon,T5,saisie formulaires F02/F03,,,,,,,,
+DEL-011,YOP,CHU de Yopougon,T6,signature des entrees eCRF,,,,,,,,
+DEL-012,YOP,CHU de Yopougon,T8,notification SAE (24 h),,,,,,,
+DEL-013,BOU,CHU de Bouake,T3,inclusion/eligibilite des sujets (eCRF F01),,,,,,,,
+DEL-014,BOU,CHU de Bouake,T5,saisie formulaires F02/F03,,,,,,,,
+DEL-015,BOU,CHU de Bouake,T6,signature des entrees eCRF,,,,,,,,
+DEL-016,BOU,CHU de Bouake,T8,notification SAE (24 h),,,,,,,

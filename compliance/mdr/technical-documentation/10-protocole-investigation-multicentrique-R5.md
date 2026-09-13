@@ -273,6 +273,14 @@ cette ligne ; `06-evaluation-clinique.md` sera mis à jour à la clôture R5
 
 ## 11. Signatures (à obtenir — jalon R5 clôturé à ce stade)
 
+> **Kit de signatures v0.9** (`compliance/mdr/clinical/signatures/`) :
+> [page de signatures formelle](../clinical/signatures/page-signatures-protocole-v1.0.md)
+> · [registre des investigateurs par site](../clinical/signatures/registre-investigateurs.md)
+> (re-signature obligatoire à chaque amendement) ·
+> [journal de délégation](../clinical/signatures/journal-delegation.csv)
+> (ISO 14155 F.4.3). Les signatures ci-dessous sont le récapitulatif ; le
+> kit fait foi pour l'exécution.
+
 | Rôle | Nom | Signature | Date |
 |---|---|---|---|
 | Promoteur / fabricant | ASSI Herve | 🔴 | — |

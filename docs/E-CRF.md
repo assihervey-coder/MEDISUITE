@@ -124,6 +124,22 @@ data manager uniquement ; promoteur, investigateur, moniteur → 403) :
 RBAC ajouté v0.8 : `ecrf.lock` (promoteur), `ecrf.extract` (data
 manager) — séparation stricte : celui qui verrouille n'extrait pas.
 
+**Écran promoteur « Study Status / Lock » (v0.9)** — route `/study` du
+portal (`features/study/StudyStatus.tsx`) : cockpit de pilotage fondé sur
+les endpoints ci-dessus sans modification backend —
+- timeline R5→R8 du plan de validation (phase active dérivée de l'état
+  réel : base ouverte → R6, verrou posé → R7) ;
+- cartes verrou (état, checksum compact, témoins), sujets/entrées
+  signées, requêtes SDV ouvertes (préconditions affichées AVANT l'action,
+  réplique exacte des gardes serveur — `status-logic.ts` pur, 14 tests) ;
+- action de verrouillage réservée au rôle promoteur : ≥ 2 témoins
+  distincts + confirmation typée « VERROU MEDISUITE-CI-01 » — la garde
+  serveur reste fail-closed (422/409/403) ;
+- agrégats DSMB sans PHI (sujets par site/scénario, EI/SAE + règle
+  d'arrêt, médiane du délai P3) ;
+- lecture réseau vivante uniquement : rien n'est mis en cache offline
+  (les indicateurs de pilotage ne doivent pas survivre à une coupure).
+
 ## Ce qui reste 🔴 (terrain)
 
 - R6 : feu vert ANOC-CI/Ministère, accords sites, formation PROC-06,

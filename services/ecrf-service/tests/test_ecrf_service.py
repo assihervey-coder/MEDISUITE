@@ -8,6 +8,17 @@ for p in ("packages/medisuite-core",
           str(ROOT / "services" / "ecrf-service" / "src")):
     sys.path.insert(0, p)
 
+# BDD fraîche par run (principe v0.1 « idempotence ») : le verrou de base
+# M+18 est IRRÉVERSIBLE par conception (EGSP) — une base de dev persistante
+# condamnerait toute ré-exécution locale de la suite (409 partout après le
+# premier run ayant posé le lock). On repart donc d'une base vide AVANT
+# l'import de main (le moteur est créé à l'import). En CI le fichier
+# n'existe pas : comportement identique.
+for _suffix in ("", "-wal", "-shm"):
+    _db = ROOT / "data" / f"ecrf-service.db{_suffix}"
+    if _db.exists():
+        _db.unlink()
+
 from fastapi.testclient import TestClient
 from main import app, JWT_SECRET, HAPI, FHIR_PUSH_ENABLED
 from medisuite_core import security
