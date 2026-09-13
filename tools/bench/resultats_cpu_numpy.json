@@ -1,0 +1,25 @@
+{
+  "date": "2026-09-13T17:00:22.886724+00:00",
+  "module": 8,
+  "backend": "numpy",
+  "torch_version": null,
+  "device": null,
+  "requests": 500,
+  "warmup": 20,
+  "missing_ratio": 0.0,
+  "fit_epochs": null,
+  "payload_bytes_mean": 20834,
+  "latency_ms": {
+    "p50": 0.278,
+    "p95": 0.319,
+    "p99": 0.372,
+    "mean": 0.283,
+    "min": 0.247,
+    "max": 0.542
+  },
+  "throughput_req_per_s": 3535.5,
+  "critique": {
+    "p95_max_ms": 2000.0,
+    "verdict": "PASS"
+  }
+}
