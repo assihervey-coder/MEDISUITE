@@ -1,5 +1,12 @@
 # Analyse d'écarts réglementaire — MEDISUITE v0.4.0
 
+> **Mise à jour v0.12.0** : e2e Playwright (5 parcours, APIs mockées, job CI)
+et charge k6 verrouillée (smoke/stress, seuil EGSP p95 ≤ 2 000 ms, workflow
+dispatch) — le bloc « e2e Playwright/charge k6 » de l'audit de couverture
+est fermé au niveau instruments ; l'exécution avec trafic CHU reste 🔴
+R6-R7. Makefile réparé (tabs). Reste codeable : setup local 00-10,
+écrans fins, GHCR/NetworkPolicy, mobile/desktop (v1+).
+
 > **Mise à jour v0.11.0** : usabilité sommative IEC 62366-1 rédigée
 (protocole 8 scénarios reliés aux dangers + grille + modèle de rapport,
 index TD §7 → 🟠 ; exécution 🔴 R6 sur interface congelée) ; i18n du

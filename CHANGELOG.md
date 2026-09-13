@@ -3,6 +3,36 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.12.0] — 2026-09-14
+
+### e2e Playwright du portal (v0.12)
+- `apps/web-portal/playwright.config.ts` + `e2e/portal.spec.ts` : 5 parcours
+  critiques (connexion, refus 401, dossiers patients, **changement de langue
+  avec RTL arabe persistant**, déconnexion) — **APIs mockées par
+  interception** (`page.route`) : aucun backend requis, run déterministe en
+  local comme en CI (Chromium). 5/5 verts.
+- Job CI `e2e-portal` (navigateur installé en CI, trace retain-on-failure) ;
+  cible `make e2e` ; script npm `e2e`.
+- Rôle assumé : le parcours UI, pas la validation clinique (39 suites
+  services + 12 tests d'intégration pour les intégrations réelles).
+
+### Charge k6 verrouillée (v0.12)
+- `testing/load/k6-smoke.js` (5 VU × 30 s : santé + chemin critique auth) et
+  `k6-stress.js` (10→50→100 VU en paliers, token optionnel pour endpoints
+  authentifiés) — **seuil EGSP p95 ≤ 2 000 ms** explicite dans les deux.
+- Verrous sans binaire k6 : `tools/tests/test_k6_scripts.py` (parsing ESM
+  node + présence des seuils) — 9/9 tests tools.
+- Workflow `ci-load.yml` (dispatch, image grafana/k6, BASE_URL en input,
+  jamais bloquant) ; éthique : comptes seedés / routes publiques, aucune
+  donnée patient réelle. L'exécution avec trafic réaliste CHU reste un
+  livrable d'exécution R6-R7.
+
+### Qualité — Makefile réparé (défaut latent v0.10)
+- Les recettes ajoutées v0.10/v0.11 (`test-tools`, `model-cards`, `e2e`)
+  portaient 8 ESPACES au lieu de TAB — `make` échouait en « missing
+  separator » (non détecté car la CI appelle pytest directement).
+  Toutes les recettes reconverties en TAB, dry-runs `make -n` vérifiés.
+
 ## [v0.11.0] — 2026-09-14
 
 ### Usabilité sommative IEC 62366-1 — protocole, grille, modèle de rapport

@@ -1,0 +1,41 @@
+name: CI Charge k6 (optionnel, dispatch)
+
+# Instrumentation de charge verrouillée (testing/load/) ; l'exécution avec
+# un trafic réaliste CHU reste un livrable d'exécution des jalons R6-R7.
+# Déclenchement manuel uniquement — jamais bloquant pour une release.
+# Éthique : comptes de démonstration seedés / routes publiques, aucune
+# donnée patient réelle.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "URL cible (ex. https://staging.medisuite.ci)"
+        required: true
+      script:
+        description: "Scénario k6"
+        type: choice
+        default: k6-smoke.js
+        options:
+          - k6-smoke.js
+          - k6-stress.js
+      token:
+        description: "JWT optionnel pour endpoints authentifiés (stress)"
+        required: false
+
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scénario k6 (image officielle grafana/k6)
+        run: |
+          docker run --rm -v "$PWD/testing/load:/scripts" grafana/k6:0.54.0 run \
+            -e BASE_URL="${{ inputs.base_url }}" \
+            -e TOKEN="${{ inputs.token }}" \
+            "/scripts/${{ inputs.script }}"
+      - name: Rappel EGSP
+        if: always()
+        run: |
+          echo "Seuil dossier CE §4 : p95 <= 2000 ms — toute dérive doit être analysée (RM-05 drift, HPA 2->6)."
