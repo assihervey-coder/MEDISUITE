@@ -5,7 +5,7 @@
 >
 > *De l'IMagerie DIgital à la fusion IA — conçu pour les CHU d'Abidjan, les hôpitaux régionaux et les centres de santé ruraux.*
 
-![status](https://img.shields.io/badge/statut-v0.2.0_alpha-2d7ab3) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
+![status](https://img.shields.io/badge/statut-v0.3.0_alpha-2d7ab3) ![python](https://img.shields.io/badge/Python-3.11%2B-3776AB) ![fastapi](https://img.shields.io/badge/FastAPI-0.110%2B-009688) ![license](https://img.shields.io/badge/Licence-MIT-green) ![ci](https://img.shields.io/badge/CI-GitHub_Actions-2088FF)
 
 ---
 
@@ -46,7 +46,7 @@ avec tests unitaires sur cas limites. *Un seul endroit pour auditer, une seule v
 (image 2D/3D, signal 1D, tabulaire, texte, génomique, waveform), 6 têtes (binaire, multiclasse,
 multi-label, régression, survie, segmentation) et explicabilité (importance des modalités via
 poids d'attention). Implémentation de référence **NumPy pur** (aucune dépendance GPU requise),
-export PyTorch/ONNX prévu en v0.2.
+export PyTorch/ONNX réalisé en v0.2 (ADR 0022) ; fusion entraînable en v0.3 (ADR 0023).
 
 **3. `services/audit-service`** — registre d'audit **à chaîne de hachage** (SHA-256 chaînée,
 horodatage, vérification d'intégrité `POST /api/v1/chain/verify`) : répond à l'exigence de
@@ -70,15 +70,16 @@ traçabilité IEC 81001-5-1 sans la complexité d'une blockchain (décision ADR-
 - **38 services** Python/FastAPI prêts à démarrer, chacun avec `/health`, seed ivoirien et tests
 - **~120 écrans** web générés sur le pattern `ClinicalPanel` branchés aux vraies API
 - **60+ scores cliniques** implémentés et testés dans `packages/clinical-rules`
-- **20 ADR** (`docs/adr/`) documentant chaque décision d'architecture, y compris les choix **contre** la spec initiale (et pourquoi)
+- **23 ADR** (`docs/adr/`) documentant chaque décision d'architecture, y compris les choix **contre** la spec initiale (et pourquoi)
 
 ## 🗺️ Roadmap
 
 | Version | Contenu | Statut |
 |---|---|---|
-| v0.1.0 | Socle fonctionnel : services, règles cliniques, fusion NumPy, web-portal, infra locale | ✅ cette release |
-| v0.2.0 | PyTorch/MONAI + poids d'entraînement, DICOMweb STOW-RS réel (Orthanc), Kafka events | 🚧 |
-| v0.3.0 | FHIR R4 server complet (HAPI), télémétrie OTel, déploiement K8s GPU | 📋 |
+| v0.1.0 | Socle fonctionnel : services, règles cliniques, fusion NumPy, web-portal, infra locale | ✅ |
+| v0.2.0 | Écrans BI-RADS + code AVC, backends torch/monai (ADR 0022), PACS Orthanc réel | ✅ |
+| v0.3.0 | Visualiseur OHIF v3 sur /dicom-web, fusion torch ENTRAÎNABLE de bout en bout (ADR 0023) | ✅ cette release |
+| v0.4.0 | FHIR R4 server complet (HAPI), télémétrie OTel, déploiement K8s GPU | 📋 |
 | v1.0.0 | Dossier de marquage CE (MDR IIb), validation clinique multicentrique CHU | 📋 |
 
 ## 🤝 Contribution

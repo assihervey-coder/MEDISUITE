@@ -2,12 +2,16 @@
 
 Workflow : STOW (réception examen) → QIDO (recherche) → WADO (métadonnées) →
 compte-rendu signé par le radiologue (statut workflow : PENDING → REPORTED → SIGNED).
-Intégration Orthanc/OHIF via configuration (ADR-0002/0006).
+Intégration Orthanc/OHIF via configuration (ADR-0002/0006) — v0.3 : lien profond
+OHIF (visualiseur diagnostique complet) par GET /api/v1/pacs/viewer-url.
 """
 from __future__ import annotations
 
+import os
 import pathlib
+import re
 import sys
+import urllib.parse
 from typing import Annotated
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
@@ -293,11 +297,18 @@ def integrations() -> dict:
                          "actif": live,
                          "note": "docker compose -f local-deployment/"
                                  "docker-compose.minimal.yml up orthanc-pacs"},
-            "ohif": {"mode": "extension dicom-viewer/apps/dicom-viewer"},
+            "ohif": {"mode": "viewer v3 dédié (v0.3)",
+                     "ui": "http://localhost:3001",
+                     "lien_profond": "/api/v1/pacs/viewer-url?study_uid=<uid>",
+                     "config": "local-deployment/ohif/ (app-config.js + nginx proxy /dicom-web)"},
             "dcm4chee": {"url": None, "actif": False}}
 
 
 # ── PACS réel (v0.2) : statut + relais QIDO vers Orthanc ─────────────────────
+
+# UID DICOM : chiffres séparés par des points (validation stricte avant
+# toute composition d'URL — anti-injection dans le lien profond OHIF).
+_UID_RE = re.compile(r"^\d+(\.\d+)+$")
 
 @app.get("/api/v1/pacs/status", tags=["PACS Orthanc (v0.2)"])
 def pacs_status() -> dict:
@@ -336,3 +347,25 @@ def pacs_qido(query: str = "limit=20") -> list[dict]:
         return oc.dicomweb_studies(query)
     except _oc.OrthancError as exc:
         raise HTTPException(502, f"PACS Orthanc injoignable : {exc}")
+
+
+# ── Visualiseur OHIF (v0.3) : lien profond d'une étude ─────────────────────
+
+@app.get("/api/v1/pacs/viewer-url", tags=["PACS Orthanc (v0.2)"])
+def viewer_url(study_uid: str, user: dict = Depends(current_user)) -> dict:
+    """URL profonde du visualiseur OHIF v3 pour une étude (v0.3).
+
+    Le web-portal ouvre cette URL dans un nouvel onglet : le radiologue passe
+    de la worklist MEDISUITE au viewer diagnostique sans ressaisie.
+    study_uid est validé (format UID DICOM strict) avant composition d'URL.
+    """
+    if not can(user.get("role", ""), "imaging.read"):
+        raise HTTPException(403, "lecture d'imagerie requise")
+    uid = (study_uid or "").strip()
+    if not _UID_RE.match(uid):
+        raise HTTPException(422, "study_uid invalide — attendu : UID DICOM "
+                                 "(chiffres séparés par des points)")
+    base = os.environ.get("MEDISUITE_OHIF_BASE", "http://localhost:3001").rstrip("/")
+    return {"viewer": "ohif",
+            "base": base,
+            "url": f"{base}/viewer?StudyInstanceUIDs={urllib.parse.quote(uid, safe='')}"}

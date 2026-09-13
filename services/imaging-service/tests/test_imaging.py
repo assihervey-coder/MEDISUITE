@@ -176,3 +176,44 @@ def test_pacs_studies_502_si_injoignable(monkeypatch):
 
     monkeypatch.setattr(main._oc, "OrthancClient", lambda: _Down())
     assert client.get("/api/v1/pacs/studies").status_code == 502
+
+
+# ── v0.3 : lien profond visualiseur OHIF ──────────────────────────────────────
+
+def test_viewer_url_ok():
+    r = client.get("/api/v1/pacs/viewer-url",
+                   params={"study_uid": "1.2.826.0.1.3680043.10.98.1"},
+                   headers=HDR)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["viewer"] == "ohif"
+    assert body["url"].startswith("http://localhost:3001/viewer?StudyInstanceUIDs=")
+    # UID encodé sans caractères dangereux
+    assert "%2F" not in body["url"] and " " not in body["url"]
+
+
+def test_viewer_url_base_personnalisee(monkeypatch):
+    import os
+
+    monkeypatch.setenv("MEDISUITE_OHIF_BASE", "https://viewer.chu-abidjan.ci/")
+    r = client.get("/api/v1/pacs/viewer-url", params={"study_uid": "1.2.3"},
+                   headers=HDR)
+    assert r.json()["url"].startswith("https://viewer.chu-abidjan.ci/viewer?")
+
+
+def test_viewer_url_uid_invalide_422():
+    # anti-injection : aucun caractère hors [0-9.]
+    for bad in ("../etc/passwd", "1.2.3;drop", "", "abc", "1.2.3 OR 1=1"):
+        r = client.get("/api/v1/pacs/viewer-url", params={"study_uid": bad},
+                       headers=HDR)
+        assert r.status_code == 422, bad
+
+
+def test_viewer_url_refuse_sans_role():
+    anon = client.get("/api/v1/pacs/viewer-url", params={"study_uid": "1.2.3"})
+    assert anon.status_code == 403
+    lecteur = security.jwt_encode({"sub": "interne", "role": "interne",
+                                   "nom": "Dr Koné"}, JWT_SECRET)
+    r = client.get("/api/v1/pacs/viewer-url", params={"study_uid": "1.2.3"},
+                   headers={"Authorization": f"Bearer {lecteur}"})
+    assert r.status_code == 403

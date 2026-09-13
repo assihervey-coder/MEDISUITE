@@ -38,3 +38,23 @@ def engine_for_module(module_no: int) -> FusionEngine:
     if not files:
         raise FileNotFoundError(f"config du module {module_no} introuvable")
     return engine_from_config(files[0])
+
+
+def fusion_model_from_config(config_path: str | Path, heads: int = 1):
+    """Construit un TorchFusionModel ENTRAÎNABLE (v0.3, ADR 0023).
+
+    Requiert PyTorch (ImportError documentée sinon). Le modèle est initialisé
+    depuis les poids NumPy du socle : équivalence numérique à l'init, divergence
+    contrôlée dès le premier fit(). Entraînable : classification | multiclass |
+    regression (survival/segmentation restent des gabarits NumPy).
+    """
+    from .core.torch_fusion import TorchFusionModel  # import paresseux torch
+    return TorchFusionModel(engine_from_config(config_path), heads=heads)
+
+
+def fusion_model_for_module(module_no: int, heads: int = 1):
+    """Raccourci entraînable : module 8 → configs/08_cardiology.yaml."""
+    files = sorted(CONFIG_DIR.glob(f"{module_no:02d}_*.yaml"))
+    if not files:
+        raise FileNotFoundError(f"config du module {module_no} introuvable")
+    return fusion_model_from_config(files[0], heads=heads)

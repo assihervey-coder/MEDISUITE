@@ -33,6 +33,16 @@ services:
       - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
       - orthanc-data:/var/lib/orthanc/db
 
+  # Visualiseur OHIF v3 (v0.3) — branché sur /dicom-web via son nginx embarqué
+  # qui proxifie orthanc-pacs:8042 (identifiants injectés côté serveur).
+  # UI : http://localhost:3001 — lien profond : /viewer?StudyInstanceUIDs=<uid>
+  ohif-viewer:
+    build: ./ohif
+    image: medisuite/ohif-viewer:0.3.0
+    restart: unless-stopped
+    ports: ["3001:80"]
+    depends_on: [orthanc-pacs]
+
   prometheus:
     image: prom/prometheus:v2.54.0
     restart: unless-stopped

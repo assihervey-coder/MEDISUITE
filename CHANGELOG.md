@@ -3,6 +3,57 @@
 Format Keep a Changelog ; versionnement sémantique ; les numéros de release
 correspondent aux tags Git.
 
+## [v0.3.0] — 2026-09-13
+
+### Visualiseur OHIF v3 branché sur /dicom-web
+- **Chaîne d'imagerie réelle de bout en bout** : STOW → Orthanc → DICOMweb
+  (PS3.18) → OHIF → lecture diagnostique. Conteneur `ohif-viewer`
+  (`ohif/app:v3.8.3` surchargé) dans `docker-compose.minimal.yml`, UI port 3001.
+- `local-deployment/ohif/app-config.js` : source de données DICOMweb
+  `orthanc` (QIDO-RS/WADO-RS en chemins relatifs, lazy-load des études,
+  transfert JPEG Lossless).
+- `local-deployment/ohif/nginx.conf` : proxy `/dicom-web` + `/wado` →
+  `orthanc-pacs:8042` avec **authentification injectée côté serveur** — le
+  secret PACS ne quitte jamais le conteneur, aucun CORS, aucune exposition
+  navigateur.
+- imaging-service : `GET /api/v1/pacs/viewer-url?study_uid=…` — lien profond
+  OHIF (`/viewer?StudyInstanceUIDs=…`) avec RBAC `imaging.read` et **validation
+  stricte d'UID DICOM** (`^\d+(\.\d+)+$`, anti-injection) ; 4 tests nouveaux.
+- web-portal (page Imagerie) : bouton **OHIF ↗** par étude (base surchargeable
+  `VITE_OHIF_BASE`).
+- Documentation : `docs/OHIF-VIEWER.md` (architecture, démarrage, sécurité,
+  limites connues — plugin Keycloak recommandé en production).
+
+### IA — fusion torch ENTRAÎNABLE de bout en bout (ADR 0023)
+- `ai/multimodal/core/torch_fusion.py` : `TorchFusionModel` (nn.Module,
+  float64) — projections `nn.Linear` par modalité, **cross-attention
+  multi-têtes** (`TorchCrossAttention` : Wq/Wk/Wv/Wo, softmax √(d/h)),
+  **portes sigmoid nn.Parameter** par modalité, **requête globale apprise**,
+  **tête de tâche entraînable** (`TorchTaskHead` : binaire / multiclasse /
+  régression).
+- **Équivalence NumPy à l'initialisation** (pattern ADR 0022 étendu au tronc) :
+  tous les poids copiés du socle déterministe v0.1 — Δ probabilité = 0 au
+  premier predict, tenseur `fused` allclose rtol 1e-6 ; divergence uniquement
+  par entraînement explicite.
+- `fit()` déterministe : Adam, ordre fixe (aucun shuffle), tokenisation gelée
+  pré-calculée, pertes BCE-with-logits / CE / MSE, historique retourné —
+  démontré sur synthétique séparable : perte 2,01 → 0,16, **accuracy 100 %**,
+  deux fits identiques → historiques identiques (zéro RNG).
+- Checkpoints natifs `state_dict` + métadonnées (`medisuite-fusion-0.3`) :
+  round-trip bit-à-bit testé, prêt pour MLflow.
+- `predict()` aux clés identiques à `FusionEngine.infer` (drop-in) :
+  importance des modalités APPRISE, recalibrage ADR-0018 conservé, gradient
+  épars sur modalités absentes (comportement testé).
+- Factory : `fusion_model_from_config()` / `fusion_model_for_module()` ;
+  périmètre honnête : survival/segmentation rejetées `NotImplementedError`.
+- Suite IA : **16 tests** nouveaux (`test_torch_fusion.py`), tous verts
+  (torch 2.14+cpu).
+
+### Divers
+- Badge README → v0.3.0 ; 22 ADR → 23 (ADR 0023) ; roadmap mise à jour :
+  FHIR R4 (HAPI), télémétrie OTel et K8s GPU reportés en v0.4.0.
+- `docker-compose.minimal.yml` : 9 services (+ ohif-viewer).
+
 ## [v0.2.0] — 2026-09-13
 
 ### Écrans cliniques spécialisés (web-portal)
