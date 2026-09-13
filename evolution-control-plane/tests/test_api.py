@@ -79,3 +79,28 @@ def test_events_flux(client):
     r = client.get("/api/v1/evolution/events")
     assert r.status_code == 200
     assert isinstance(r.json(), list)
+
+
+def test_chaine_audit_par_defaut_dans_le_repo_gouverne():
+    """Verrou PROP-0012 — la preuve d'audit vit DANS le dépôt gouverné.
+
+    parents[4] faisait écrire la chaîne WORM hors du dépôt (preuve non
+    versionnée). La racine par défaut doit être le dépôt, et les tests
+    doivent être isolés de la vraie chaîne via ECP_AUDIT_PATH.
+    """
+    from pathlib import Path
+
+    state_mod = importlib.import_module("evolution-control-plane.api.rest._state")
+    repo_root = Path(state_mod.ROOT).resolve()
+    assert repo_root.name == "medisuite", f"racine inattendue : {repo_root}"
+    assert (repo_root / "governance").is_dir(), "ROOT doit être la racine du dépôt"
+
+    # chemin PAR DÉFAUT (sans override) = dépôt/audit/evolution/api-events.jsonl
+    default = repo_root / "audit" / "evolution" / "api-events.jsonl"
+    recalcul = Path(state_mod.__file__).resolve().parents[3] / \
+        "audit" / "evolution" / "api-events.jsonl"
+    assert default == recalcul, "racine par défaut mal calibrée"
+
+    # isolation active : la chaîne utilisée par les tests n'est PAS la vraie
+    assert Path(state_mod.STATE.audit._path).resolve() != default, \
+        "les tests écrivent dans la chaîne WORM réelle (ECP_AUDIT_PATH non appliqué)"

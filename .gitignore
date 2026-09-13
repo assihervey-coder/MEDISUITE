@@ -71,3 +71,4 @@ local-deployment/certs/
 # Control Plane — artefacts runtime
 audit/evolution/api-events.jsonl
 governance/proposals/registry/proposals-runtime.json
+evolution-control-plane/tests/_audit-tests.jsonl

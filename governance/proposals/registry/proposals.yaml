@@ -68,7 +68,7 @@ proposals:
   - id: PROP-0027
     version: 1
     title: "Ajout du Patient Digital Twin"
-    status: SUBMITTED
+    status: APPROVED
     type: ARCHITECTURE
     priority: HIGH
     requested_by: system
@@ -87,6 +87,24 @@ proposals:
       Ne pas modifier patient-service. Créer patient-context/ qui consomme
       patient/laboratory/imaging/pharmacy + AI, puis progressivement :
       existing systems → patient-context → digital twin.
+    decision:
+      outcome: APPROVED
+      decided_at: 2026-09-13T23:19:53+00:00
+      decided_via: "cycle API complet (:8400) — validate → classify → analyze → quorum"
+      change_class: P4
+      quorum_roles: [maintainer, security_officer]
+      approvers:
+        - {role: maintainer, actor: assihervey-coder}
+        - {role: security_officer, actor: so-delegation-session-2026-09-14}
+      conditions:
+        - "Aucun code avant CHANGE SET planifié (NO DIRECT CHANGE) — implémentation V2"
+        - "Gates requis à l'implémentation : technical_validation, compatibility_review, safety_review, clinical_review, regulatory_review"
+        - "Full regression obligatoire (mandatory_full_regression: true)"
+        - "Signatures formelles du comité à recueillir (délégation de session 🟠)"
+      evidence:
+        audit_chain: audit/evolution/api-events.jsonl
+        event: ProposalApproved
+        hash: a70bbcd63f7ba209836671a841ec32c96eedd6c1807f91ae179e65f191c71826
 
   - id: PROP-0004
     version: 1
@@ -242,3 +260,51 @@ proposals:
     human_approval_required: true
     rollback_required: true
     note: "Repoussé v1+ (décision backlog)."
+
+  - id: PROP-0012
+    version: 1
+    title: "Correctif — chaîne d'audit API écrite hors du dépôt (parents[4] → parents[3])"
+    status: APPROVED
+    type: ARCHITECTURE
+    priority: HIGH
+    requested_by: maintainer
+    affected_domains: [evolution-control-plane, audit]
+    changed_paths:
+      - evolution-control-plane/api/rest/_state.py
+      - evolution-control-plane/tests/conftest.py
+      - evolution-control-plane/tests/test_api.py
+      - .gitignore
+    breaking_change: false
+    clinical_impact: NONE
+    patient_safety_impact: NONE
+    security_impact: MEDIUM
+    data_impact: LOW
+    api_impact: MEDIUM
+    ai_impact: NONE
+    migration_required: false
+    human_approval_required: true
+    rollback_required: false
+    detected_problem: >-
+      Test d'intégration API réel (harnais :8400, cycle PROP-0027) :
+      _state.py résolvait parents[4] (workspace) au lieu de parents[3] (dépôt)
+      — la chaîne WORM api-events.jsonl s'écrivait HORS du dépôt gouverné
+      (preuve non versionnée) ; de plus, les tests pytest écrivaient dans la
+      chaîne réelle (aucune isolation).
+    decision:
+      outcome: APPROVED
+      decided_at: 2026-09-14
+      change_class: P4
+      change_class_note: "plancher ARCHITECTURE — aucune règle de chemin ne remonte (P1/P2 inatteignables hors *.md)"
+      quorum_roles: [maintainer, security_officer]
+      approvers:
+        - {role: maintainer, actor: assihervey-coder}
+        - {role: security_officer, actor: so-delegation-session-2026-09-14}
+      conditions:
+        - "Verrou test obligatoire (test_chaine_audit_par_defaut_dans_le_repo_gouverne)"
+        - "Isolation tests via ECP_AUDIT_PATH (conftest) — la chaîne WORM réelle ne reçoit jamais d'événements de test"
+        - "Signatures formelles du comité à recueillir (délégation de session 🟠)"
+        - "ACCEPTED après CI verte (statut réévalué au prochain passage)"
+      evidence:
+        verrou_test: test_chaine_audit_par_defaut_dans_le_repo_gouverne
+        isolation: "ECP_AUDIT_PATH (conftest) — la chaîne WORM réelle ne reçoit jamais d'événements de test"
+        note_changement: "Correctif appliqué dans le même change set que l'enregistrement de la proposition ; chaîne parasite hors dépôt purgée."
