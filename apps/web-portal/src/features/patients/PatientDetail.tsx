@@ -4,8 +4,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api } from "../../services/api";
-import { downloadFile } from "../../utils/csv";
+import { downloadBlob, downloadFile } from "../../utils/csv";
 import { toast } from "../../store/toastStore";
+import { buildPatientPdf } from "../../lib/pdf";
+import { useAuth } from "../../store/authStore";
 
 interface Patient {
   id: string; numero_dossier: string; nom: string; prenoms: string;
@@ -31,6 +33,7 @@ export default function PatientDetail() {
   const [conditions, setConditions] = useState<Condition[]>([]);
   const [error, setError] = useState("");
   const [fhirBusy, setFhirBusy] = useState(false);
+  const { nom: userNom, role: userRole } = useAuth();
 
   const load = useCallback(async () => {
     try {
@@ -94,6 +97,16 @@ export default function PatientDetail() {
     } catch (err) {
       toast.error((err as Error).message);
     }
+  }
+
+  /** Impression PDF (good-to-have) : fiche A4 complète, générée côté client. */
+  function printPdf() {
+    if (!p) return;
+    const bytes = buildPatientPdf(p, encounters, conditions, {
+      generePar: userNom || undefined, role: userRole || undefined,
+    });
+    downloadBlob(`fiche-patient-${p.numero_dossier}.pdf`, bytes, "application/pdf");
+    toast.ok("Fiche patient PDF générée (A4, prête à imprimer)");
   }
 
   async function exportFhir() {
@@ -168,10 +181,15 @@ export default function PatientDetail() {
               {p.consent_recherche ? "Révoquer" : "Accorder"}
             </button>
           </p>
-          <h3 style={{ marginTop: 16 }}>Interopérabilité</h3>
-          <button type="button" onClick={exportFhir} disabled={fhirBusy}>
-            {fhirBusy ? "Export…" : "⬇ Export FHIR R4 (JSON)"}
-          </button>
+          <h3 style={{ marginTop: 16 }}>Impression &amp; interopérabilité</h3>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <button type="button" onClick={printPdf} data-testid="btn-pdf" className="primary">
+              🖨 Imprimer / PDF
+            </button>
+            <button type="button" onClick={exportFhir} disabled={fhirBusy}>
+              {fhirBusy ? "Export…" : "⬇ Export FHIR R4 (JSON)"}
+            </button>
+          </div>
           <p className="note" style={{ marginTop: 8 }}>
             Patient FHIR (<code>identifier</code> dossier + CNAM) — prêt pour
             DHIS2 / systèmes hospitaliers tiers.

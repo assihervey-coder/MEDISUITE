@@ -37,3 +37,14 @@ export function downloadFile(filename: string, content: string, mime = "applicat
   a.click();
   URL.revokeObjectURL(url);
 }
+
+/** Télécharge des octets binaires (PDF fiche patient, ZIP…). */
+export function downloadBlob(filename: string, data: Uint8Array, mime: string): void {
+  const blob = new Blob([data as unknown as BlobPart], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
