@@ -15,12 +15,27 @@ const proxy: Record<string, { target: string; rewrite?: (p: string) => string }>
   "/api/analytics": { target: "http://localhost:8204", rewrite: strip("/api/analytics") },
   // eCRF (v0.7) : le préfixe /api/ecrf est retiré comme le fait l'api-gateway
   "/api/ecrf": { target: "http://localhost:8205", rewrite: strip("/api/ecrf") },
-  // Spécialités (v0.5) : /api/specialty/{module} → service dédié 8100-8123
-  "/api/specialty/emergency": { target: "http://localhost:8123", rewrite: strip("/api/specialty/emergency") },
-  "/api/specialty/oncology": { target: "http://localhost:8100", rewrite: strip("/api/specialty/oncology") },
   // Étiquetage UDI public servi par l'api-gateway
   "/api/v1/about": { target: "http://localhost:8000" },
 };
+
+// Spécialités (v0.5) : /api/specialty/{module} → service dédié 8100-8123.
+// Ports alignés sur services/registry.py (source de vérité unique).
+const SPECIALTY_PORTS: Record<string, number> = {
+  oncology: 8100, tumor: 8101, ophthalmology: 8102, diabetes: 8103,
+  traumatology: 8104, cardiology: 8105, pneumology: 8106, obstetrics: 8107,
+  gynecology: 8108, fertility: 8109, neurology: 8110, psychiatry: 8111,
+  pediatrics: 8112, nephrology: 8113, gastroenterology: 8114,
+  dermatology: 8115, ent: 8116, rheumatology: 8117, urology: 8118,
+  "nuclear-medicine": 8119, radiotherapy: 8120, anesthesia: 8121,
+  geriatrics: 8122, emergency: 8123,
+};
+for (const [slug, port] of Object.entries(SPECIALTY_PORTS)) {
+  proxy[`/api/specialty/${slug}`] = {
+    target: `http://localhost:${port}`,
+    rewrite: strip(`/api/specialty/${slug}`),
+  };
+}
 
 export default defineConfig({
   plugins: [react()],

@@ -22,6 +22,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = useAuth.getState().token;
   const res = await fetch(path, {
     ...init,
+    cache: "no-store", // données cliniques : jamais une réponse périmée
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

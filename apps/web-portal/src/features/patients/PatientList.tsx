@@ -38,12 +38,13 @@ export default function PatientList() {
 
   async function create(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
+    const form = e.currentTarget; // capturé AVANT le await (null après)
+    const f = new FormData(form);
     await api.post("/api/patients/api/v1/patients", {
       nom: f.get("nom"), prenoms: f.get("prenoms"), sexe: f.get("sexe"),
       date_naissance: f.get("naissance"), commune: f.get("commune"),
     });
-    e.currentTarget.reset();
+    form.reset();
     load(q);
   }
 

@@ -37,7 +37,9 @@ export default function Login() {
         {error && <p className="error">{error}</p>}
         <button type="submit" style={{ width: "100%" }}>Se connecter</button>
         <p className="note" style={{ marginTop: 12 }}>
-          Démo : medecin@chu-cocody.ci · biologiste@… · admin@medisuite.ci — mot de passe MediSuite2026!
+          Démo : medecin@chu-cocody.ci · biologiste@… · radiologue@… ·
+          admin@medisuite.ci · datamanager@medisuite.ci (écran Promoteur) —
+          mot de passe MediSuite2026!
         </p>
       </form>
     </div>

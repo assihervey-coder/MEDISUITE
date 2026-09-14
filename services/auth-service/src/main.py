@@ -78,7 +78,8 @@ def _get_user(db: Session, email: str) -> User | None:
 
 
 def seed() -> None:
-    """Comptes de démonstration : admin, médecin, biologiste, radiologue, infirmier."""
+    """Comptes de démonstration : admin, médecin, biologiste, radiologue,
+    infirmier, data manager (écran Promoteur/DSMB — ecrf.export/lock)."""
     with SessionLocal() as db:
         if db.scalar(select(User).limit(1)):
             return
@@ -88,6 +89,7 @@ def seed() -> None:
             ("biologiste@chu-cocody.ci", "Traoré", "Ibrahim", "biologiste"),
             ("radiologue@chu-treichville.ci", "Yao", "Aristide", "radiologue"),
             ("infirmier@chu-cocody.ci", "Bamba", "Awa", "infirmier"),
+            ("datamanager@medisuite.ci", "Gbagbo", "Nadège", "data_manager"),
         ]
         for email, nom, prenoms, role in demo:
             db.add(User(id=new_id(), email=email, nom=nom, prenoms=prenoms,

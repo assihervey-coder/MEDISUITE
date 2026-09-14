@@ -79,6 +79,46 @@ class EventIn(BaseModel):
     detail: dict = {}
 
 
+def seed_events() -> None:
+    """Jeu de démonstration déterministe — idempotent.
+
+    Événements typiques d'une journée d'activité CHU : chaque entrée passe par
+    HashChainLedger.append pour garantir la chaîne SHA-256 (vérifiable via
+    POST /chain/verify), puis est persistée."""
+    chain = _chain_all()
+    if chain.events:
+        return
+    demo = [
+        ("system", "system", "service.start", "auth-service",
+         {"version": "v0.16.0"}),
+        ("medecin@chu-cocody.ci", "medecin", "auth.login", "session:web-portal",
+         {"mfa": False}),
+        ("Dr Koné Fatoumata", "medecin", "patient.created", "patient:pat0001",
+         {"commune": "Cocody"}),
+        ("Dr Koné Fatoumata", "medecin", "lab.ordered", "order:hba1c-pat0002",
+         {"urgent": False}),
+        ("infirmier Traoré", "infirmier", "lab.collected", "sample:LAB-2026",
+         {"type": "sang veineux"}),
+        ("automate SYSMEX", "system", "lab.resulted", "order:leucocytes-pat0004",
+         {"critical": True, "valeur": 18400}),
+        ("Dr Bakayoko Lydie", "biologiste", "lab.result.validated",
+         "result:hemoglobine-pat0001", {"flag": "low"}),
+        ("Dr Ouattara Aline", "radiologue", "imaging.reported", "study:ACC-2026-00002",
+         {"modality": "MG", "birads": 4}),
+        ("admin@medisuite.ci", "admin", "consent.granted", "patient:pat0003",
+         {"ia": True}),
+        ("system", "system", "chain.verify", "audit:self", {"result": "OK"}),
+    ]
+    with SessionLocal() as db:
+        for actor, role, action, resource, detail in demo:
+            e = chain.append(actor, role, action, resource, detail)
+            db.merge(AuditRow(**e.to_dict()))
+        db.commit()
+
+
+seed_events()
+
+
 @app.post("/api/v1/events", status_code=201, tags=["registre"])
 def append_event(body: EventIn) -> dict:
     chain = _chain_all()

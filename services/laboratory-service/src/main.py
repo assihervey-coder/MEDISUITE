@@ -94,6 +94,60 @@ class QCRun(Base):
 SessionLocal = init_db(engine, Base.metadata)
 
 
+def seed() -> None:
+    """Jeu de démonstration déterministe (graine 42) — idempotent.
+
+    Recouvre le workflow complet : prescriptions ORDERED/COLLECTED/RESULTED/
+    VALIDATED, flags calculés par le moteur lab_qc (même logique que
+    l'endpoint /results), dont deux valeurs critiques pour la démo
+    notification + un résultat validé par le biologiste démo."""
+    import random
+
+    with SessionLocal() as db:
+        if db.scalar(select(Order).limit(1)):
+            return
+        rng = random.Random(42)
+        demo = [
+            # (patient_id, dossier, nom, analyte, urgent, valeur_ou_None, valide)
+            ("pat0001", "MS-2026-00001", "Kouassi Didier", "hemoglobine", False, 9.1, True),
+            ("pat0001", "MS-2026-00001", "Kouassi Didier", "creatinine", False, 1.1, True),
+            ("pat0002", "MS-2026-00002", "Diomandé Awa", "hba1c", False, 9.4, True),
+            ("pat0003", "MS-2026-00003", "Traoré Ibrahim", "glucose", True, 386.0, False),
+            ("pat0004", "MS-2026-00004", "Aka Marie", "leucocytes", True, 18400.0, False),
+            ("pat0005", "MS-2026-00005", "Bamba Salif", "crp", False, 42.0, False),
+            ("pat0006", "MS-2026-00006", "N'Guessan Adjoua", "plaquettes", False, None, False),
+            ("pat0007", "MS-2026-00007", "Coulibaly Fanta", "sodium", False, None, False),
+            ("pat0008", "MS-2026-00008", "Yao Kouadio", "potassium", True, None, False),
+        ]
+        for pid, dossier, nom, analyte, urgent, valeur, valide in demo:
+            o = Order(id=new_id(), patient_id=pid, patient_dossier=dossier,
+                      patient_nom=nom, analyte=analyte,
+                      prescripteur="Dr Koné Fatoumata", urgent=urgent,
+                      statut="ORDERED")
+            db.add(o)
+            if valeur is None:
+                continue  # reste ORDERED : démo bouton « Prélever »
+            o.statut = "COLLECTED"
+            db.add(Sample(id=new_id(), order_id=o.id,
+                          barcode=f"LAB-2026-{new_id().upper()[:10]}"))
+            analyse = lab_qc.analyser_resultat(analyte, valeur)
+            loinc, unite, bas, haut, *_ = lab_qc.REFERENCE_RANGES[analyte]
+            r = Result(id=new_id(), order_id=o.id, valeur=valeur, unite=unite,
+                       reference=f"{bas}-{haut} {unite}",
+                       flag=analyse["flag"], critical=analyse["critical"],
+                       delta_pct=round(rng.uniform(-12, 12), 1))
+            if valide:
+                r.valide_par = "Dr Bakayoko Lydie (biologiste)"
+                o.statut = "VALIDATED"
+            else:
+                o.statut = "RESULTED"
+            db.add(r)
+        db.commit()
+
+
+seed()
+
+
 class OrderIn(BaseModel):
     patient_id: str
     patient_dossier: str = ""
@@ -139,6 +193,23 @@ def list_orders(statut: str = "", limit: int = 50,
             stmt = stmt.where(Order.statut == statut)
         return [{c.name: getattr(o, c.name) for c in o.__table__.columns}
                 for o in db.scalars(stmt)]
+
+
+@app.get("/api/v1/results", tags=["résultats"])
+def list_results(limit: int = 100,
+                 user: dict = Depends(current_user)) -> list[dict]:
+    """Résultats publiés, joints à leur prescription (analyte, patient, statut)
+    — alimente l'écran Laboratoire du web-portal en une seule requête."""
+    with SessionLocal() as db:
+        rows = db.execute(
+            select(Result, Order).join(Order, Result.order_id == Order.id)
+            .order_by(Result.id.desc()).limit(limit)).all()
+        return [{"id": r.id, "order_id": r.order_id, "analyte": o.analyte,
+                 "patient_nom": o.patient_nom, "patient_dossier": o.patient_dossier,
+                 "valeur": r.valeur, "unite": r.unite, "reference": r.reference,
+                 "flag": r.flag, "critical": r.critical, "delta_pct": r.delta_pct,
+                 "valide_par": r.valide_par, "statut": o.statut}
+                for r, o in rows]
 
 
 @app.post("/api/v1/orders/{oid}/collect", tags=["prélèvements"])
