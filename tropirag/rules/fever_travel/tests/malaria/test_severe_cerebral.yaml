@@ -1,0 +1,23 @@
+name: paludisme-severe-cerebral
+description: Coma + fièvre → paludisme sévère, artésunate IV, transfert
+case:
+  patient:
+    age_years: 40
+    sex: male
+  symptoms:
+  - code: fever
+    onset: '2026-09-01'
+    severity: severe
+  - code: coma
+  travel:
+    segments:
+    - country: CI
+      arrival: '2026-08-10'
+      departure: '2026-09-01'
+  consultation_date: '2026-09-04'
+expect:
+  rules_include:
+  - mal-sev-cerebral-001
+  - mal-tx-severe-iv-001
+  - rf-coma-001
+  urgency_at_least: immediate

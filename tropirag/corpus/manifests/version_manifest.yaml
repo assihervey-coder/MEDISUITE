@@ -1,0 +1,8 @@
+current: &id001
+  version: auto-2026-09-12
+  date: '2026-09-12'
+  units: 47
+  sources: 20
+  corpus_sha256: 5ec3772d5d298de7bee9058a9e0dde279813d078693c144987c6513947e6951e
+versions:
+- *id001

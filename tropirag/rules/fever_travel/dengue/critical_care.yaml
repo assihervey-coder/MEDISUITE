@@ -1,0 +1,181 @@
+version: 1
+domain: fever_travel
+# =============================================================================
+# V1.2 — Dengue pédiatrique : soins critiques et critères d'intubation
+#
+# Chez l'enfant, la dengue sévère évolue en phases : fièvre → PHASE CRITIQUE
+# (défervescence, 12-24 h de fuite plasmatique maximale) → convalescence.
+# Le remplissage est prudent : bolus 10-20 mL/kg de cristalloïde isotonique
+# sur 1 h dans le choc, réévalué après chaque bolus. La surcharge iatrogène
+# (œdème pulmonaire) est l'erreur n°1 en zone à ressources limitées.
+#
+# Critères d'intubation : (1) trouble de conscience ne protégeant plus les
+# voies aériennes, (2) détresse respiratoire réfractaire / SpO2 < 92 % malgré
+# oxygène, (3) choc réfractaire après remplissage + catécholamines.
+# Ventilation protectrice : petits volumes courants (épanchements pleuraux
+# + ascite), sédation prudente (hypovolémie).
+#
+# Sources : who-dengue-2024.
+# =============================================================================
+rules:
+# --- 1. Transfert en réanimation pédiatrique ----------------------------------
+- id: den-peds-icu-transfer-001
+  action: escalate
+  priority: 89
+  weight: 0.5
+  description: Dengue sévère de l'enfant — transfert réa
+  when:
+    all:
+    - patient: child
+    - disease: dengue
+    - any:
+      - red_flag_code: dengue_shock
+      - red_flag_code: dengue_plasma_leakage
+      - red_flag_code: dengue_warning_bleeding
+  then:
+    level: emergency_transfer
+    message: 'Dengue sévère chez l''enfant : transfert URGENT en réanimation pédiatrique —
+      oxygène, deux voies veineuses (ou voie intra-osseuse), remplissage prudent préparé,
+      transport médicalisé'
+  evidence:
+  - who-dengue-2024
+
+# --- 2. Détection du choc et du choc compensé -----------------------------------
+- id: den-peds-shock-deep-002
+  action: red_flag
+  priority: 97
+  weight: 0.5
+  description: Choc profond pédiatrique
+  when:
+    all:
+    - patient: child
+    - disease: dengue
+    - vital: systolic_bp
+      lt: 70
+  then:
+    code: dengue_peds_decompensated_shock
+    severity: critical
+    urgency: immediate
+    message: 'Choc décompensé chez l''enfant dengue : bolus immédiat de cristalloïde isotonique
+      20 mL/kg sur 15-20 min, réévaluation après chaque bolus ; préparer les catécholamines
+      si le choc persiste après 40-60 mL/kg — réa pédiatrique'
+  evidence:
+  - who-dengue-2024
+- id: den-peds-compensated-003
+  action: red_flag
+  priority: 88
+  weight: 0.5
+  description: Choc compensé — remplissage prudent
+  when:
+    all:
+    - patient: child
+    - disease: dengue
+    - vital: capillary_refill_s
+      gte: 3
+  then:
+    code: dengue_peds_compensated_shock
+    severity: severe
+    urgency: emergency
+    message: 'Signes de choc compensé (recoloration cutanée ≥ 3 s) : bolus prudent 10-20 mL/kg
+      de Ringer lactate sur 1 h, réévaluer TA, FC, diurèse et conscience après chaque bolus —
+      la phase critique nécessite un monitorage rapproché'
+  evidence:
+  - who-dengue-2024
+
+# --- 3. Critères d'intubation — le cœur du protocole ------------------------------
+- id: den-peds-intubation-004
+  action: red_flag
+  priority: 98
+  weight: 0.5
+  description: Critères d'intubation en dengue pédiatrique
+  when:
+    all:
+    - patient: child
+    - disease: dengue
+    - any:
+      - symptom: coma
+      - all:
+        - symptom: dyspnea
+        - vital: spo2_pct
+          lt: 92
+      - all:
+        - vital: systolic_bp
+          lt: 75
+        - symptom: prostration
+  then:
+    code: dengue_peds_intubation_criteria
+    severity: critical
+    urgency: immediate
+    message: 'Critères d''intubation en dengue pédiatrique : (1) trouble de conscience
+      sévère ne protégeant plus les voies aériennes, (2) détresse respiratoire réfractaire
+      avec SpO2 < 92 % malgré oxygène (œdème pulmonaire / SDRA), (3) choc réfractaire après
+      2 bolus de 10-20 mL/kg + catécholamines. Ventilation PROTECTRICE : petits volumes
+      courants (épanchements pleuraux + ascite), sédation prudente sur hypovolémie, tube
+      non obturé au retrait — réa pédiatrique immédiate'
+  evidence:
+  - who-dengue-2024
+
+# --- 4. Monitorage et prévention de la surcharge iatrogène ----------------------
+- id: den-peds-monitoring-005
+  action: inform
+  priority: 70
+  weight: 0.5
+  description: Phase critique — monitorage horaire
+  when:
+    all:
+    - patient: child
+    - disease: dengue
+  then:
+    message: 'Dengue de l''enfant : PHASE CRITIQUE = défervescence (12-24 h de risque maximal
+      de fuite plasmatique). Monitorage horaire : TA, FC, FR, diurèse, glycémie, niveau de
+      conscience ; PVC si disponible ; hématocrite sériel (hémoconcentration = fuite)'
+    topic: critical_care
+  evidence:
+  - who-dengue-2024
+- id: den-peds-avoid-overload-006
+  action: inform
+  priority: 69
+  weight: 0.5
+  description: Sans choc — pas de remplissage systématique
+  when:
+    all:
+    - patient: child
+    - disease: dengue
+    - not:
+        any:
+        - vital: systolic_bp
+          lt: 90
+        - vital: capillary_refill_s
+          gte: 3
+  then:
+    message: 'Dengue de l''enfant SANS choc : PAS de remplissage systématique — risque
+      d''œdème pulmonaire iatrogène. Apport d''entretien prudent en isotonique, antalgique
+      paracétamol (jamais AINS), réhydratation orale si tolérée'
+    topic: fluid_therapy
+  evidence:
+  - who-dengue-2024
+
+# --- 5. Transfusion et plateau hémostatique -------------------------------------
+- id: den-peds-bleeding-icu-007
+  action: red_flag
+  priority: 92
+  weight: 0.5
+  description: Hémorragie sévère + choc — transfusion immédiate
+  when:
+    all:
+    - patient: child
+    - disease: dengue
+    - any:
+      - symptom: hematemesis
+      - symptom: melena
+    - vital: systolic_bp
+      lt: 80
+  then:
+    code: dengue_peds_hemorrhagic_shock
+    severity: critical
+    urgency: immediate
+    message: 'Choc hémorragique de la dengue pédiatrique : transfusion sanguine immédiate
+      (culot globulaire + plasma frais congelé selon bilan), pas de remplissage massif
+      isolé ; réa pédiatrique + avis hémostase'
+  evidence:
+  - who-dengue-2024

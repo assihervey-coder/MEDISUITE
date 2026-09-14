@@ -1,0 +1,8 @@
+reranking:
+  primary: qwen-reranker (si mesh actif)
+  fallback: lexical_overlap + authority_boost
+  authority_boost:
+    who: 1.15
+    national: 1.1
+    msf: 1.1
+    cdc: 1.1

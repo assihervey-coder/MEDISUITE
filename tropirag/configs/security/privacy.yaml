@@ -1,0 +1,5 @@
+privacy:
+  data_minimization: true
+  patient_identifier: local only
+  logs: redaction PII systématique
+  ai_transmission: local LLM uniquement — aucune donnée vers des API externes

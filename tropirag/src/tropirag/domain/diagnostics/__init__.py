@@ -1,0 +1,1 @@
+"""Tests diagnostiques et interprétation."""

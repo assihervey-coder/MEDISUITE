@@ -1,0 +1,15 @@
+unit_id: eu-msf-rick-001
+source_id: msf-rickettsia
+section: Rickettsioses
+text: 'La fièvre boutonneuse méditerranéenne/africaine (Rickettsia conorii, africae) survient 5 à 10 jours
+  après piqûre de tique : fièvre élevée, céphalées, myalgies, escarre d''inoculation (tache noire) et
+  éruption maculopapuleuse des membres. En Afrique de l''Ouest, la recherche de l''escarre est systématique
+  après séjour rural ou brousse. Traitement : doxycycline courte durée, très efficace.'
+topics:
+- rickettsia
+- tick
+- eschar
+diseases:
+- rickettsial
+jurisdiction: INT
+language: fr

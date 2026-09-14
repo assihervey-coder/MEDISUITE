@@ -1,0 +1,20 @@
+{
+  "name": "TropiRAG Terrain — Compagnon clinique",
+  "short_name": "TropiRAG",
+  "description": "Saisie clinique terrain fièvre + voyage (Afrique de l'Ouest) — offline-first, IA encadrée, autorité déterministe.",
+  "lang": "fr",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1622",
+  "theme_color": "#0d1b2a",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

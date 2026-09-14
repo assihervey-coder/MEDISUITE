@@ -1,0 +1,19 @@
+features:
+  vision_analytics:
+    enabled: false
+    requires_mesh: true
+  dictation:
+    enabled: false
+    requires_mesh: true
+  drug_engine:
+    enabled: true
+  public_health_notifications:
+    enabled: true
+  ai_synthesis:
+    enabled: true
+    gated_by: safety_gate
+  multilingual:
+    enabled: true
+    languages:
+    - fr
+    - en

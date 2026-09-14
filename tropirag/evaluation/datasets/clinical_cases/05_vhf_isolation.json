@@ -1,0 +1,19 @@
+{
+  "case_id": "eval-vhf-isolation-05",
+  "description": "Suspicion VHF — retour de Guinée, isolement immédiat + notification",
+  "payload": {
+    "patient": {"age_years": 35, "sex": "male"},
+    "symptoms": [{"code": "fever", "onset": "2026-09-03", "severity": "severe"},
+                 {"code": "hemorrhagic_signs"}, {"code": "vomiting"}, {"code": "diarrhea"}],
+    "travel": {"segments": [{"country": "GN", "arrival": "2026-08-15", "departure": "2026-09-01", "burial_attended": true}]},
+    "consultation_date": "2026-09-05"
+  },
+  "expect": {
+    "differential_in_top3": ["ebola", "lassa", "marburg"],
+    "urgency_at_least": "immediate",
+    "severity_at_least": "critical",
+    "escalation_includes": ["isolation"],
+    "notifications_nonempty": true,
+    "ai_synthesis_allowed": false
+  }
+}

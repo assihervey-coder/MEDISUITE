@@ -1,0 +1,36 @@
+version: 1
+domain: fever_travel
+rules:
+- id: time-fever-short-001
+  action: inform
+  priority: 15
+  weight: 0.5
+  description: Fièvre courte
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - fever_duration_days:
+        lte: 2
+  then:
+    message: Fièvre de moins de 48 h — virose ou paludisme précoce possibles
+    topic: timing
+- id: time-fever-prolonged-001
+  action: inform
+  priority: 20
+  weight: 0.5
+  description: Fièvre prolongée ≥ 7 jours — élargir le différentiel
+  when:
+    all:
+    - *id001
+    - fever_duration_days:
+        gte: 7
+  then:
+    message: 'Fièvre prolongée ≥ 7 jours — élargir : typhoïde, HIV, tuberculose, endocardite, abcès'
+    topic: timing
+  evidence:
+  - who-typhoid-2018

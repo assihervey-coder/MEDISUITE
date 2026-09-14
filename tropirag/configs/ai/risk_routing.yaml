@@ -1,0 +1,9 @@
+risk_routing:
+  severe_or_urgent:
+    ai_synthesis_allowed: false
+    reason: règles + preuves uniquement
+  moderate:
+    ai_synthesis_allowed: true
+    supervision: evidence_pack_required
+  mild:
+    ai_synthesis_allowed: true

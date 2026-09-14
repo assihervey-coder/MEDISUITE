@@ -1,0 +1,19 @@
+version: 1
+domain: fever_travel
+rules:
+- id: exp-unprotected-malaria-001
+  action: raise_suspicion
+  priority: 40
+  weight: 0.15
+  description: Séjour paludéen sans chimioprophylaxie
+  when:
+    all:
+    - exposure: malaria_exposure
+    - exposure: unprotected
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.15
+    note: Absence de chimioprophylaxie en zone d'endémie palustre
+  evidence:
+  - who-malaria-2023

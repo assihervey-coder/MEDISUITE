@@ -1,0 +1,55 @@
+version: 1
+domain: fever_travel
+rules:
+- id: em-shock-001
+  action: escalate
+  priority: 96
+  weight: 0.5
+  description: Choc fébrile
+  when:
+    any:
+    - vital: systolic_bp
+      lt: 90
+    - all:
+      - vital: capillary_refill_s
+        gte: 3.0
+      - vital: temperature_c
+        gte: 38.0
+  then:
+    level: emergency_transfer
+    message: Signes de choc — remplissage IV (Ringer lactate) et transfert urgent
+  evidence:
+  - msf-malaria-guidelines
+- id: em-meningitis-001
+  action: escalate
+  priority: 97
+  weight: 0.5
+  description: Méningite suspectée
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: neck_stiffness
+  then:
+    level: emergency_transfer
+    message: Méningite bactérienne suspectée — ceftriaxone IV immédiate (ne pas attendre la PL), transfert
+  evidence:
+  - who-meningitis
+- id: em-purpura-001
+  action: escalate
+  priority: 97
+  weight: 0.5
+  description: Purpura fulminans
+  when:
+    all:
+    - *id001
+    - symptom: petechiae
+  then:
+    level: emergency_transfer
+    message: Purpura fulminans suspecté — ceftriaxone IV immédiate + transfert en réanimation
+  evidence:
+  - who-meningitis

@@ -1,0 +1,8 @@
+fallback:
+  chain:
+  - ollama
+  - vllm
+  - deterministic
+  on_model_failure: repli heuristique ResponseEngine
+  on_no_evidence: refus constructif (insufficient_evidence)
+  never_silent: true

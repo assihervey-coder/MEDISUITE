@@ -1,0 +1,220 @@
+version: 1
+domain: fever_travel
+# =============================================================================
+# V1.2 — Typhoïde XDR (Salmonella Typhi résistante extrême)
+#
+# Contexte : foyer XDR au Pakistan (2016→), diffusion Inde/Afghanistan et cas
+# importés mondiaux. XDR = résistance aux fluoroquinolones ET aux
+# céphalosporines de 3e génération. Azithromycine orale = 1ère ligne si forme
+# non compliquée ; méropénème IV si forme sévère. Le retour d'une zone foyer
+# fait suspecter le XDR jusqu'à preuve du contraire (antibiogramme).
+#
+# Seuils et conduites : sources cdc-typhoid-xdr-2023 + who-typhoid-2018.
+# =============================================================================
+rules:
+# --- 1. Drapeau de risque XDR par contexte de voyage -------------------------
+- id: typ-xdr-travel-risk-001
+  action: red_flag
+  priority: 76
+  weight: 0.5
+  description: Risque typhoïde XDR — retour de zone foyer (Asie du Sud)
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - fever_duration_days:
+        gte: 3
+    - exposure: typhoid_xdr_zone
+  disease: enteric_fever
+  then:
+    code: enteric_fever_xdr_risk
+    severity: severe
+    urgency: priority
+    message: 'Retour d''une zone foyer de typhoïde XDR (Pakistan / Asie du Sud) avec fièvre
+      ≥ 3 jours : considérer XDR jusqu''à preuve du contraire — azithromycine orale en
+      1ère ligne, éviter fluoroquinolones et céphalosporines ; hémoculture + antibiogramme'
+  evidence:
+  - cdc-typhoid-xdr-2023
+  - who-typhoid-2018
+- id: typ-xdr-contact-risk-002
+  action: red_flag
+  priority: 72
+  weight: 0.5
+  description: Fièvre + contact malade retour de zone XDR
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - travel: sick_contacts
+    - exposure: typhoid_xdr_zone
+  disease: enteric_fever
+  then:
+    code: enteric_fever_xdr_contact
+    severity: severe
+    urgency: priority
+    message: 'Fièvre avec contacts malades lors d''un séjour en zone foyer XDR : probabilité
+      de typhoïde XDR élevée — azithromycine 1ère ligne, documentation par hémoculture'
+  evidence:
+  - cdc-typhoid-xdr-2023
+
+# --- 2. Confirmation biologique par antibiogramme ---------------------------
+- id: typ-xdr-lab-confirmed-003
+  action: red_flag
+  priority: 84
+  weight: 0.5
+  description: Antibiogramme XDR confirmé
+  when:
+    lab: antibiogram
+    value: xdr
+  disease: enteric_fever
+  then:
+    code: enteric_fever_xdr_confirmed
+    severity: severe
+    urgency: emergency
+    message: 'Antibiogramme XDR confirmé (résistance fluoroquinolones + céphalosporines
+      3G) : azithromycine orale si forme non compliquée ; méropénème IV si signes de
+      gravité — avis référent + signalement'
+  evidence:
+  - cdc-typhoid-xdr-2023
+  - who-typhoid-2018
+- id: typ-xdr-lab-mdr-004
+  action: red_flag
+  priority: 74
+  weight: 0.5
+  description: Antibiogramme MDR
+  when:
+    lab: antibiogram
+    value: mdr
+  disease: enteric_fever
+  then:
+    code: enteric_fever_mdr_confirmed
+    severity: moderate
+    urgency: priority
+    message: 'Antibiogramme MDR (multirésistance) : azithromycine ou céfixime selon profil —
+      adapter au profil de sensibilité, éviter les fluoroquinolones si résistance documentée'
+  evidence:
+  - who-typhoid-2018
+
+# --- 3. Traitements orientés XDR ----------------------------------------------
+- id: typ-xdr-treat-outpatient-005
+  action: recommend_drug
+  priority: 62
+  weight: 0.5
+  description: XDR non compliquée — azithromycine 1ère ligne
+  when:
+    all:
+    - disease: enteric_fever
+    - any:
+      - exposure: typhoid_xdr_zone
+      - red_flag_code: enteric_fever_xdr_confirmed
+    - not:
+        any:
+        - symptom: coma
+        - symptom: confusion
+        - symptom: melena
+        - symptom: hematemesis
+        - vital: systolic_bp
+          lt: 90
+  then:
+    drug: azithromycin
+    reason: 'Typhoïde XDR (ou suspicion en zone foyer) SANS signe de gravité : azithromycine
+      orale = 1ère ligne ; réévaluation clinique à 48-72 h ; hémoculture de contrôle'
+  evidence:
+  - cdc-typhoid-xdr-2023
+- id: typ-xdr-treat-severe-006
+  action: recommend_drug
+  priority: 66
+  weight: 0.5
+  description: XDR sévère — méropénème IV
+  when:
+    all:
+    - disease: enteric_fever
+    - any:
+      - exposure: typhoid_xdr_zone
+      - red_flag_code: enteric_fever_xdr_confirmed
+    - any:
+      - symptom: coma
+      - symptom: confusion
+      - symptom: melena
+      - symptom: hematemesis
+      - vital: systolic_bp
+        lt: 90
+  then:
+    drug: meropenem
+    reason: 'Typhoïde XDR AVEC signes de gravité (encéphalopathie, hémorragie digestive,
+      choc) : méropénème IV = référence — hospitalisation + avis référent'
+  evidence:
+  - cdc-typhoid-xdr-2023
+
+# --- 4. Contre-indications antibiotiques en contexte XDR ----------------------
+- id: typ-xdr-avoid-fq-007
+  action: contraindicate_drug
+  priority: 64
+  weight: 0.5
+  description: XDR — fluoroquinolones inefficaces
+  when:
+    all:
+    - disease: enteric_fever
+    - any:
+      - exposure: typhoid_xdr_zone
+      - red_flag_code: enteric_fever_xdr_confirmed
+  then:
+    drug: ciprofloxacin
+    reason: 'XDR : résistance acquise aux fluoroquinolones — ne pas utiliser'
+  evidence:
+  - cdc-typhoid-xdr-2023
+- id: typ-xdr-avoid-cephalo-008
+  action: contraindicate_drug
+  priority: 65
+  weight: 0.5
+  description: XDR confirmé — céphalosporines inutilisables
+  when:
+    red_flag_code: enteric_fever_xdr_confirmed
+  then:
+    drug: ceftriaxone
+    reason: 'XDR confirmé : résistance aux céphalosporines 3G — azithromycine orale (ou
+      méropénème IV si sévère)'
+  evidence:
+  - cdc-typhoid-xdr-2023
+
+# --- 5. Escalade + notification + documentation -------------------------------
+- id: typ-xdr-escalate-009
+  action: escalate
+  priority: 71
+  weight: 0.5
+  description: XDR confirmé — hospitalisation + signalement
+  when:
+    red_flag_code: enteric_fever_xdr_confirmed
+  then:
+    level: refer_hospital
+    message: 'Typhoïde XDR confirmée : hospitalisation pour antibiothérapie adaptée
+      (méropénème IV si signes de gravité), déclaration et signalement au MSP-CI / INHP'
+  evidence:
+  - who-typhoid-2018
+- id: typ-xdr-require-antibiogram-010
+  action: require_test
+  priority: 61
+  weight: 0.5
+  description: Zone foyer XDR — hémoculture + antibiogramme
+  when:
+    all:
+    - disease: enteric_fever
+    - any:
+      - exposure: typhoid_xdr_zone
+      - red_flag_code: enteric_fever_xdr_confirmed
+    - lab_missing: antibiogram
+  then:
+    tests:
+    - blood_culture
+    - antibiogram
+    reason: 'Contexte XDR : hémoculture + antibiogramme indispensables pour confirmer le
+      profil de résistance et adapter l''antibiothérapie (avant toute première dose)'
+  evidence:
+  - who-typhoid-2018
+  - cdc-typhoid-xdr-2023

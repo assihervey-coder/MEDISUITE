@@ -23,7 +23,7 @@ coverage/
 *.tsbuildinfo
 
 # ---- Données & artefacts ----
-data/
+/data/
 ai/datasets/raw/
 ai/datasets/processed/
 ai/models/**/checkpoints/
@@ -72,3 +72,6 @@ local-deployment/certs/
 audit/evolution/api-events.jsonl
 governance/proposals/registry/proposals-runtime.json
 evolution-control-plane/tests/_audit-tests.jsonl
+
+# ---- TropiRAG (intégré) ----
+tropirag/indexes/

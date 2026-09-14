@@ -74,6 +74,7 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
       { key: "lab", icon: "🧪", label: t("laboratory"), hint: "/laboratory", go: () => navigate("/laboratory") },
       { key: "urg", icon: "🚨", label: t("emergency"), hint: "/emergency", go: () => navigate("/emergency") },
       { key: "avc", icon: "🧠", label: t("nav.code_avc"), hint: "/code-avc", go: () => navigate("/code-avc") },
+      { key: "tr", icon: "🧭", label: t("nav.tropirag"), hint: "/decision", go: () => navigate("/decision") },
       { key: "fus", icon: "🧠", label: t("nav.multimodal"), hint: "/multimodal", go: () => navigate("/multimodal") },
       { key: "ecrf", icon: "📋", label: t("nav.ecrf"), hint: "/ecrf", go: () => navigate("/ecrf") },
       { key: "study", icon: "📈", label: t("nav.study"), hint: "/study", go: () => navigate("/study") },

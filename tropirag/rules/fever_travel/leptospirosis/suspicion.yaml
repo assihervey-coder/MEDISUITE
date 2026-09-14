@@ -1,0 +1,144 @@
+version: 1
+domain: fever_travel
+# =============================================================================
+# V1.3 — Leptospirose : suspicion et orientation diagnostique
+#
+# Zoonose bactérienne (Leptospira interrogans) ubiquitaire, fortement liée aux
+# eaux contaminées par les urines de rongeurs : rizières, inondations, mines,
+# travail agricole, baignade en eau douce. Côte d'Ivoire : contexte de rizières
+# (savanes, Gagnoa, Daloa) et saison des pluies.
+#
+# Triade évocatrice : fièvre + myalgies intenses (mollets) + injection
+# conjonctivale. Ictère = gravité (maladie de Weil — voir severe.yaml).
+# Diagnostic : PCR sanguine (1re semaine) ou sérologie IgM/MAT.
+# Sources : who-lepto (eu-who-lepto-001/002/003).
+# =============================================================================
+rules:
+# --- 1. Triade classique + exposition hydrique --------------------------------
+- id: lepto-susp-core-001
+  action: raise_suspicion
+  priority: 56
+  weight: 0.4
+  description: Triade leptospirose + eaux stagnantes
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - travel: stagnant_water
+    - any:
+      - symptom: myalgia
+      - symptom: muscle_tenderness
+      - symptom: conjunctival_injection
+  disease: leptospirosis
+  then:
+    disease: leptospirosis
+    weight: 0.4
+    note: 'Fièvre + contact eaux stagnantes (rizières/inondations) + myalgies ou injection
+      conjonctivale — leptospirose à évoquer : PCR/sérologie, rechercher ictère et atteinte
+      rénale (Weil)'
+  evidence:
+  - eu-who-lepto-001
+- id: lepto-susp-triad-002
+  action: raise_suspicion
+  priority: 55
+  weight: 0.3
+  description: Triade fièvre-myalgies-conjonctives sans exposition documentée
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: myalgia
+    - symptom: conjunctival_injection
+  disease: leptospirosis
+  then:
+    disease: leptospirosis
+    weight: 0.3
+    note: 'Fièvre + myalgies + injection conjonctivale (triade) — leptospirose possible même
+      sans exposition hydrique rapportée : réinterroger (travaux agricoles, inondations, baignade)'
+  evidence:
+  - eu-who-lepto-001
+# --- 2. Contexte professionnel / rural ----------------------------------------
+- id: lepto-susp-occupational-003
+  action: raise_suspicion
+  priority: 52
+  weight: 0.25
+  description: Fièvre + contexte rural agricole + myalgies
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - exposure: rural_stay
+    - any:
+      - symptom: myalgia
+      - symptom: muscle_tenderness
+    - not:
+        any:
+        - symptom: rash
+        - symptom: retro_orbital_pain
+  disease: leptospirosis
+  then:
+    disease: leptospirosis
+    weight: 0.25
+    note: 'Fièvre + myalgies en contexte rural (agriculture, rizières, mines) — leptospirose
+      à considérer dans le différentiel'
+  evidence:
+  - eu-who-lepto-001
+# --- 3. Formes ictériques fébriles : écarter le diagnostic différentiel --------
+- id: lepto-susp-icteric-004
+  action: raise_suspicion
+  priority: 58
+  weight: 0.45
+  description: Fièvre ictérique + exposition hydrique
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: jaundice
+    - travel: stagnant_water
+  disease: leptospirosis
+  then:
+    disease: leptospirosis
+    weight: 0.45
+    note: 'Fièvre ictérique après contact eaux stagnantes — leptospirose ictéro-hémorragique
+      (Weil) à évoquer en priorité : urgence (voir règles sévérité) ; écarter paludisme
+      sévère (TDR immédiat) et fièvre jaune (statut vaccinal) qui peuvent coexister'
+  evidence:
+  - eu-who-lepto-002
+- id: lepto-susp-hepatorenal-005
+  action: raise_suspicion
+  priority: 59
+  weight: 0.45
+  description: Fièvre + hépatite + atteinte rénale (Weil fruste)
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: jaundice
+    - any:
+      - symptom: oliguria
+      - lab_numeric:
+          test: creatinine
+          gte: 1.5
+  disease: leptospirosis
+  then:
+    disease: leptospirosis
+    weight: 0.45
+    note: 'Fièvre + ictère + atteinte rénale — syndrome de Weil : leptospirose sévère jusqu''à
+      preuve du contraire (hospitalisation, pénicilline G IV)'
+  evidence:
+  - eu-who-lepto-002

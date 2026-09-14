@@ -1,0 +1,38 @@
+version: 1
+domain: fever_travel
+rules:
+- id: hcid-esc-isolate-001
+  action: escalate
+  priority: 99
+  weight: 0.5
+  description: Isolement MVH
+  when:
+    any:
+    - red_flag_code: vhf_suspected
+    - red_flag_code: vhf_suspected_marburg
+    - red_flag_code: lassa_suspected
+    - red_flag_code: vhf_generic_suspected
+  disease: ebola
+  then:
+    level: isolation
+    message: Suspicion MVH — ISOLEMENT IMMÉDIAT (chambre dédiée), équipe formée, limiter les contacts,
+      registre des exposés
+  evidence:
+  - who-ebola-2024
+- id: hcid-esc-no-invasive-002
+  action: inform
+  priority: 99
+  weight: 0.5
+  description: Limite gestes invasifs
+  when:
+    any:
+    - red_flag_code: vhf_suspected
+    - red_flag_code: lassa_suspected
+    - red_flag_code: vhf_generic_suspected
+  disease: ebola
+  then:
+    message: 'AVANT tout geste invasif (PL, cathéter) : coordination avec l''équipe de réponse aux épidémies
+      — RT-PCR de confirmation à visée thérapeutique seulement'
+    topic: safety
+  evidence:
+  - who-ebola-2024

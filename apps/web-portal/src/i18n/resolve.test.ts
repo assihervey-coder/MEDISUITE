@@ -17,10 +17,10 @@ describe("i18n resolve (pur)", () => {
     }
   });
 
-  it("87 clés × 4 langues (nav + 24 modules + écrans fins v0.14 + écrans v0.15)", () => {
-    expect(Object.keys(translations.fr)).toHaveLength(87);
+  it("88 clés × 4 langues (nav + TropiRAG + 24 modules + écrans fins v0.14 + écrans v0.15)", () => {
+    expect(Object.keys(translations.fr)).toHaveLength(88);
     for (const lang of LANGS) {
-      expect(Object.keys(translations[lang])).toHaveLength(87);
+      expect(Object.keys(translations[lang])).toHaveLength(88);
     }
   });
 

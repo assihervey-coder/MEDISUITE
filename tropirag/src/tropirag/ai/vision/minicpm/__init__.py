@@ -1,0 +1,1 @@
+"""MiniCPM-V — triage image."""

@@ -1,0 +1,30 @@
+unit_id: eu-draft-who-malaria-guide-extrait-006
+source_id: who-malaria-guide-extrait
+text: Le paludisme simple à P. falciparum non compliqué se traite par combinaison
+  à base d'artémisinine (CTA) en cure de trois jours. Le paludisme sévère relève de
+  l'artésunate IV pendant au moins 24 heures, relayé par un traitement oral complet
+  dès l'amélioration. La quinine IV reste une alternative en cas d'indisponibilité
+  de l'artésunate. La primaquine, utilisée pour les formes à P. vivax ou ovale, est
+  contre-indiquée chez la femme enceinte et en cas de déficit en G6PD.
+section: 5. Traitement
+topics:
+- strong_recommendation
+- treatment
+diseases:
+- malaria
+- severe_malaria
+symptom_codes: []
+drug_codes:
+- artesunate_iv
+- primaquine
+- quinine_iv
+test_codes: []
+recommendation_strength: strong
+chunk_index: 5
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 46080ccec5a1551b8c34a3b640d28d1ee881e25e175bd036fbfee2c6cb0fe354
+  source_path: data/raw/guidelines/who-malaria-guide-extrait.md
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

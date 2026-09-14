@@ -1,0 +1,19 @@
+unit_id: eu-who-lepto-004
+source_id: who-lepto
+section: Diagnostic biologique
+text: 'Diagnostic de la leptospirose : PCR sanguine (ou LCR) positive surtout pendant la
+  première semaine ; sérologie IgM ELISA à partir de la fin de la première semaine,
+  micro-agglutination (MAT) en laboratoire de référence pour la confirmation et la
+  sérotypie. Bilan de gravité obligatoire au diagnostic : NFS-plaquettes (thrombopénie),
+  créatinine (insuffisance rénale de Weil), bilan hépatique (ictère, cytolyse),
+  ionogramme et hémostase en cas de forme sévère. Le diagnostic différentiel des fièvres
+  ictériques en Afrique de l''Ouest inclut le paludisme sévère, la fièvre jaune, les
+  hépatites virales et les septicémies à bacilles Gram négatif.'
+topics:
+- diagnosis
+- pcr
+- serology
+diseases:
+- leptospirosis
+jurisdiction: INT
+language: fr

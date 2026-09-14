@@ -1,0 +1,278 @@
+{
+  "suite": "clinical_accuracy",
+  "generated_at": "2026-09-14T23:46:18",
+  "passed": true,
+  "metrics": [
+    {
+      "name": "case_accuracy",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "passed": 14,
+        "total": 14
+      }
+    },
+    {
+      "name": "dim_ai_gate",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 6
+      }
+    },
+    {
+      "name": "dim_differential_top3",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 14
+      }
+    },
+    {
+      "name": "dim_drug_ibuprofen",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 2
+      }
+    },
+    {
+      "name": "dim_drug_primaquine",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 4
+      }
+    },
+    {
+      "name": "dim_notifications",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 2
+      }
+    },
+    {
+      "name": "dim_red_flags",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 2
+      }
+    },
+    {
+      "name": "dim_severity",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 5
+      }
+    },
+    {
+      "name": "dim_test_cbc",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 2
+      }
+    },
+    {
+      "name": "dim_test_rdt_malaria",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 2
+      }
+    },
+    {
+      "name": "dim_top_differential",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 3
+      }
+    },
+    {
+      "name": "dim_urgency",
+      "value": 1.0,
+      "threshold": 0.95,
+      "passed": true,
+      "details": {
+        "n": 7
+      }
+    }
+  ],
+  "cases": [
+    {
+      "passed": true,
+      "checks": {
+        "urgency": true,
+        "severity": true,
+        "red_flags": true,
+        "ai_gate": true,
+        "top_differential": true,
+        "differential_top3": true,
+        "escalation_transfer": true,
+        "test_rdt_malaria": true,
+        "test_thick_smear": true
+      },
+      "failed_dimensions": [],
+      "case_id": "eval-malaria-severe-01"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "urgency": true,
+        "severity": true,
+        "red_flags": true,
+        "ai_gate": true,
+        "top_differential": true,
+        "differential_top3": true,
+        "test_rdt_malaria": true,
+        "drug_primaquine": true
+      },
+      "failed_dimensions": [],
+      "case_id": "eval-malaria-pregnancy-02"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "urgency": true,
+        "severity": true,
+        "ai_gate": true,
+        "differential_top3": true,
+        "test_dengue_ns1": true,
+        "test_cbc": true,
+        "drug_ibuprofen": true,
+        "drug_aspirin": true
+      },
+      "failed_dimensions": [],
+      "case_id": "eval-dengue-warning-03"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "ai_gate": true,
+        "differential_top3": true,
+        "test_blood_culture": true,
+        "test_antibiogram": true,
+        "family_typ-xdr": true
+      },
+      "failed_dimensions": [],
+      "case_id": "eval-typhoid-xdr-04"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "urgency": true,
+        "severity": true,
+        "notifications": true,
+        "ai_gate": true,
+        "differential_top3": true,
+        "escalation_isolation": true
+      },
+      "failed_dimensions": [],
+      "case_id": "eval-vhf-isolation-05"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "urgency": true,
+        "notifications": true,
+        "differential_top3": true,
+        "test_lepto_pcr": true,
+        "test_lepto_serology": true,
+        "drug_ibuprofen": true
+      },
+      "failed_dimensions": [],
+      "case_id": "eval-lepto-weil-06"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "urgency": true,
+        "severity": true,
+        "ai_gate": true,
+        "top_differential": true,
+        "differential_top3": true,
+        "test_blood_culture_men": true,
+        "test_cbc": true
+      },
+      "failed_dimensions": [],
+      "case_id": "eval-meningo-purpura-07"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "urgency": true,
+        "differential_top3": true,
+        "drug_ceftriaxone": true,
+        "family_scd": true
+      },
+      "failed_dimensions": [],
+      "case_id": "eval-scd-crisis-08"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "differential_top3": true
+      },
+      "failed_dimensions": [],
+      "case_id": "syn-malaria-peds-12y"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "differential_top3": true
+      },
+      "failed_dimensions": [],
+      "case_id": "syn-malaria-peds-1y"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "differential_top3": true
+      },
+      "failed_dimensions": [],
+      "case_id": "syn-malaria-peds-4y"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "differential_top3": true,
+        "drug_primaquine": true
+      },
+      "failed_dimensions": [],
+      "case_id": "syn-malaria-preg-t1"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "differential_top3": true,
+        "drug_primaquine": true
+      },
+      "failed_dimensions": [],
+      "case_id": "syn-malaria-preg-t2"
+    },
+    {
+      "passed": true,
+      "checks": {
+        "differential_top3": true,
+        "drug_primaquine": true
+      },
+      "failed_dimensions": [],
+      "case_id": "syn-malaria-preg-t3"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+name: dengue-signes-alarme
+description: Douleur abdominale + vomissements + saignement → signes d'alarme
+case:
+  patient:
+    age_years: 25
+    sex: female
+  symptoms:
+  - code: fever
+    onset: '2026-09-06'
+  - code: headache
+  - code: myalgia
+  - code: abdominal_pain
+    severity: severe
+  - code: vomiting
+  travel:
+    segments:
+    - country: CI
+      region: lagunes
+      arrival: '2026-08-25'
+      departure: '2026-09-01'
+  consultation_date: '2026-09-09'
+expect:
+  rules_include:
+  - den-susp-core-001
+  drugs_blocked_include:
+  - aspirin
+  - ibuprofen

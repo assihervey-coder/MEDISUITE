@@ -1,0 +1,50 @@
+{
+  "suite": "grounding_citations",
+  "generated_at": "2026-09-14T23:46:18",
+  "passed": true,
+  "metrics": [
+    {
+      "name": "citation_accuracy",
+      "value": 1.0,
+      "threshold": 0.9,
+      "passed": true,
+      "details": {
+        "cases": 8
+      }
+    }
+  ],
+  "cases": [
+    {
+      "score": 1.0,
+      "problems": []
+    },
+    {
+      "score": 1.0,
+      "problems": []
+    },
+    {
+      "score": 1.0,
+      "problems": []
+    },
+    {
+      "score": 1.0,
+      "problems": []
+    },
+    {
+      "score": 1.0,
+      "problems": []
+    },
+    {
+      "score": 1.0,
+      "problems": []
+    },
+    {
+      "score": 1.0,
+      "problems": []
+    },
+    {
+      "score": 1.0,
+      "problems": []
+    }
+  ]
+}

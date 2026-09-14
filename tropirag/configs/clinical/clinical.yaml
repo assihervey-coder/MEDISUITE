@@ -1,0 +1,5 @@
+clinical:
+  scope: fever_travel
+  region: west_africa
+  primary_jurisdiction: CI
+  consultation_timezone: Africa/Abidjan

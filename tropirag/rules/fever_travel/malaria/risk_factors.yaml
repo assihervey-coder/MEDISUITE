@@ -1,0 +1,58 @@
+version: 1
+domain: fever_travel
+rules:
+- id: mal-rf-child-001
+  action: raise_suspicion
+  priority: 70
+  weight: 0.15
+  description: Enfant en zone d'endémie
+  when:
+    all:
+    - patient: child
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - exposure: malaria_exposure
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.15
+    note: Enfant < 15 ans en zone d'endémie — vulnérabilité accrue au paludisme sévère
+  evidence:
+  - who-malaria-2023
+- id: mal-rf-pregnancy-001
+  action: raise_suspicion
+  priority: 75
+  weight: 0.2
+  description: Grossesse en zone d'endémie
+  when:
+    all:
+    - patient: pregnant
+    - *id001
+    - exposure: malaria_exposure
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.2
+    note: Grossesse + zone d'endémie — risque de paludisme gestationnel et d'anémie maternelle
+  evidence:
+  - who-malaria-2023
+- id: mal-rf-sickle-001
+  action: raise_suspicion
+  priority: 70
+  weight: 0.2
+  description: Drépanocytose
+  when:
+    all:
+    - condition: drépanocytose
+    - *id001
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.2
+    note: Drépanocytose — épisodes palustres plus sévères
+  evidence:
+  - msf-malaria-guidelines

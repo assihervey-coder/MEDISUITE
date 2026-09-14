@@ -10,6 +10,7 @@ import BiRadsViewer from "./features/imaging/BiRadsViewer";
 import TriageBoard from "./features/emergency/TriageBoard";
 import StrokeCode from "./features/neurology/StrokeCode";
 import FusionViewer from "./features/multimodal/FusionViewer";
+import TropiRagConsult from "./features/decision/TropiRagConsult";
 import AuditLog from "./features/admin/AuditLog";
 import Admin from "./features/admin/Admin";
 import About from "./features/about/About";
@@ -45,6 +46,7 @@ const NAV_MAIN: Array<{ to: string; icon: string; key: MsgKey }> = [
   { to: "/laboratory", icon: "🧪", key: "laboratory" },
   { to: "/emergency", icon: "🚨", key: "emergency" },
   { to: "/code-avc", icon: "🧠", key: "nav.code_avc" },
+  { to: "/decision", icon: "🧭", key: "nav.tropirag" },
   { to: "/multimodal", icon: "🧠", key: "nav.multimodal" },
   { to: "/epidemiologie", icon: "🌍", key: "nav.epidemiologie" },
   { to: "/audit", icon: "🔐", key: "nav.audit" },
@@ -140,6 +142,7 @@ function AppShell() {
           <Route path="/laboratory" element={<Laboratory />} />
           <Route path="/emergency" element={<TriageBoard />} />
           <Route path="/code-avc" element={<StrokeCode />} />
+          <Route path="/decision" element={<TropiRagConsult />} />
           <Route path="/multimodal" element={<FusionViewer />} />
           <Route path="/epidemiologie" element={<Epidemiology />} />
           <Route path="/audit" element={<AuditLog />} />

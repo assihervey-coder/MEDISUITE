@@ -1,0 +1,22 @@
+hardware:
+  topology: 4 nodes x 8 GPU x 48GB
+  nodes:
+    node1:
+    - medasr
+    - whisper
+    - bge-m3
+    - qwen-reranker
+    - medgemma
+    - minicpm
+    - vector-db
+    node2:
+    - med42-70b (TP=4)
+    - openbiollm-70b (TP=4)
+    node3:
+    - med42-70b replica (TP=4)
+    - openbiollm-70b replica (TP=4)
+    node4:
+    - deepseek-r1-distill-32b
+    - standby
+    - nightly-batch
+  rule: aucun TP inter-nœuds sans InfiniBand

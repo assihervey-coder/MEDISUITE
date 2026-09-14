@@ -1,0 +1,18 @@
+unit_id: eu-who-vhf-001
+source_id: who-ebola-2024
+section: Définition de cas Ebola/Marburg
+text: 'Toute fièvre ≥ 38 °C chez une personne ayant séjourné ou transité dans une zone d''épidémie de
+  fièvre hémorragique virale (Ebola, Marburg) dans les 21 jours précédents, OU ayant été en contact avec
+  un cas suspect/confirmé, un décès ou des funérailles en zone d''épidémie, doit être considérée comme
+  cas suspect jusqu''à preuve du contraire : isolement immédiat et test RT-PCR de confirmation.'
+topics:
+- vhf
+- ebola
+- marburg
+- isolation
+- 21-days
+diseases:
+- ebola
+- marburg
+jurisdiction: INT
+language: fr

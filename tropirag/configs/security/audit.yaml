@@ -1,0 +1,11 @@
+audit:
+  events:
+  - case_created
+  - analysis_completed
+  - refusal
+  - safety_gate_decision
+  - evidence_query
+  - inference_call
+  - notification
+  retention_days: 365
+  format: jsonl

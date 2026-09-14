@@ -1,0 +1,88 @@
+{
+  "suite": "clinical_differential",
+  "generated_at": "2026-09-12T05:55:50",
+  "passed": true,
+  "metrics": [
+    {
+      "name": "differential_top1_rate",
+      "value": 1.0,
+      "threshold": 0.5,
+      "passed": true,
+      "details": {
+        "n_with_expectation": 3,
+        "total_cases": 8
+      }
+    },
+    {
+      "name": "differential_hit_rate_top3",
+      "value": 1.0,
+      "threshold": 0.9,
+      "passed": true,
+      "details": {
+        "n": 8
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case": "eval-malaria-severe-01",
+      "top3": [
+        "malaria",
+        "yellow_fever",
+        "leptospirosis"
+      ]
+    },
+    {
+      "case": "eval-malaria-pregnancy-02",
+      "top3": [
+        "malaria",
+        "enteric_fever"
+      ]
+    },
+    {
+      "case": "eval-dengue-warning-03",
+      "top3": [
+        "malaria",
+        "dengue",
+        "enteric_fever"
+      ]
+    },
+    {
+      "case": "eval-typhoid-xdr-04",
+      "top3": [
+        "malaria",
+        "enteric_fever"
+      ]
+    },
+    {
+      "case": "eval-vhf-isolation-05",
+      "top3": [
+        "ebola",
+        "lassa",
+        "malaria"
+      ]
+    },
+    {
+      "case": "eval-lepto-weil-06",
+      "top3": [
+        "leptospirosis",
+        "malaria",
+        "yellow_fever"
+      ]
+    },
+    {
+      "case": "eval-meningo-purpura-07",
+      "top3": [
+        "meningococcal"
+      ]
+    },
+    {
+      "case": "eval-scd-crisis-08",
+      "top3": [
+        "invasive_bacterial_infection",
+        "acute_hemolysis",
+        "osteomyelitis"
+      ]
+    }
+  ]
+}

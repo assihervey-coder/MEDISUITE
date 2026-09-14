@@ -1,0 +1,50 @@
+version: 1
+domain: fever_travel
+rules:
+- id: typ-susp-core-001
+  action: raise_suspicion
+  priority: 55
+  weight: 0.35
+  description: Suspiction typhoïde
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - fever_duration_days:
+        gte: 3
+    - exposure: malaria_exposure
+    - any:
+      - symptom: abdominal_pain
+      - symptom: constipation
+      - symptom: diarrhea
+      - symptom: headache
+  disease: enteric_fever
+  then:
+    disease: enteric_fever
+    weight: 0.35
+    note: Fièvre ≥ 3 jours + symptômes digestifs ou céphalées en zone d'endémie — fièvre typhoïde à considérer
+  evidence:
+  - who-typhoid-2018
+  - cdc-typhoid
+- id: typ-susp-prolonged-002
+  action: raise_suspicion
+  priority: 50
+  weight: 0.25
+  description: Fièvre prolongée orientant typhoïde
+  when:
+    all:
+    - *id001
+    - fever_duration_days:
+        gte: 7
+    - exposure: malaria_exposure
+  disease: enteric_fever
+  then:
+    disease: enteric_fever
+    weight: 0.25
+    note: Fièvre prolongée > 7 jours — typhoïde et causes chroniques à explorer
+  evidence:
+  - who-typhoid-2018

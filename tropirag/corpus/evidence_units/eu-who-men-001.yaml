@@ -1,0 +1,16 @@
+unit_id: eu-who-men-001
+source_id: who-meningitis
+section: Méningite bactérienne
+text: 'Devant fièvre + raideur de nuque ou purpura, l''antibiothérapie parentérale (ceftriaxone) doit
+  être administrée DANS L''HEURE, avant tout transfert ou ponction lombaire si celle-ci retarde le traitement.
+  Le purpura fulminans (purpura extensif + choc) est une urgence absolue : antibiotique immédiat, remplissage,
+  transfert en réanimation. Prophylaxie des contacts et notification obligatoire.'
+topics:
+- meningitis
+- ceftriaxone
+- emergency
+- purpura
+diseases:
+- meningococcal
+jurisdiction: INT
+language: fr

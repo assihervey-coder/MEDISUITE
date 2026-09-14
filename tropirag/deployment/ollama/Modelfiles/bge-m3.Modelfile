@@ -1,0 +1,7 @@
+# BGE-M3 — Embeddings hybrides multilingues (nœud 1)
+FROM bge-m3
+
+PARAMETER temperature 0.0
+
+SYSTEM """Embedding model. Return dense vector for RAG retrieval.
+No text generation. Do not add commentary."""

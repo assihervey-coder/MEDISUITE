@@ -1,0 +1,5 @@
+alerts:
+  rules_zero_loaded: critique — le moteur ne doit jamais démarrer sans règles
+  evidence_zero_units: critique — RAG sans corpus
+  safety_gate_refusal_rate_gt: 0.5 sur 1h → investigation
+  circuit_breaker_open: gateway IA down — vérifier les nœuds

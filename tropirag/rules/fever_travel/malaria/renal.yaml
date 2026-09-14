@@ -1,0 +1,174 @@
+version: 1
+domain: fever_travel
+# =============================================================================
+# V1.2 — Paludisme rénal : AKI et épuration extrarénale (EER)
+#
+# L'insuffisance rénale aiguë est un critère OMS de paludisme sévère (créat > 265
+# µmol/L ≈ 3 mg/dL). L'artésunate IV reste le traitement étiologique : la
+# clairance parasitaire conditionne la récupération rénale. L'EER est indiquée
+# en urgence sur : hyperkaliémie réfractaire ≥ 6,5 mmol/L, surcharge œdémateuse
+# avec œdème pulmonaire, encéphalopathie urémique, acidose sévère pH ≤ 7,15.
+# Modalité selon le niveau de structure : dialyse péritonéale en district,
+# hémodialyse intermittente / CVVHDF au CHU.
+#
+# Conventions d'unités : créatinine normalisée en mg/dL (µmol/L converti à
+# l'ingestion, ÷ 88,4) ; kaliémie en mmol/L ; pH en valeur directe.
+# Sources : who-malaria-severe-2023.
+# =============================================================================
+rules:
+# --- 1. AKI du paludisme sévère — critère OMS --------------------------------
+- id: mal-renal-aki-001
+  action: red_flag
+  priority: 97
+  weight: 0.5
+  description: AKI — critère de paludisme sévère
+  when:
+    all:
+    - exposure: malaria_exposure
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - any:
+      - lab_numeric:
+          test: creatinine
+          gte: 3.0
+      - all:
+        - lab_numeric:
+            test: creatinine
+            gte: 1.5
+        - symptom: oliguria
+  disease: severe_malaria
+  then:
+    code: malaria_acute_kidney_injury
+    severity: critical
+    urgency: immediate
+    message: 'Insuffisance rénale aiguë (créatinine ≥ 3 mg/dL ≈ 265 µmol/L, ou ≥ 1,5 mg/dL
+      avec oligurie) = critère OMS de paludisme sévère : artésunate IV IMMÉDIAT + bilan rénal
+      complet (ionogramme, urée, gaz du sang) + anticipation de l''épuration extrarénale'
+  evidence:
+  - who-malaria-severe-2023
+- id: mal-renal-oliguria-002
+  action: red_flag
+  priority: 87
+  weight: 0.5
+  description: Oligurie en contexte palustre
+  when:
+    all:
+    - exposure: malaria_exposure
+    - symptom: oliguria
+  disease: severe_malaria
+  then:
+    code: malaria_oliguric_aki
+    severity: severe
+    urgency: emergency
+    message: 'Oligurie en contexte palustre : créatininémie + kaliémie URGENTES — AKI du
+      paludisme sévère à confirmer ; hydratation contrôlée avec diurèse horaire (pas de
+      remplissage aveugle)'
+  evidence:
+  - who-malaria-severe-2023
+
+# --- 2. Urgences métaboliques déclenchant l'EER ---------------------------------
+- id: mal-renal-hyperk-003
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Hyperkaliémie menaçante
+  when:
+    all:
+    - exposure: malaria_exposure
+    - lab_numeric:
+        test: potassium
+        gte: 6.5
+  disease: severe_malaria
+  then:
+    code: hyperkalemia_emergency
+    severity: critical
+    urgency: immediate
+    message: 'Hyperkaliémie ≥ 6,5 mmol/L : protection cardiaque immédiate (calcium IV),
+      insuline-glucose, échangeurs de potassium — EER si réfractaire ; ECG si disponible'
+  evidence:
+  - who-malaria-severe-2023
+- id: mal-renal-rrt-indicated-004
+  action: red_flag
+  priority: 96
+  weight: 0.5
+  description: Indication d'épuration extrarénale
+  when:
+    all:
+    - red_flag_code: malaria_acute_kidney_injury
+    - any:
+      - lab_numeric:
+          test: potassium
+          gte: 6.5
+      - symptom: dyspnea
+      - symptom: coma
+      - symptom: confusion
+      - lab_numeric:
+          test: blood_gas
+          component: ph
+          lte: 7.15
+  disease: severe_malaria
+  then:
+    code: malaria_rrt_indication
+    severity: critical
+    urgency: immediate
+    message: 'Indication d''épuration extrarénale URGENTE : hyperkaliémie réfractaire,
+      surcharge avec œdème pulmonaire, encéphalopathie ou acidose sévère (pH ≤ 7,15).
+      Transfert vers structure disposant de la dialyse ; artésunate IV poursuivi (la
+      clairance parasitaire conditionne la récupération rénale)'
+  evidence:
+  - who-malaria-severe-2023
+
+# --- 3. Escalade et monitorage --------------------------------------------------
+- id: mal-renal-transfer-005
+  action: escalate
+  priority: 91
+  weight: 0.5
+  description: AKI — transfert vers structure avec dialyse
+  when:
+    red_flag_code: malaria_acute_kidney_injury
+  then:
+    level: refer_hospital
+    message: 'Paludisme avec atteinte rénale : transfert vers une structure disposant de
+      l''épuration extrarénale. En district : dialyse péritonéale possible ; au CHU :
+      hémodialyse intermittente ou CVVHDF selon l''hémodynamique. Bilan complet avant
+      transfert + artésunate IV en pré-référence'
+  evidence:
+  - who-malaria-severe-2023
+- id: mal-renal-monitor-006
+  action: require_test
+  priority: 62
+  weight: 0.5
+  description: Surveillance biologique de l'AKI
+  when:
+    all:
+    - exposure: malaria_exposure
+    - red_flag_code: malaria_acute_kidney_injury
+  then:
+    tests:
+    - creatinine
+    - urea
+    - potassium
+    - blood_gas
+    - cbc
+    reason: 'Surveillance de l''AKI du paludisme sévère : créatinine, urée, ionogramme,
+      gaz du sang (acidose lactique), NFS — répéter selon protocole réanimation'
+  evidence:
+  - who-malaria-severe-2023
+
+# --- 4. Néphroprotection médicamenteuse ----------------------------------------
+- id: mal-renal-avoid-nephrotoxins-007
+  action: contraindicate_drug
+  priority: 63
+  weight: 0.5
+  description: AKI — éviter les néphrotoxiques
+  when:
+    red_flag_code: malaria_acute_kidney_injury
+  then:
+    drug: ibuprofen
+    reason: 'AKI en cours : néphrotoxicité des AINS — antalgique de première intention :
+      paracétamol ; réévaluer toutes les posologies en fonction de la clairance rénale'
+  evidence:
+  - who-malaria-severe-2023

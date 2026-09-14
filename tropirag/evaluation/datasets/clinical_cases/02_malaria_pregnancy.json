@@ -1,0 +1,54 @@
+{
+  "case_id": "eval-malaria-pregnancy-02",
+  "description": "Paludisme gravidique 2e trimestre — artésunate IV préféré",
+  "payload": {
+    "patient": {
+      "age_years": 26,
+      "sex": "female",
+      "pregnant": "pregnant",
+      "gestational_age_weeks": 22
+    },
+    "symptoms": [
+      {
+        "code": "fever",
+        "onset": "2026-09-06"
+      },
+      {
+        "code": "chills"
+      },
+      {
+        "code": "headache"
+      }
+    ],
+    "travel": {
+      "segments": [
+        {
+          "country": "CI",
+          "arrival": "2026-08-01",
+          "departure": "2026-09-04"
+        }
+      ]
+    },
+    "consultation_date": "2026-09-09"
+  },
+  "expect": {
+    "top_differential": "malaria",
+    "differential_in_top3": [
+      "malaria",
+      "severe_malaria"
+    ],
+    "urgency_at_least": "emergency",
+    "severity_at_least": "severe",
+    "red_flags_include": [
+      "malaria_pregnancy_urgent"
+    ],
+    "escalation_includes": [],
+    "drug_constraints_include": [
+      "primaquine"
+    ],
+    "suggested_tests_include": [
+      "rdt_malaria"
+    ],
+    "ai_synthesis_allowed": false
+  }
+}

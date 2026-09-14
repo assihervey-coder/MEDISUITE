@@ -1,0 +1,3 @@
+temporal:
+  source: core.constants.INCUBATION_WINDOWS_DAYS
+  unknown_dates_policy: never_exclude

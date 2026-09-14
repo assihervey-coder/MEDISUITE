@@ -1,0 +1,54 @@
+version: 1
+domain: fever_travel
+rules:
+- id: esc-any-red-flag-001
+  action: escalate
+  priority: 94
+  weight: 0.5
+  description: Escalade sur signes de gravité majeurs
+  when:
+    symptom_any:
+    - coma
+    - convulsions
+    - prostration
+    - hematemesis
+    - melena
+  then:
+    level: emergency_transfer
+    message: Présence de signes de gravité — transfert médicalisé et monitorage
+  evidence:
+  - who-malaria-severe-2023
+- id: esc-infant-fever-001
+  action: escalate
+  priority: 80
+  weight: 0.5
+  description: Nourrisson fébrile
+  when:
+    all:
+    - patient: infant
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+  then:
+    level: refer_hospital
+    message: Nourrisson fébrile < 12 mois — évaluation hospitalière recommandée quel que soit le TDR
+  evidence:
+  - who-malaria-2023
+- id: esc-pregnant-fever-001
+  action: escalate
+  priority: 85
+  weight: 0.5
+  description: Fièvre grossesse
+  when:
+    all:
+    - patient: pregnant
+    - *id001
+  then:
+    level: refer_hospital
+    message: 'Fièvre chez femme enceinte en zone d''endémie — risque materno-fœtal : évaluation rapide,
+      paludisme à exclure'
+  evidence:
+  - who-malaria-2023

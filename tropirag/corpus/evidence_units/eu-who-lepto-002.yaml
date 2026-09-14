@@ -1,0 +1,20 @@
+unit_id: eu-who-lepto-002
+source_id: who-lepto
+section: Formes sévères — maladie de Weil
+text: 'La forme sévère (maladie de Weil) associe fièvre, ictère, insuffisance rénale aiguë
+  et atteintes multiviscérales : hémorragies (alvéolaires, digestives), myocardite avec
+  troubles du rythme, parfois méningite. Mortalité 5 à 15 % sans traitement, jusqu''à 50 %
+  dans les formes avec hémorragie alvéolaire. Prise en charge : hospitalisation urgente,
+  pénicilline G IV, réanimation des défaillances (remplissage prudent, oxygénothérapie,
+  support transfusionnel) et éviction stricte des AINS qui aggravent l''insuffisance rénale
+  et le risque hémorragique. Toute fièvre ictérique avec oligurie après exposition aux eaux
+  contaminées est une urgence vitale.'
+topics:
+- weil-disease
+- icterus
+- kidney-failure
+- hemorrhage
+diseases:
+- leptospirosis
+jurisdiction: INT
+language: fr

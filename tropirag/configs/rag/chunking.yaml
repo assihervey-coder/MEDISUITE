@@ -1,0 +1,5 @@
+chunking:
+  mode: semantic_sections
+  target_tokens: 180
+  overlap_sentences: 1
+  min_chars: 80

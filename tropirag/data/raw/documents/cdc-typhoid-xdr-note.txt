@@ -1,0 +1,37 @@
+NOTE EPIDEMIOLOGIQUE — FIEVRE TYPHOIDE ET RESISTANCE XDR
+Fixture interne de test TropiRAG — 20/10/2023 — Abidjan, Cote d'Ivoire
+
+Le Centre de coordination note la circulation continue de souches de
+Salmonella Typhi resistantes aux antibiotiques de reference dans le
+sous-continent indien, avec extension documentee vers l'Afrique de l'Est.
+Les voyageurs au retour du Pakistan et de l'Afghanistan doivent etre
+consideres comme exposes a la fièvre typhoide XDR jusqu'a preuve du
+contraire.
+
+1. DEFINITION DE CAS
+
+Cas suspect : toute personne presentant une fievre persistante superieure
+a trois jours, avec cephaees, douleurs abdominales, et constipation ou
+diarrhee, dans les 3 a 60 jours suivant un sejour dans une zone de
+transmission.
+
+2. DIAGNOSTIC
+
+L'hémoculture est l'examen de reference et doit etre realisee avant toute
+antibiotherapie. L'antibiogramme est indispensable en zone XDR : il guide
+le relais therapeutique. La serologie Widal est peu specifique et ne doit
+plus etre utilisee seule.
+
+3. PRISE EN CHANCE EN CONTEXTE XDR
+
+En cas de sejour dans un pays a haut risque XDR, l'azithromycine orale est
+recommandee en premiere intention pour les formes non compliquees. Les
+fluoroquinolones sont contre-indiquees, ainsi que les cephalosporines de
+troisieme generation orales comme la cefixime, en cas de XDR confirmee.
+Les formes graves, avec perforation digestive ou choc septique, relèvent
+du meropeneme intraveineux en milieu hospitalier.
+
+4. NOTIFICATION
+
+Tout cas confirme de fièvre typhoide XDR doit etre notifie immediatement
+aux autorites sanitaires de district et consolide au niveau national.

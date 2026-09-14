@@ -1,0 +1,15 @@
+unit_id: eu-who-mal-003
+source_id: who-malaria-2023
+section: Traitement du paludisme simple
+text: Le traitement du paludisme simple à P. falciparum repose sur les combinaisons à base d'artémisinine
+  (CTA), notamment l'artéméther-luméfantrine, pris avec un aliment ou du lait pour améliorer l'absorption.
+  Le traitement doit être complet (généralement 3 jours). En cas de vomissement dans l'heure suivant la
+  prise, réadministrer la dose.
+topics:
+- malaria
+- treatment
+- act
+diseases:
+- malaria
+jurisdiction: INT
+language: fr

@@ -1,0 +1,125 @@
+version: 1
+domain: fever_travel
+# =============================================================================
+# V1.3 — Leptospirose : traitement et contraintes médicamenteuses
+#
+# Forme légère/modérée : doxycycline orale. Forme sévère (Weil, hémorragie
+# alvéolaire) : pénicilline G IV (ou ceftriaxone IV si indisponible).
+# AINS contre-indiqués dans toute leptospirose suspectée : néphrotoxicité
+# propre + risque hémorragique aggravé. Antipyrétique : paracétamol.
+#
+# ⚠️ Aucune posologie chiffrée ici : les doses relèvent du clinicien et du
+# protocole national (le LLM n'émet jamais de posologie — invariant G4).
+# Sources : who-lepto (eu-who-lepto-003).
+# =============================================================================
+rules:
+# --- 1. Antibiothérapie adaptée à la sévérité ----------------------------------
+- id: lepto-mgmt-mild-001
+  action: recommend_drug
+  priority: 60
+  weight: 0.5
+  description: Leptospirose non sévère — doxycycline orale
+  when:
+    all:
+    - disease: leptospirosis
+    - not:
+        any:
+        - red_flag_code: leptospirosis_weil_disease
+        - red_flag_code: leptospirosis_pulmonary_hemorrhage
+        - red_flag_code: leptospirosis_myocarditis
+  disease: leptospirosis
+  then:
+    drug: doxycycline
+    reason: 'Leptospirose à l''état léger/modéré : doxycycline orale selon protocole (éviter
+      si grossesse/allaitement — alternative selon protocole national) ; réévaluer à 48 h'
+  evidence:
+  - eu-who-lepto-003
+- id: lepto-mgmt-severe-002
+  action: recommend_drug
+  priority: 95
+  weight: 0.5
+  description: Leptospirose sévère — pénicilline G IV
+  when:
+    all:
+    - any:
+      - red_flag_code: leptospirosis_weil_disease
+      - red_flag_code: leptospirosis_pulmonary_hemorrhage
+      - red_flag_code: leptospirosis_myocarditis
+  disease: leptospirosis
+  then:
+    drug: benzylpenicillin
+    reason: 'Forme sévère de leptospirose : pénicilline G IV (traitement de référence) selon
+      protocole hospitalier — ceftriaxone IV en alternative ; durée selon évolution clinique
+      et biologique'
+  evidence:
+  - eu-who-lepto-003
+# --- 2. AINS interdits (néphrotoxicité + hémorragie) ---------------------------
+- id: lepto-mgmt-nsaid-ibuprofen-003
+  action: contraindicate_drug
+  priority: 92
+  weight: 0.5
+  description: Ibuprofène interdit en contexte leptospirose
+  when:
+    all:
+    - disease: leptospirosis
+  disease: leptospirosis
+  then:
+    drug: ibuprofen
+    forbidden: true
+    reason: 'AINS contre-indiqué en contexte de leptospirose : néphrotoxicité (insuffisance
+      rénale de Weil) et risque hémorragique — antipyrétique : paracétamol'
+  evidence:
+  - eu-who-lepto-003
+- id: lepto-mgmt-nsaid-aspirin-004
+  action: contraindicate_drug
+  priority: 92
+  weight: 0.5
+  description: Aspirine interdite en contexte leptospirose
+  when:
+    all:
+    - disease: leptospirosis
+  disease: leptospirosis
+  then:
+    drug: aspirin
+    forbidden: true
+    reason: 'Aspirine contre-indiquée en contexte de leptospirose : risque hémorragique
+      (hémorragies alvéolaires) et néphrotoxicité — antipyrétique : paracétamol'
+  evidence:
+  - eu-who-lepto-003
+- id: lepto-mgmt-nsaid-diclofenac-005
+  action: contraindicate_drug
+  priority: 92
+  weight: 0.5
+  description: Diclofénac interdit en contexte leptospirose
+  when:
+    all:
+    - disease: leptospirosis
+  disease: leptospirosis
+  then:
+    drug: diclofenac
+    forbidden: true
+    reason: 'Diclofénac contre-indiqué en contexte de leptospirose : néphrotoxicité et risque
+      hémorragique — antipyrétique : paracétamol'
+  evidence:
+  - eu-who-lepto-003
+# --- 3. Bilan diagnostique requis ---------------------------------------------
+- id: lepto-mgmt-tests-006
+  action: require_test
+  priority: 62
+  weight: 0.5
+  description: Bilan leptospirose requis
+  when:
+    all:
+    - disease: leptospirosis
+  disease: leptospirosis
+  then:
+    tests:
+    - lepto_pcr
+    - lepto_serology
+    - cbc
+    - creatinine
+    - liver_panel
+    reason: 'Confirmation : PCR sanguine (1re semaine) ou sérologie IgM/MAT (référence) ;
+      évaluation de gravité : NFS-plaquettes, créatinine (Weil), bilan hépatique (ictère)'
+  evidence:
+  - eu-who-lepto-004

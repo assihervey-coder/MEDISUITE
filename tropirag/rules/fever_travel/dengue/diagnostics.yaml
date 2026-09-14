@@ -1,0 +1,28 @@
+version: 1
+domain: fever_travel
+rules:
+- id: den-dx-workup-001
+  action: require_test
+  priority: 72
+  weight: 0.5
+  description: Bilan dengue
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - exposure_risk_gte:
+        disease: dengue
+        level: moderate
+  disease: dengue
+  then:
+    tests:
+    - cbc
+    - dengue_ns1
+    - dengue_igm
+    reason: NFS (plaquettes, hématocrite) + NS1 (J1–J5) ou IgM (après J5) selon la durée
+  evidence:
+  - who-dengue-2024
+  - msf-dengue

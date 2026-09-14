@@ -1,0 +1,155 @@
+version: 1
+domain: fever_travel
+# =============================================================================
+# V1.3 — Leptospirose sévère : maladie de Weil et formes graves
+#
+# Maladie de Weil = triade ictère + insuffisance rénale + atteinte
+# multiviscérale ; mortalité 5-15 % sans traitement. Hémorragie alvéolaire
+# = urgence de réanimation (mortalité jusqu'à 50 %). Myocardite et troubles
+# du rythme : monitoring.
+#
+# Pénicilline G IV = traitement de référence des formes sévères.
+# Sources : who-lepto (eu-who-lepto-002/003).
+# =============================================================================
+rules:
+# --- 1. Maladie de Weil (forme ictéro-hémorragique) ---------------------------
+- id: lepto-sev-weil-001
+  action: red_flag
+  priority: 94
+  weight: 0.5
+  description: Maladie de Weil — ictère + atteinte rénale
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: jaundice
+    - any:
+      - symptom: oliguria
+      - lab_numeric:
+          test: creatinine
+          gte: 1.5
+    - any:
+      - travel: stagnant_water
+      - exposure: rural_stay
+      - symptom: myalgia
+      - symptom: conjunctival_injection
+  disease: leptospirosis
+  then:
+    code: leptospirosis_weil_disease
+    severity: critical
+    urgency: immediate
+    message: 'MALADIE DE WEIL suspectée (fièvre + ictère + atteinte rénale) — urgence vitale :
+      hospitalisation immédiate, pénicilline G IV, hydratation surveillée, éviter tout AINS
+      (néphrotoxicité) ; surveillance diurèse et ionogramme'
+  evidence:
+  - eu-who-lepto-002
+- id: lepto-sev-pulm-hemorrhage-002
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Hémorragie alvéolaire — leptospirose pulmonaire sévère
+  when:
+    all:
+    - symptom: hemoptysis
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - any:
+      - travel: stagnant_water
+      - symptom: myalgia
+      - symptom: conjunctival_injection
+      - symptom: jaundice
+  disease: leptospirosis
+  then:
+    code: leptospirosis_pulmonary_hemorrhage
+    severity: critical
+    urgency: immediate
+    message: 'HÉMORRAGIE ALVÉOLAIRE suspectée dans un contexte de leptospirose — urgence de
+      réanimation : oxygène, position demi-assise, transfert réanimation, pénicilline G IV,
+      surveillance hémodynamique et de l''hémostase'
+  evidence:
+  - eu-who-lepto-002
+- id: lepto-sev-cardiac-003
+  action: red_flag
+  priority: 90
+  weight: 0.4
+  description: Atteinte cardiaque — myocardite leptospirosique
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - vital: temperature_c
+        gte: 38.0
+    - any:
+      - symptom: chest_pain
+      - symptom: palpitations
+    - any:
+      - travel: stagnant_water
+      - symptom: myalgia
+      - symptom: conjunctival_injection
+      - symptom: jaundice
+  disease: leptospirosis
+  then:
+    code: leptospirosis_myocarditis
+    severity: severe
+    urgency: emergency
+    message: 'Douleur thoracique ou palpitations en contexte fébrile avec signes de leptospirose —
+      myocardite possible : ECG + troponine, monitorage rythmique, éviter médicaments allongeant
+      le QT, transfert hospitalier'
+  evidence:
+  - eu-who-lepto-002
+# --- 2. Escalades structure ----------------------------------------------------
+- id: lepto-sev-escalate-004
+  action: escalate
+  priority: 93
+  weight: 0.5
+  description: Leptospirose sévère — transfert hospitalier
+  when:
+    all:
+    - any:
+      - red_flag_code: leptospirosis_weil_disease
+      - red_flag_code: leptospirosis_myocarditis
+  then:
+    level: refer_hospital
+    message: 'Leptospirose sévère (Weil/myocardite) — transfert hospitalier : pénicilline G IV
+      débutée si possible avant transfert, réhydratation prudente, bilan d''hémostase'
+  evidence:
+  - eu-who-lepto-002
+- id: lepto-sev-escalate-icu-005
+  action: escalate
+  priority: 96
+  weight: 0.5
+  description: Hémorragie alvéolaire — transfert réanimation
+  when:
+    all:
+    - red_flag_code: leptospirosis_pulmonary_hemorrhage
+  then:
+    level: emergency_transfer
+    message: 'Syndrome de détresse respiratoire hémorragique — transfert en réanimation,
+      oxygénothérapie, pénicilline G IV continue, produits sanguins disponibles'
+  evidence:
+  - eu-who-lepto-002
+# --- 3. Notification autorité de santé -----------------------------------------
+- id: lepto-sev-notify-006
+  action: notify
+  priority: 88
+  weight: 0.5
+  description: Cas sévère de leptospirose — notification
+  when:
+    all:
+    - any:
+      - red_flag_code: leptospirosis_weil_disease
+      - red_flag_code: leptospirosis_pulmonary_hemorrhage
+  disease: leptospirosis
+  then:
+    authority: public_health
+    reason: 'Leptospirose sévère (Weil/hémorragie alvéolaire) — maladie à déclaration obligatoire :
+      notification aux autorités sanitaires du district (recherche de source hydrique, autres
+      cas exposés)'
+  evidence:
+  - eu-who-lepto-002

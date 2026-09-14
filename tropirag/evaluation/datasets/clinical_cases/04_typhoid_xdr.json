@@ -1,0 +1,48 @@
+{
+  "case_id": "eval-typhoid-xdr-04",
+  "description": "Fièvre typhoïde XDR — retour du Pakistan, azithromycine 1re ligne",
+  "payload": {
+    "patient": {
+      "age_years": 41,
+      "sex": "male"
+    },
+    "symptoms": [
+      {
+        "code": "fever",
+        "onset": "2026-08-28"
+      },
+      {
+        "code": "headache"
+      },
+      {
+        "code": "abdominal_pain"
+      },
+      {
+        "code": "constipation"
+      }
+    ],
+    "travel": {
+      "segments": [
+        {
+          "country": "PK",
+          "arrival": "2026-08-01",
+          "departure": "2026-08-25"
+        }
+      ]
+    },
+    "consultation_date": "2026-09-04"
+  },
+  "expect": {
+    "differential_in_top3": [
+      "enteric_fever"
+    ],
+    "suggested_tests_include": [
+      "blood_culture",
+      "antibiogram"
+    ],
+    "expected_rule_families": [
+      "typ-xdr"
+    ],
+    "ai_synthesis_allowed": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "suite": "ai",
+  "generated_at": "2026-09-14T23:46:18",
+  "passed": true,
+  "metrics": [
+    {
+      "name": "failure_recovery_rate",
+      "value": 1.0,
+      "threshold": 1.0,
+      "passed": true,
+      "details": {
+        "scenarios": 4
+      }
+    }
+  ],
+  "cases": [
+    {
+      "scenario": "deterministic_baseline",
+      "passed": true
+    },
+    {
+      "scenario": "ollama_down_detected",
+      "passed": true
+    },
+    {
+      "scenario": "pipeline_offline_complete",
+      "passed": true
+    },
+    {
+      "scenario": "corrupted_output_blocked",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+version: 1
+domain: fever_travel
+rules:
+- id: sev-fever-extreme-001
+  action: red_flag
+  priority: 88
+  weight: 0.5
+  description: Hyperpyrexie
+  when:
+    vital: temperature_c
+    gte: 41.0
+  then:
+    code: hyperpyrexia
+    severity: severe
+    urgency: emergency
+    message: Hyperpyrexie ≥ 41 °C — urgence, rechercher paludisme sévère et sepsis
+  evidence:
+  - who-malaria-severe-2023

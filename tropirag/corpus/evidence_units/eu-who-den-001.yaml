@@ -1,0 +1,16 @@
+unit_id: eu-who-den-001
+source_id: who-dengue-2024
+section: Définition de cas
+text: 'La dengue se définit par une fièvre aiguë de 2 à 7 jours associée à au moins deux des signes suivants
+  : céphalées, douleur rétro-orbitaire, myalgies, arthralgies, éruption cutanée, leucopénie, hémorragies
+  bénignes. La définition de dengue sévère ajoute : fuite plasmatique sévère menant au choc ou détresse
+  respiratoire, hémorragie sévère, ou défaillance d''organe sévère.'
+topics:
+- dengue
+- definition
+- suspicion
+diseases:
+- dengue
+- severe_dengue
+jurisdiction: INT
+language: fr

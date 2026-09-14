@@ -1,0 +1,65 @@
+version: 1
+domain: fever_travel
+rules:
+- id: mal-tx-severe-iv-001
+  action: recommend_drug
+  priority: 95
+  weight: 0.5
+  description: Artésunate IV dans le paludisme sévère
+  when:
+    all:
+    - symptom_any:
+      - coma
+      - convulsions
+      - prostration
+    - exposure: malaria_exposure
+  disease: severe_malaria
+  then:
+    drug: artesunate_iv
+    reason: 'Paludisme sévère : artésunate IV est le traitement de référence (OMS) — dose par protocole
+      national, jamais extrapolée par l''IA'
+  evidence:
+  - who-malaria-severe-2023
+- id: mal-tx-no-oral-in-severe-002
+  action: contraindicate_drug
+  priority: 93
+  weight: 0.5
+  description: Pas de CTA orale dans les formes sévères
+  when:
+    all:
+    - symptom_any:
+      - coma
+      - convulsions
+      - prostration
+      - vomiting
+    - exposure: malaria_exposure
+  disease: severe_malaria
+  then:
+    drug: artemether_lumefantrine
+    reason: CTA orale CONTRE-INDIQUÉE si vomissements incoercibles ou troubles de conscience — artésunate
+      IV
+  evidence:
+  - who-malaria-severe-2023
+- id: mal-tx-uncomplicated-003
+  action: recommend_drug
+  priority: 70
+  weight: 0.5
+  description: CTA dans le paludisme simple confirmé
+  when:
+    all:
+    - lab:
+        lab: rdt_malaria
+        value: positive
+    - not:
+        symptom_any:
+        - coma
+        - convulsions
+        - prostration
+  disease: malaria
+  then:
+    drug: artemether_lumefantrine
+    reason: 'Paludisme simple confirmé : CTA selon protocole national — vérifier prise avec aliment/m
+      lait, 2 fois/j'
+  evidence:
+  - who-malaria-2023
+  - msf-malaria-guidelines

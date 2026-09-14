@@ -1,0 +1,15 @@
+unit_id: eu-who-zik-001
+source_id: who-zika
+section: Zika et grossesse
+text: 'L''infection à virus Zika est habituellement modérée (fièvre basse, éruption maculopapuleuse débutant
+  au visage, conjonctivite NON purulente, arthralgies). MAIS l''infection pendant la grossesse est associée
+  à la microcéphalie et à d''autres anomalies congénitales sévères : toute femme enceinte suspecte de
+  Zika doit être orientée pour suivi spécialisé. La transmission sexuelle est documentée.'
+topics:
+- zika
+- pregnancy
+- microcephaly
+diseases:
+- zika
+jurisdiction: INT
+language: fr

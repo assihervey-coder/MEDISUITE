@@ -1,0 +1,30 @@
+unit_id: eu-draft-msf-dengue-protocole-003
+source_id: msf-dengue-protocole
+text: 'Les signes d''alarme imposent une réévaluation immédiate : douleurs abdominales
+  intenses ou sensibilité de l''hypochondre droit, vomissements persistants, saignement
+  des gencives ou du nez, léthargie ou agitation, hémoconcentration, éruption avec
+  pétéchies, et foie augmenté de volume. Chez l''enfant, la soif intense et les pleurs
+  sans larmes signalent la déshydratation.'
+section: 2. Signes d'alarme
+topics:
+- severity
+diseases: []
+symptom_codes:
+- abdominal_pain
+- abnormal_bleeding
+- bleeding_gums
+- irritability
+- petechiae
+- rash
+- vomiting
+drug_codes: []
+test_codes: []
+recommendation_strength: none
+chunk_index: 2
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: aa54d1afee7df7bf65d235d496e1194473298f23d74388ce31687f37fdcd2b0c
+  source_path: data/raw/protocols/msf-dengue-protocole.html
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

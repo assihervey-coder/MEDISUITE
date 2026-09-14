@@ -1,0 +1,17 @@
+routing:
+  strategy: capability_first
+  inputs:
+  - task
+  - modality
+  - language
+  - latency_budget
+  - clinical_risk
+  - evidence_requirement
+  - health
+  fallback_chain:
+  - preferred
+  - deterministic
+  risk_floor:
+    moderate: assisted
+    severe: supervised
+    critical: supervised

@@ -1,0 +1,86 @@
+version: 1
+domain: fever_travel
+rules:
+- id: scd-rf-fever-001
+  action: raise_suspicion
+  priority: 78
+  weight: 0.3
+  description: Fièvre chez drépanocytaire — infection bactérienne invasive
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+  disease: invasive_bacterial_infection
+  then:
+    disease: invasive_bacterial_infection
+    weight: 0.3
+    note: 'Drépanocytose fébrile : risque majeur d''infection bactérienne invasive (asplénie
+      fonctionnelle) — pneumocoque, salmonelle'
+  evidence:
+  - eu-who-scd-001
+- id: scd-rf-malaria-002
+  action: raise_suspicion
+  priority: 80
+  weight: 0.35
+  description: Drépanocytose + fièvre en zone d'endémie — paludisme à tester d'emblée
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - exposure: malaria_exposure
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.35
+    note: 'Paludisme plus fréquent et plus sévère chez le drépanocytaire : crise hémolytique,
+      anémie, syndrome thoracique aigu possibles'
+  evidence:
+  - eu-who-scd-002
+- id: scd-rf-osteomyelitis-003
+  action: raise_suspicion
+  priority: 60
+  weight: 0.2
+  description: Douleurs osseuses focalisées fébriles — ostéomyélite salmonellique
+  when:
+    all:
+    - patient: sickle_cell
+    - symptom: bone_pain
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+  disease: osteomyelitis
+  then:
+    disease: osteomyelitis
+    weight: 0.2
+    note: 'Drépanocytose + douleur osseuse LOCALISÉE fébrile : ostéomyélite à salmonelle à
+      éliminer (imagerie, hémocultures) — distincte de la crise vaso-occlusive diffuse'
+  evidence:
+  - eu-who-scd-004
+- id: scd-rf-hemolysis-004
+  action: raise_suspicion
+  priority: 62
+  weight: 0.2
+  description: Pâleur + ictère — hémolyse aiguë à explorer
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: pallor
+      - symptom: jaundice
+      - symptom: dark_urine
+  disease: acute_hemolysis
+  then:
+    disease: acute_hemolysis
+    weight: 0.2
+    note: 'Signes d''hémolyse (pâleur, ictère, urines foncées) : NFS urgente — chercher déclencheur
+      (paludisme, infection, G6PD)'
+  evidence:
+  - eu-who-scd-002

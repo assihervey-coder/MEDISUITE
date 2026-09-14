@@ -1,0 +1,25 @@
+unit_id: eu-draft-who-malaria-guide-extrait-008
+source_id: who-malaria-guide-extrait
+text: La prévention associe moustiquaires imprégnées d'insecticide, prophylaxie médicamenteuse
+  pour les voyageurs non immuns, et lutte antivectorielle. La chimioprévention du
+  paludisme saisonnier est recommandée chez les enfants de moins de 5 ans dans les
+  zones de forte transmission saisonnière.
+section: 7. Prévention
+topics:
+- prevention
+- strong_recommendation
+- treatment
+diseases:
+- malaria
+symptom_codes: []
+drug_codes: []
+test_codes: []
+recommendation_strength: strong
+chunk_index: 7
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 46080ccec5a1551b8c34a3b640d28d1ee881e25e175bd036fbfee2c6cb0fe354
+  source_path: data/raw/guidelines/who-malaria-guide-extrait.md
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

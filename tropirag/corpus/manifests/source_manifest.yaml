@@ -1,0 +1,144 @@
+generated_at: '2026-09-12T04:53:39'
+sources_total: 20
+sources:
+- source_id: cdc-typhoid-xdr-2023
+  authority: cdc
+  title: Extensively Drug-Resistant (XDR) Typhoid Fever — Clinical and Travel Guidance,
+    CDC
+  jurisdiction: INT
+  edition_date: '2023-06-01'
+  file: sources/cdc/cdc-typhoid-xdr-2023.yaml
+  sha256: 6a79035e36f219a676da7d89cc9d4470fa8dcee672dab1946a1c460970feaed1
+- source_id: cdc-typhoid
+  authority: cdc
+  title: Typhoid Fever — Clinical Information, CDC
+  jurisdiction: INT
+  edition_date: '2023-05-01'
+  file: sources/cdc/cdc-typhoid.yaml
+  sha256: 53297f8b7160211cef0a201e7003af95fa7668c556ee483dfc27ea964d0656b7
+- source_id: msf-dengue
+  authority: msf
+  title: Dengue — guide clinique MSF (gestion des cas)
+  jurisdiction: INT
+  edition_date: '2023-01-01'
+  file: sources/msf/msf-dengue.yaml
+  sha256: bffd4566eb2b8ef2787f333214b75505995c06a6408dc36e6ae61018c92a9bd2
+- source_id: msf-malaria-guidelines
+  authority: msf
+  title: Protocole clinique paludisme — MSF/OCG
+  jurisdiction: INT
+  edition_date: '2022-06-01'
+  file: sources/msf/msf-malaria-guidelines.yaml
+  sha256: 6fe55a6a6202b1492c376c074041440f5dbeb16bd8cd220e366f0678015e8930
+- source_id: msf-rickettsia
+  authority: msf
+  title: Rickettsioses (fièvre boutonneuse) — guide MSF
+  jurisdiction: INT
+  edition_date: '2021-01-01'
+  file: sources/msf/msf-rickettsia.yaml
+  sha256: ba588e8469b6f5868eddf5a1c9831e00955f5ec67868c664c25159ba2a96d6e3
+- source_id: ci-msp-2024
+  authority: national
+  title: Guide national de prise en charge du paludisme — Côte d'Ivoire
+  jurisdiction: CI
+  edition_date: '2024-01-01'
+  file: sources/national/ci-msp-2024.yaml
+  sha256: 800b5a9e985b9302096a07b9aa27183806c20d933678bcfc890c1888553d51f9
+- source_id: who-chikungunya
+  authority: who
+  title: Chikungunya — fiche d'information OMS
+  jurisdiction: INT
+  edition_date: '2022-09-01'
+  file: sources/who/who-chikungunya.yaml
+  sha256: 0739f1a41acc2ad8bdcfd953fd26745bb12768501713bf6f908e66cc8dfc1e2a
+- source_id: who-dengue-2024
+  authority: who
+  title: Dengue — lignes directrices pour le diagnostic, le traitement et la prévention
+  jurisdiction: INT
+  edition_date: '2024-04-01'
+  file: sources/who/who-dengue-2024.yaml
+  sha256: 70e42423b66df0b47101aea889d14ecce79b337eb964c22630b5852f3b1b2a14
+- source_id: who-ebola-2024
+  authority: who
+  title: Maladie à virus Ebola — guide de terrain OMS (dépistage, isolement)
+  jurisdiction: INT
+  edition_date: '2024-01-01'
+  file: sources/who/who-ebola-2024.yaml
+  sha256: 37af908ec5a3d874cd0ea56aecd059f794128feb021a5d853cb4d06d2ff6e84f
+- source_id: who-lassa
+  authority: who
+  title: Fièvre de Lassa — fiche d'information OMS
+  jurisdiction: INT
+  edition_date: '2023-08-01'
+  file: sources/who/who-lassa.yaml
+  sha256: c5c991ea770d19d3628168ebd3cde7f9b39aecdd21f4f8e4f2a32f29b04d0c3d
+- source_id: who-lepto
+  authority: who
+  title: Leptospirose — fiche OMS
+  jurisdiction: INT
+  edition_date: '2023-01-01'
+  file: sources/who/who-lepto.yaml
+  sha256: e7247a7ff5001d569f1336dcca50869995b9d7d1b8cf8fddcd22188f7571f0fd
+- source_id: who-malaria-2023
+  authority: who
+  title: Paludisme (paludisme simple) — lignes directrices OMS
+  jurisdiction: INT
+  edition_date: '2023-03-01'
+  file: sources/who/who-malaria-2023.yaml
+  sha256: 5c2bae1c3aa5a7b85d9bca6dd3d07763184a9e0e1cc51c798ba6942d050e4850
+- source_id: who-malaria-pregnancy-2023
+  authority: who
+  title: Paludisme chez la femme enceinte (MIPT/IPTp) — lignes directrices OMS
+  jurisdiction: INT
+  edition_date: '2023-06-20'
+  file: sources/who/who-malaria-pregnancy-2023.yaml
+  sha256: b771ebbd1bdf8cbdbc960dfc088366c3312c0dbb2489f12d8847dd046382c3de
+- source_id: who-malaria-severe-2023
+  authority: who
+  title: Paludisme sévère — prise en charge, OMS
+  jurisdiction: INT
+  edition_date: '2023-03-01'
+  file: sources/who/who-malaria-severe-2023.yaml
+  sha256: ad6a03d5cf5875908b552f51ed654a88534173323134b2e7ff25df32fabd56ae
+- source_id: who-marburg
+  authority: who
+  title: Maladie à virus Marburg — fiche OMS
+  jurisdiction: INT
+  edition_date: '2023-12-01'
+  file: sources/who/who-marburg.yaml
+  sha256: 94431391dcb033bc1dd4c069fae7be7ce919a56d1af3043bc23bce7c2fda23c7
+- source_id: who-meningitis
+  authority: who
+  title: Méningite à méningocoque — prise en charge OMS
+  jurisdiction: INT
+  edition_date: '2023-02-01'
+  file: sources/who/who-meningitis.yaml
+  sha256: f9a9233074073c1c163e2532b246c4cbbee2a7cb117be220f7b7c2ca6f4553a7
+- source_id: who-scd-2024
+  authority: who
+  title: Drépanocytose — lignes directrices de prise en charge
+  jurisdiction: INT
+  edition_date: '2024-01-15'
+  file: sources/who/who-scd-2024.yaml
+  sha256: cce13b36988d0fb7941f49df6d08bc2be89576488e7cd01a41811a3f10dcfbee
+- source_id: who-typhoid-2018
+  authority: who
+  title: Typhoïde — note de synthèse OMS
+  jurisdiction: INT
+  edition_date: '2018-08-01'
+  file: sources/who/who-typhoid-2018.yaml
+  sha256: 4523b6cc06ebf6ee12dc5c31d2b8f5e4c7a81582ab5559962113bc9e2ea459ca
+- source_id: who-yf
+  authority: who
+  title: Fièvre jaune — fiche d'information OMS
+  jurisdiction: INT
+  edition_date: '2023-05-01'
+  file: sources/who/who-yf.yaml
+  sha256: d24c344ddbdbb35da6c009ece81cdefd37ed1fca22ab0a267ea4a8948f09d407
+- source_id: who-zika
+  authority: who
+  title: Virus Zika — fiche d'information OMS
+  jurisdiction: INT
+  edition_date: '2023-04-01'
+  file: sources/who/who-zika.yaml
+  sha256: 0de9cc90b5517e6e134aff98d93830c3507e65bb66bcd2a00775912886da7782

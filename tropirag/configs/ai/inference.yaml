@@ -1,0 +1,8 @@
+inference:
+  mode: deterministic
+  ollama_url: http://localhost:11434
+  vllm_url: http://localhost:8001
+  timeout_seconds: 60.0
+  max_concurrent_requests: 8
+  circuit_breaker_failures: 3
+  circuit_breaker_reset_seconds: 300.0

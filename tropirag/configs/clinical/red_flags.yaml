@@ -1,0 +1,14 @@
+red_flags:
+  critical_symptoms:
+  - coma
+  - convulsions
+  - hematemesis
+  - melena
+  - prostration
+  - abnormal_bleeding
+  - neck_stiffness
+  - petechiae
+  critical_vitals:
+    systolic_bp_lt: 90
+    spo2_lt: 92.0
+    respiratory_rate_gte: 30

@@ -1,0 +1,15 @@
+{
+  "case_id": "fixture-006",
+  "patient": {"age_years": 28},
+  "free_text": "fièvre depuis 8 jours, céphalées, douleurs abdominales, constipation",
+  "travel": {"segments": [{"country": "PK", "departure": "{RET-35}"}]},
+  "vitals": {"temperature_c": 39.1},
+  "lab_results": [{"test": "blood_culture", "value": "pending"}],
+  "expected": {
+    "differentials": ["enteric_fever"],
+    "red_flags": ["enteric_fever_xdr_risk"],
+    "recommended_drugs": ["azithromycin"],
+    "forbidden_drugs": ["ciprofloxacin"],
+    "urgency": ["priority", "emergency"]
+  }
+}

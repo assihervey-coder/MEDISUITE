@@ -1,0 +1,15 @@
+name: red-flag-purpura-enfant
+description: Purpura + fièvre chez l'enfant → urgence vitale immédiate
+case:
+  patient:
+    age_years: 4
+    sex: male
+  symptoms:
+  - code: fever
+    onset: '2026-09-10'
+    severity: severe
+  - code: petechiae
+  consultation_date: '2026-09-12'
+expect:
+  urgency_at_least: immediate
+  severity_at_least: critical

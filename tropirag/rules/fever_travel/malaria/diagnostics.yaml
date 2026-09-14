@@ -1,0 +1,48 @@
+version: 1
+domain: fever_travel
+rules:
+- id: mal-dx-test-first-001
+  action: require_test
+  priority: 85
+  weight: 0.5
+  description: Test de confirmation requis avant traitement
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - exposure: malaria_exposure
+    - lab_missing: rdt_malaria
+  disease: malaria
+  then:
+    tests:
+    - rdt_malaria
+    - thick_smear
+    - cbc
+    reason: 'OMS : confirmer avant de traiter — TDR (15 min) ± goutte épaisse ; NFS pour l''anémie'
+  evidence:
+  - who-malaria-2023
+- id: mal-dx-severe-workup-002
+  action: require_test
+  priority: 92
+  weight: 0.5
+  description: Bilan de gravité si signes neurologiques
+  when:
+    all:
+    - symptom_any:
+      - coma
+      - convulsions
+      - prostration
+    - exposure: malaria_exposure
+  disease: malaria
+  then:
+    tests:
+    - rdt_malaria
+    - cbc
+    - creatinine
+    - glycemia
+    reason: 'Bilan de gravité du paludisme sévère (OMS) : parasitémie, hémoglobine, créatinine, glycémie'
+  evidence:
+  - who-malaria-severe-2023

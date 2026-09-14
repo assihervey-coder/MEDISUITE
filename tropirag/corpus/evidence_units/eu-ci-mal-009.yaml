@@ -1,0 +1,15 @@
+unit_id: eu-ci-mal-009
+source_id: ci-msp-2024
+section: Contexte national ivoirien
+text: La Côte d'Ivoire est un pays à transmission palustre intense et permanente (holoendémie). Le protocole
+  national recommande le TDR systématique devant toute fièvre, la CTA (artéméther-luméfantrine) pour le
+  paludisme simple et l'artésunate injectable pour les formes sévères, avec gratuité du TDR dans les formations
+  sanitaires publiques.
+topics:
+- malaria
+- cote-divoire
+- national
+diseases:
+- malaria
+jurisdiction: CI
+language: fr

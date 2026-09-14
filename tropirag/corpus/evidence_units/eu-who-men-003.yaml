@@ -1,0 +1,21 @@
+unit_id: eu-who-men-003
+source_id: who-meningitis
+section: Purpura fulminans et sepsis de l'enfant
+text: 'Le purpura fulminans (purpura fébrile extensif avec extension rapide) révèle
+  une infection invasive à méningocoque jusqu''à preuve du contraire : urgence vitale
+  absolue, mortalité élevée. La prise en charge ne supporte aucun délai : ceftriaxone
+  par voie IM ou IV immédiate, y compris en pré-hospitalier et avant tout transfert ;
+  remplissage vasculaire prudent, surveillance de l''extension du purpura toutes les
+  heures, transfert en réanimation pédiatrique. Un enfant fébrile prostré, convulsif
+  ou pâle avec vomissements doit être traité comme un sepsis grave : antibiothérapie
+  immédiate, contrôle glycémique, oxygénothérapie si détresse. La ponction lombaire
+  ne doit jamais retarder l''antibiothérapie en cas de purpura fulminans ou d''instabilité
+  hémodynamique.'
+topics:
+- purpura-fulminans
+- sepsis-pediatric
+- emergency-antibiotics
+diseases:
+- meningococcal
+jurisdiction: INT
+language: fr

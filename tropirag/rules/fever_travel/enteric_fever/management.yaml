@@ -1,0 +1,23 @@
+version: 1
+domain: fever_travel
+rules:
+- id: typ-mgmt-antibio-001
+  action: recommend_drug
+  priority: 58
+  weight: 0.5
+  description: Antibiothérapie typhoïde (hors contexte XDR — voir resistance.yaml)
+  when:
+    all:
+    - disease: enteric_fever
+    - not:
+        any:
+        - exposure: typhoid_xdr_zone
+        - red_flag_code: enteric_fever_xdr_confirmed
+        - red_flag_code: enteric_fever_xdr_risk
+  disease: enteric_fever
+  then:
+    drug: ceftriaxone
+    reason: 'Fièvre typhoïde : ceftriaxone IV ou azithromycine selon protocole national et résistances
+      locales — durée selon protocole'
+  evidence:
+  - who-typhoid-2018

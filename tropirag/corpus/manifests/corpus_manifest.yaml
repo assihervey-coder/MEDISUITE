@@ -1,0 +1,12 @@
+corpus: tropirag-fever-travel
+version: 1.3.0
+units: 47
+sources: 19
+generated: '2026-09-12'
+authorities:
+- cdc
+- msf
+- national
+- who
+notes: 'V1.3 — leptospirose (WHO : suspicion, Weil, traitement, diagnostic — 4 unités)
+  et méningocoque pédiatrique (WHO : nourrisson, purpura fulminans, prophylaxie — 3 unités)'

@@ -1,0 +1,33 @@
+unit_id: eu-draft-who-malaria-guide-extrait-004
+source_id: who-malaria-guide-extrait
+text: 'Le paludisme sévère est une urgence vitale thérapeutique. Les critères de gravité
+  comprennent : troubles de la conscience ou coma, convulsions répétées, anémie sévère,
+  ictère, oligurie ou insuffisance rénale, détresse respiratoire, hypoglycémie, et
+  hyperparasitémie. La présence d''un seul critère impose l''hospitalisation immédiate
+  en soins critiques. Le traitement de première intention est l''artésunate par voie
+  intraveineuse : il doit être administré immédiatement, sans attendre la confirmation
+  parasitologique chez le patient critique.'
+section: 3. Critères de gravité
+topics:
+- severity
+- strong_recommendation
+- treatment
+diseases:
+- malaria
+- severe_malaria
+symptom_codes:
+- coma
+- convulsions
+- jaundice
+- oliguria
+drug_codes: []
+test_codes: []
+recommendation_strength: strong
+chunk_index: 3
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 46080ccec5a1551b8c34a3b640d28d1ee881e25e175bd036fbfee2c6cb0fe354
+  source_path: data/raw/guidelines/who-malaria-guide-extrait.md
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

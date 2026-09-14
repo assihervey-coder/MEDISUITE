@@ -1,0 +1,17 @@
+unit_id: eu-who-den-003
+source_id: who-dengue-2024
+section: Interdiction AINS
+text: Les anti-inflammatoires non stéroïdiens (ibuprofène, diclofénac, aspirine) sont formellement déconseillés
+  en cas de dengue suspectée ou confirmée en raison du risque hémorragique majoré (atteinte plaquettaire
+  et endothéliale). La prise en charge symptomatique repose sur le paracétamol aux doses espacées et l'hydratation
+  orale ; l'aspirine expose en outre au syndrome de Reye chez l'enfant.
+topics:
+- dengue
+- nsaid
+- management
+- paracetamol
+diseases:
+- dengue
+- severe_dengue
+jurisdiction: INT
+language: fr

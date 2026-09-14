@@ -1,0 +1,101 @@
+version: 1
+domain: fever_travel
+rules:
+- id: mal-susp-core-001
+  action: raise_suspicion
+  priority: 90
+  weight: 0.45
+  description: 'Suspicion de paludisme : fièvre + exposition'
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - exposure: malaria_exposure
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.45
+    note: Fièvre + exposition zone paludéenne — paludisme à éliminer en priorité (OMS)
+  evidence:
+  - who-malaria-2023
+  - msf-malaria-guidelines
+- id: mal-susp-classic-002
+  action: raise_suspicion
+  priority: 80
+  weight: 0.2
+  description: Présentation classique du paludisme simple
+  when:
+    all:
+    - *id001
+    - exposure: malaria_exposure
+    - any:
+      - symptom: chills
+      - symptom: sweats
+      - symptom: headache
+      - symptom: myalgia
+      - symptom: vomiting
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.2
+    note: 'Triade évocatrice : fièvre + frissons + céphalées en zone d''endémie'
+  evidence:
+  - who-malaria-2023
+- id: mal-susp-rdt-positive-003
+  action: raise_suspicion
+  priority: 99
+  weight: 0.9
+  description: TDR positif
+  when:
+    all:
+    - lab:
+        lab: rdt_malaria
+        value: positive
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.9
+    note: TDR paludisme POSITIF — confirmer la gravité et traiter selon protocole
+  evidence:
+  - who-malaria-2023
+- id: mal-susp-rdt-negative-fever-004
+  action: raise_suspicion
+  priority: 60
+  weight: 0.15
+  description: TDR négatif mais suspicion persiste
+  when:
+    all:
+    - lab:
+        lab: rdt_malaria
+        value: negative
+    - *id001
+    - exposure: malaria_exposure
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.15
+    note: TDR négatif n'exclut pas le paludisme si forte suspicion clinique — contrôler (goutte épaisse,
+      TDR à HRP2, densité parasitaire)
+  evidence:
+  - who-malaria-2023
+- id: mal-incubation-compatible-005
+  action: raise_suspicion
+  priority: 30
+  weight: 0.1
+  description: Incubation compatible
+  when:
+    all:
+    - exposure: malaria_exposure
+    - incubation: malaria_falciparum
+      compatible: true
+  disease: malaria
+  then:
+    disease: malaria
+    weight: 0.1
+    note: Délai compatible avec l'incubation de P. falciparum (7–90 j)
+  evidence:
+  - who-malaria-2023

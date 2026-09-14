@@ -1,0 +1,57 @@
+# Topologie matérielle du mesh Ollama — TropiRAG V1.1
+# 4 nœuds × 8 GPU × 48 Go — règle d'or : AUCUN TP inter-nœuds.
+#
+# Les noms d'hôte sont des exemples : adapter /etc/hosts ou DNS interne.
+# Chaque nœud héberge UN serveur Ollama (port 11434) avec ses modèles résidents.
+
+nodes:
+  node1:                      # entrée + evidence (léger, haute cadence)
+    host: node1.tropirag.local
+    role: input-evidence
+    models:
+      - medasr-quantized      # dictée clinique
+      - whisper-large-v3      # conversation multilingue
+      - bge-m3                # embeddings hybrides (RAG)
+      - qwen-reranker         # reranking evidence
+      - medgemma-4b-it        # analyse image contextualisée
+      - minicpm-v-2.6         # triage image
+    services:
+      - vector-db             # stockage index (hors Ollama)
+
+  node2:                      # réplique A — raisonnement lourd
+    host: node2.tropirag.local
+    role: reasoning-a
+    models:
+      - med42-v2-70b          # TP=4 (4 GPU)
+      - openbiollm-70b        # TP=4 (4 GPU)
+
+  node3:                      # réplique B — domaine de panne distinct
+    host: node3.tropirag.local
+    role: reasoning-b
+    models:
+      - med42-v2-70b          # TP=4 (4 GPU)
+      - openbiollm-70b        # TP=4 (4 GPU)
+
+  node4:                      # audit + secours
+    host: node4.tropirag.local
+    role: audit-standby
+    models:
+      - deepseek-r1-distill-32b  # auditeur logique (jamais décideur)
+      # standby : capacité d'accueil des modèles de node2/node3 en cas de panne
+    nightly: batch-evidence   # réindexation RAG nocturne
+
+# Routage famille → nœud (consommé par TROPIRAG_OLLAMA_NODES)
+family_routing:
+  speech: http://node1.tropirag.local:11434
+  vision: http://node1.tropirag.local:11434
+  embeddings: http://node1.tropirag.local:11434
+  reranking: http://node1.tropirag.local:11434
+  text: http://node2.tropirag.local:11434
+
+# Répliques croisées (node3 sert de repli si node2 tombe)
+replicas:
+  - http://node3.tropirag.local:11434
+
+# Variable prête à l'emploi :
+# export TROPIRAG_OLLAMA_NODES="speech=http://node1.tropirag.local:11434,vision=http://node1.tropirag.local:11434,embeddings=http://node1.tropirag.local:11434,reranking=http://node1.tropirag.local:11434,text=http://node2.tropirag.local:11434"
+# export TROPIRAG_OLLAMA_URL="http://node2.tropirag.local:11434"

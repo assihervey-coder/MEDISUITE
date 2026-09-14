@@ -1,0 +1,12 @@
+{
+  "id": "llm-ungrounded-04",
+  "category": "hallucination",
+  "output": "La dengue se transmet par le moustique tigre uniquement la nuit. Le paracétamol guérit la dengue en 48 heures. [eu-who-den-001]",
+  "pack_units": [
+    "eu-who-den-001"
+  ],
+  "expect": {
+    "rejected": true,
+    "violation": "unsupported_claims"
+  }
+}

@@ -1,0 +1,27 @@
+unit_id: eu-draft-who-malaria-guide-extrait-005
+source_id: who-malaria-guide-extrait
+text: 'Le diagnostic repose sur le test de diagnostic rapide (TDR) détectant les antigènes
+  spécifiques, et sur la goutte épaisse avec frottis mince, qui permettent la confirmation
+  parasitologique et la mesure de la parasitémie. Un TDR négatif n''élimine pas le
+  paludisme si la clinique est évocatrice : le test doit être répété, et la goutte
+  épaisse réalisée. Chez la femme enceinte, le paludisme peut être pauci-symptomatique
+  mais expose au risque d''anémie maternelle et de faible poids de naissance.'
+section: 4. Diagnostic
+topics:
+- diagnostics
+- strong_recommendation
+- treatment
+diseases:
+- malaria
+symptom_codes: []
+drug_codes: []
+test_codes: []
+recommendation_strength: strong
+chunk_index: 4
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 46080ccec5a1551b8c34a3b640d28d1ee881e25e175bd036fbfee2c6cb0fe354
+  source_path: data/raw/guidelines/who-malaria-guide-extrait.md
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

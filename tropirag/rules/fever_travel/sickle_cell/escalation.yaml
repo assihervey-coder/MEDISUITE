@@ -1,0 +1,61 @@
+version: 1
+domain: fever_travel
+rules:
+- id: scd-esc-hospital-001
+  action: escalate
+  priority: 93
+  weight: 0.5
+  description: Toute fièvre SCD → structure avec capacité transfusionnelle
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+  disease: sickle_cell_disease
+  then:
+    level: refer_hospital
+    message: 'Drépanocytaire fébrile : orienter vers une structure avec capacité d''hémoculture,
+      de transfusion et de surveillance continue — la fièvre SCD ne se gère pas en ambulatoire
+      sans avis spécialisé'
+  evidence:
+  - eu-who-scd-001
+- id: scd-esc-critical-002
+  action: escalate
+  priority: 99
+  weight: 0.5
+  description: Complication vitale SCD → urgence vitale
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: focal_deficit
+      - symptom: coma
+      - symptom: convulsions
+      - symptom: dyspnea
+  disease: sickle_cell_disease
+  then:
+    level: emergency_transfer
+    message: 'Complication vitale de drépanocytose probable (AVC, syndrome thoracique, anémie
+      profonde) : transfert médicalisé IMMÉDIAT vers unité spécialisée (réanimation/hématologie),
+      oxygène, voie veineuse, bilan transmis'
+  evidence:
+  - eu-who-scd-003
+  - eu-who-scd-004
+- id: scd-esc-notify-003
+  action: notify
+  priority: 45
+  weight: 0.3
+  description: Registre drépanocytose — rappel cohorte
+  when:
+    all:
+    - patient: sickle_cell
+  disease: sickle_cell_disease
+  then:
+    authority: public_health
+    reason: 'Drépanocytose identifiée : s''assurer du suivi de cohorte (programme national SCD),
+      de la prophylaxie et de la vaccination (pneumocoque, méningocoque, Haemophilus influenzae b)'
+  evidence:
+  - eu-who-scd-001

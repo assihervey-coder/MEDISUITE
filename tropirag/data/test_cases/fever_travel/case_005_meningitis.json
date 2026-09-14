@@ -1,0 +1,6 @@
+{
+  "case_id": "fixture-005",
+  "patient": {"age_years": 19, "sex": "male"},
+  "free_text": "fièvre 40, raideur de nuque, vomissements, photophobie",
+  "expected": {"urgency": ["immediate"], "differential_contains": "meningococcal"}
+}

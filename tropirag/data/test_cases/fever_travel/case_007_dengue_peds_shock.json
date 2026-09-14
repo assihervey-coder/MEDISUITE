@@ -1,0 +1,12 @@
+{
+  "case_id": "fixture-007",
+  "patient": {"age_years": 6},
+  "free_text": "fièvre depuis 4 jours, céphalées, vomissements, prostration, somnolence",
+  "travel": {"segments": [{"country": "CI", "region": "Abidjan", "departure": "{RET-9}"}]},
+  "vitals": {"temperature_c": 38.5, "systolic_bp": 64, "capillary_refill_s": 4},
+  "expected": {
+    "differentials": ["dengue", "severe_dengue"],
+    "red_flags": ["dengue_peds_decompensated_shock", "dengue_peds_intubation_criteria", "dengue_shock"],
+    "urgency": ["immediate"]
+  }
+}

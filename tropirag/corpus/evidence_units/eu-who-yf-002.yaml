@@ -1,0 +1,16 @@
+unit_id: eu-who-yf-002
+source_id: who-yf
+section: Vaccination YF
+text: La vaccination antiamarile (souche 17D) confère une immunité protectrice dans les 10 jours chez
+  95 % des vaccinés, à vie selon les positions OMS actuelles. Tout voyageur vers une zone d'endémie amarile
+  (Afrique subsaharienne, Amazonie) doit être vacciné ; le certificat international est exigé aux frontières
+  des pays à risque. Un sujet non vacciné fébrile au retour d'une zone amarile doit être pris en charge
+  comme suspicion de fièvre jaune.
+topics:
+- yellow-fever
+- vaccine
+- travel
+diseases:
+- yellow_fever
+jurisdiction: INT
+language: fr

@@ -1,0 +1,6 @@
+tracing:
+  backend: contextvars
+  fields:
+  - request_id
+  - case_id
+  propagation_header: X-Request-ID

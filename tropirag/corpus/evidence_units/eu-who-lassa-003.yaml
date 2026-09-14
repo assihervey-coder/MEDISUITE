@@ -1,0 +1,16 @@
+unit_id: eu-who-lassa-003
+source_id: who-lassa
+section: Fièvre de Lassa
+text: 'La fièvre de Lassa est endémique en Afrique de l''Ouest (Nigéria, Sierra Leone, Liberia, Guinée).
+  Le tableau associe fièvre progressive, malaise, céphalées, pharyngite, douleurs lombaires et abdominales
+  ; les formes sévères ajoutent œdème facial, épanchements, syndrome hémorragique et atteinte hépatique.
+  La transmission est liée au contact avec les excretas de rongeurs (Mastomys) ou interhumaine. Traitement
+  : ribavirine IV précoce.'
+topics:
+- lassa
+- west-africa
+- rodent
+diseases:
+- lassa
+jurisdiction: INT
+language: fr

@@ -1,0 +1,26 @@
+unit_id: eu-draft-cdc-typhoid-xdr-note-001
+source_id: cdc-typhoid-xdr-note
+text: Fixture interne de test TropiRAG - 20/10/2023 - Abidjan, Cote d'Ivoire Le Centre
+  de coordination note la circulation continue de souches de Salmonella Typhi resistantes
+  aux antibiotiques de reference dans le sous-continent indien, avec extension documentee
+  vers l'Afrique de l'Est. Les voyageurs au retour du Pakistan et de l'Afghanistan
+  doivent etre consideres comme exposes a la fièvre typhoide XDR jusqu'a preuve du
+  contraire.
+section: Note Epidemiologique - Fievre Typhoide Et Resistance Xdr
+topics:
+- strong_recommendation
+diseases:
+- enteric_fever
+symptom_codes:
+- fever
+drug_codes: []
+test_codes: []
+recommendation_strength: strong
+chunk_index: 0
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 3e96b5561d98480461d0f9478ff313335bd75872b59443e288bbbdbdf46eaece
+  source_path: data/raw/documents/cdc-typhoid-xdr-note.txt
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

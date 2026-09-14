@@ -1,0 +1,25 @@
+unit_id: eu-draft-cdc-typhoid-xdr-note-003
+source_id: cdc-typhoid-xdr-note
+text: 'L''hémoculture est l''examen de reference et doit etre realisee avant toute
+  antibiotherapie. L''antibiogramme est indispensable en zone XDR : il guide le relais
+  therapeutique. La serologie Widal est peu specifique et ne doit plus etre utilisee
+  seule.'
+section: 2 DIAGNOSTIC
+topics:
+- diagnostics
+- strong_recommendation
+diseases: []
+symptom_codes: []
+drug_codes: []
+test_codes:
+- blood_culture
+- widal
+recommendation_strength: strong
+chunk_index: 2
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 3e96b5561d98480461d0f9478ff313335bd75872b59443e288bbbdbdf46eaece
+  source_path: data/raw/documents/cdc-typhoid-xdr-note.txt
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

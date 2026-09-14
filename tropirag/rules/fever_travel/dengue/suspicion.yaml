@@ -1,0 +1,76 @@
+version: 1
+domain: fever_travel
+rules:
+- id: den-susp-core-001
+  action: raise_suspicion
+  priority: 82
+  weight: 0.4
+  description: Critères OMS de dengue
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - exposure_risk_gte:
+        disease: dengue
+        level: moderate
+    - n_of:
+        n: 2
+        of:
+        - symptom: headache
+        - symptom: retro_orbital_pain
+        - symptom: myalgia
+        - symptom: arthralgia
+        - symptom: rash
+        - symptom: nausea
+        - symptom: vomiting
+  disease: dengue
+  then:
+    disease: dengue
+    weight: 0.4
+    note: Fièvre + ≥ 2 critères OMS (céphalées, douleur rétro-orbitaire, myalgies, arthralgies, éruption,
+      nausées) en zone de transmission
+  evidence:
+  - who-dengue-2024
+- id: den-susp-leukopenia-002
+  action: raise_suspicion
+  priority: 65
+  weight: 0.25
+  description: Leucopénie
+  when:
+    all:
+    - *id001
+    - lab_numeric:
+        test: cbc
+        component: wbc
+        lt: 4000
+  disease: dengue
+  then:
+    disease: dengue
+    weight: 0.25
+    note: Leucopénie < 4 000/mm³ — critère d'orientation dengue
+  evidence:
+  - who-dengue-2024
+- id: den-susp-thrombocytopenia-003
+  action: raise_suspicion
+  priority: 68
+  weight: 0.3
+  description: Thrombopénie évocatrice
+  when:
+    all:
+    - *id001
+    - lab_numeric:
+        test: cbc
+        component: plt
+        lt: 100000
+  disease: dengue
+  then:
+    disease: dengue
+    weight: 0.3
+    note: Thrombopénie < 100 000/mm³ — très évocatrice de dengue en contexte fébrile
+  evidence:
+  - who-dengue-2024
+  - msf-dengue

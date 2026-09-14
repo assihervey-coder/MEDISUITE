@@ -1,0 +1,23 @@
+unit_id: eu-draft-msf-dengue-protocole-005
+source_id: msf-dengue-protocole
+text: Le diagnostic repose sur la recherche du virus NS1 dans les cinq premiers jours,
+  puis sur la sérologie IgM/IgG. La thrombopénie inférieure à 100 giga/litres et l'hémoconcentration
+  sont des signes biologiques d'orientation. La numération formule sanguine doit être
+  répétée quotidiennement jusqu'à la sortie de la phase critique.
+section: 4. Diagnostic
+topics:
+- diagnostics
+- strong_recommendation
+diseases: []
+symptom_codes: []
+drug_codes: []
+test_codes: []
+recommendation_strength: strong
+chunk_index: 4
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: aa54d1afee7df7bf65d235d496e1194473298f23d74388ce31687f37fdcd2b0c
+  source_path: data/raw/protocols/msf-dengue-protocole.html
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

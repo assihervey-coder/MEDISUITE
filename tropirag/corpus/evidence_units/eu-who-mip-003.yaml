@@ -1,0 +1,19 @@
+unit_id: eu-who-mip-003
+source_id: who-malaria-pregnancy-2023
+section: Paludisme sévère de la femme enceinte
+text: 'Le paludisme sévère de la femme enceinte est une urgence obstétricale et médicale : risque
+  d''hypoglycémie, d''œdème pulmonaire, d''anémie sévère, de détresse fœtale et d''accouchement
+  prématuré. La prise en charge associe artésunate IV, surveillance glycémique rapprochée,
+  évaluation obstétricale conjointe et orientation vers une structure avec capacité de
+  réanimation et de soins néonatals.'
+topics:
+- malaria
+- severe_malaria
+- pregnancy
+- emergency
+- hypoglycemia
+diseases:
+- severe_malaria
+- malaria_in_pregnancy
+jurisdiction: INT
+language: fr

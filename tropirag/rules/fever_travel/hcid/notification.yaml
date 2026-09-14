@@ -1,0 +1,72 @@
+version: 1
+domain: fever_travel
+rules:
+- id: hcid-notif-001
+  action: notify
+  priority: 99
+  weight: 0.5
+  description: Notification RSI
+  when:
+    any:
+    - red_flag_code: vhf_suspected
+    - red_flag_code: vhf_generic_suspected
+    - symptom: abnormal_bleeding
+  disease: ebola
+  then:
+    authority: public_health
+    reason: Suspicion de fièvre hémorragique virale — notification immédiate obligatoire (OMS RSI)
+  evidence:
+  - who-ebola-2024
+- id: men-notif-001
+  action: notify
+  priority: 88
+  weight: 0.5
+  description: Notification méningite
+  when:
+    symptom: neck_stiffness
+  disease: meningococcal
+  then:
+    authority: public_health
+    reason: Méningite suspectée — notification + prophylaxie des contacts selon protocole national
+  evidence:
+  - who-meningitis
+- id: men-susp-core-001
+  action: raise_suspicion
+  priority: 95
+  weight: 0.7
+  description: Suspicion méningite bactérienne
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom_any:
+      - neck_stiffness
+      - photophobia
+  disease: meningococcal
+  then:
+    disease: meningococcal
+    weight: 0.7
+    note: 'Fièvre + raideur de nuque ou photophobie — méningite à méningocoque : urgence thérapeutique,
+      ceftriaxone sans délai'
+  evidence:
+  - who-meningitis
+- id: men-susp-purpura-002
+  action: raise_suspicion
+  priority: 96
+  weight: 0.8
+  description: Suspicion purpura fulminans
+  when:
+    all:
+    - *id001
+    - symptom: petechiae
+  disease: meningococcal
+  then:
+    disease: meningococcal
+    weight: 0.8
+    note: Purpura fébrile — purpura fulminans à méningocoque jusqu'à preuve du contraire
+  evidence:
+  - who-meningitis

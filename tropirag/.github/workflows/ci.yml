@@ -1,0 +1,23 @@
+name: CI
+on:
+  push: {branches: [main, develop]}
+  pull_request: {branches: [main]}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -e ".[dev,api]"
+      - name: Lint des règles cliniques
+        run: python scripts/validate_rules.py
+      - name: Diagnostic système
+        run: python scripts/system_diagnostics.py
+      - name: Tests complets
+        run: python -m pytest tests/ -v --tb=short
+      - name: Benchmark sécurité
+        run: python scripts/evaluate_safety.py
+      - name: Benchmark RAG
+        run: python scripts/evaluate_rag.py

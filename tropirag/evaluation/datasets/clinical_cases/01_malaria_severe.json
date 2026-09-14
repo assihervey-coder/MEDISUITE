@@ -1,0 +1,57 @@
+{
+  "case_id": "eval-malaria-severe-01",
+  "description": "Paludisme sévère — retour de zone d'endémie, signes de gravité",
+  "payload": {
+    "patient": {
+      "age_years": 28,
+      "sex": "male"
+    },
+    "symptoms": [
+      {
+        "code": "fever",
+        "onset": "2026-09-02",
+        "severity": "severe"
+      },
+      {
+        "code": "coma"
+      },
+      {
+        "code": "jaundice"
+      },
+      {
+        "code": "oliguria"
+      }
+    ],
+    "travel": {
+      "segments": [
+        {
+          "country": "CI",
+          "arrival": "2026-08-10",
+          "departure": "2026-09-01"
+        }
+      ]
+    },
+    "consultation_date": "2026-09-05"
+  },
+  "expect": {
+    "top_differential": "malaria",
+    "differential_in_top3": [
+      "severe_malaria",
+      "malaria"
+    ],
+    "urgency_at_least": "immediate",
+    "severity_at_least": "critical",
+    "red_flags_include": [
+      "coma"
+    ],
+    "escalation_includes": [
+      "transfer"
+    ],
+    "notifications": [],
+    "suggested_tests_include": [
+      "rdt_malaria",
+      "thick_smear"
+    ],
+    "ai_synthesis_allowed": false
+  }
+}

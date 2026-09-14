@@ -1,0 +1,11 @@
+evidence:
+  min_units_for_synthesis: 1
+  citation_required: true
+  expired_units_excluded: true
+  authority_precedence:
+  - who
+  - national
+  - msf
+  - cdc
+  - institutional
+  - scientific

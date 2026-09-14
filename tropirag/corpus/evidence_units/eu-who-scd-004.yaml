@@ -1,0 +1,18 @@
+unit_id: eu-who-scd-004
+source_id: who-scd-2024
+section: Crise vaso-occlusive et AVC
+text: 'La crise vaso-occlusive se manifeste par des douleurs osseuses intenses récurrentes ;
+  elle impose analgésie graduée (paracétamol → opioïdes si besoin) et hydratation prudente
+  sans surcharge. Tout déficit neurologique focal chez un drépanocytaire est un AVC jusqu''à
+  preuve du contraire : transfusion urgente en unité spécialisée. Une anémie qui s''aggrave
+  avec splénomégalie douloureuse rapide évoque une séquestration splénique — urgence vitale
+  de l''enfant drépanocytaire.'
+topics:
+- sickle_cell
+- vaso_occlusive_crisis
+- stroke
+- splenic_sequestration
+diseases:
+- sickle_cell_disease
+jurisdiction: INT
+language: fr

@@ -1,0 +1,90 @@
+version: 1
+domain: fever_travel
+rules:
+- id: preg-mip-severity-001
+  action: red_flag
+  priority: 96
+  weight: 0.5
+  description: Paludisme gestationnel — urgence materno-fœtale
+  when:
+    all:
+    - patient: pregnant
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - exposure: malaria_exposure
+  disease: malaria_in_pregnancy
+  then:
+    code: malaria_pregnancy_urgent
+    severity: severe
+    urgency: emergency
+    message: 'Paludisme gestationnel probable : risque d''anémie maternelle sévère, d''hypotrophie
+      et de prématurité — TDR/microscopie IMMÉDIAT, traitement sans délai, évaluation obstétricale
+      conjointe'
+  evidence:
+  - eu-who-mip-001
+- id: preg-mip-anemia-002
+  action: red_flag
+  priority: 90
+  weight: 0.5
+  description: Anémie de la femme enceinte
+  when:
+    all:
+    - patient: pregnant
+    - lab_numeric:
+        test: cbc
+        component: hb
+        lt: 8.0
+  disease: malaria_in_pregnancy
+  then:
+    code: severe_anemia_pregnancy
+    severity: severe
+    urgency: emergency
+    message: 'Anémie sévère chez femme enceinte (Hb < 8 g/dL) : étiologie à documenter (paludisme,
+      carence martiale) — décision transfusionnelle selon tolérance et protocole, fer + acide
+      folique'
+  evidence:
+  - eu-who-mip-001
+- id: preg-mip-hypoglyc-003
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Hypoglycémie — risque majoré sous quinine
+  when:
+    all:
+    - patient: pregnant
+    - lab_numeric:
+        test: glucose
+        lt: 3.9
+  disease: malaria_in_pregnancy
+  then:
+    code: hypoglycemia_pregnancy
+    severity: severe
+    urgency: emergency
+    message: 'Hypoglycémie chez femme enceinte (glycémie < 3,9 mmol/L) : correction IV immédiate —
+      si paludisme sévère traité par quinine, surveiller la glycémie toutes les 4 h (risque
+      d''hypoglycémie quininique)'
+  evidence:
+  - eu-who-mip-003
+- id: preg-fetal-distress-004
+  action: red_flag
+  priority: 97
+  weight: 0.5
+  description: Souffrance fœtale possible — mouvements actifs diminués
+  when:
+    all:
+    - patient: pregnant
+    - any:
+      - symptom: decreased_fetal_movements
+      - symptom: vaginal_bleeding
+  disease: malaria_in_pregnancy
+  then:
+    code: fetal_distress_risk
+    severity: critical
+    urgency: immediate
+    message: 'Diminution des mouvements actifs fœtaux et/ou métrorragies chez femme enceinte fébrile :
+      évaluation obstétricale d''urgence (rythme cardiaque fœtal, échographie) — transfert médicalisé'
+  evidence:
+  - eu-who-mip-001

@@ -1,0 +1,25 @@
+unit_id: eu-draft-msf-dengue-protocole-004
+source_id: msf-dengue-protocole
+text: Les AINS, dont l'ibuprofène et l'aspirine, sont contre-indiqués dans la dengue
+  suspectée en raison du risque hémorragique et du syndrome de Reye chez l'enfant.
+  Le paracétamol est le seul antipyrétique recommandé, à dose espacée. Aucune corticothérapie
+  n'est indiquée.
+section: 3. Contre-indications thérapeutiques
+topics:
+- strong_recommendation
+diseases:
+- dengue
+symptom_codes: []
+drug_codes:
+- ibuprofen
+- paracetamol
+test_codes: []
+recommendation_strength: strong
+chunk_index: 3
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: aa54d1afee7df7bf65d235d496e1194473298f23d74388ce31687f37fdcd2b0c
+  source_path: data/raw/protocols/msf-dengue-protocole.html
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

@@ -1,0 +1,9 @@
+app:
+  name: tropirag
+  version: 0.1.0
+  environment: local
+  jurisdiction_default: CI
+  languages:
+  - fr
+  - en
+  timezone: Africa/Abidjan

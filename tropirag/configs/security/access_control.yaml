@@ -1,0 +1,9 @@
+access_control:
+  default_role: clinician
+  roles:
+    clinician:
+    - cases:*
+    - clinical:*
+    - evidence:*
+    admin:
+    - '*'

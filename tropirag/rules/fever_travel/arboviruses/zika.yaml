@@ -1,0 +1,45 @@
+version: 1
+domain: fever_travel
+rules:
+- id: zik-susp-001
+  action: raise_suspicion
+  priority: 40
+  weight: 0.25
+  description: Suspicion Zika
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom_any:
+      - rash
+      - conjunctival_injection
+    - symptom_any:
+      - arthralgia
+      - myalgia
+      - headache
+  disease: zika
+  then:
+    disease: zika
+    weight: 0.25
+    note: Éruption maculopapuleuse + conjonctivite non purulente + arthralgies — tableau Zika
+  evidence:
+  - who-zika
+- id: zik-pregnancy-alert-002
+  action: escalate
+  priority: 78
+  weight: 0.5
+  description: Zika + grossesse
+  when:
+    all:
+    - patient: pregnant
+    - disease: zika
+  disease: zika
+  then:
+    level: senior_clinician
+    message: 'Zika suspecté chez femme enceinte — risque de microcéphalie fœtale : orientation spécialisée
+      et suivi'
+  evidence:
+  - who-zika

@@ -1,0 +1,33 @@
+version: 1
+domain: fever_travel
+rules:
+- id: ref-severe-anemia-001
+  action: escalate
+  priority: 90
+  weight: 0.5
+  description: Anémie sévère
+  when:
+    lab_numeric:
+      test: cbc
+      component: hb
+      lt: 7.0
+  then:
+    level: emergency_transfer
+    message: 'Anémie sévère (Hb < 7 g/dL) — transfusion à envisager : référence urgente'
+  evidence:
+  - who-malaria-severe-2023
+- id: ref-creatinine-001
+  action: escalate
+  priority: 90
+  weight: 0.5
+  description: Insuffisance rénale
+  when:
+    lab_numeric:
+      test: creatinine
+      gte: 265.0
+  then:
+    level: emergency_transfer
+    message: Insuffisance rénale (créatinine ≥ 265 µmol/L) — critère OMS de paludisme sévère / dengue
+      sévère
+  evidence:
+  - who-malaria-severe-2023

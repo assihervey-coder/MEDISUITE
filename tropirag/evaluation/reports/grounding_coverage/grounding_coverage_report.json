@@ -1,0 +1,42 @@
+{
+  "suite": "grounding_coverage",
+  "generated_at": "2026-09-12T05:55:50",
+  "passed": true,
+  "metrics": [
+    {
+      "name": "evidence_coverage",
+      "value": 1.0,
+      "threshold": 0.4,
+      "passed": true,
+      "details": {
+        "cases": 8
+      }
+    }
+  ],
+  "cases": [
+    {
+      "coverage": 1.0
+    },
+    {
+      "coverage": 1.0
+    },
+    {
+      "coverage": 1.0
+    },
+    {
+      "coverage": 1.0
+    },
+    {
+      "coverage": 1.0
+    },
+    {
+      "coverage": 1.0
+    },
+    {
+      "coverage": 1.0
+    },
+    {
+      "coverage": 1.0
+    }
+  ]
+}

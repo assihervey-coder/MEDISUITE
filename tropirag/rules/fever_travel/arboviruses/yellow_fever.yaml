@@ -1,0 +1,77 @@
+version: 1
+domain: fever_travel
+rules:
+- id: yf-susp-001
+  action: raise_suspicion
+  priority: 88
+  weight: 0.6
+  description: Suspicion fièvre jaune
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: jaundice
+    - exposure: yellow_fever_zone
+  disease: yellow_fever
+  then:
+    disease: yellow_fever
+    weight: 0.6
+    note: Fièvre + ictère en zone d'endémie amarile — fièvre jaune à éliminer en priorité
+  evidence:
+  - who-yf
+- id: yf-unvaccinated-002
+  action: raise_suspicion
+  priority: 70
+  weight: 0.3
+  description: Non-vacciné en zone amarile
+  when:
+    all:
+    - *id001
+    - exposure: yf_unvaccinated_in_zone
+  disease: yellow_fever
+  then:
+    disease: yellow_fever
+    weight: 0.3
+    note: Séjour en zone amarile SANS vaccination documentée — fièvre jaune à considérer même sans ictère
+  evidence:
+  - who-yf
+- id: yf-notify-003
+  action: notify
+  priority: 89
+  weight: 0.5
+  description: Notification fièvre jaune
+  when:
+    disease: yellow_fever
+  disease: yellow_fever
+  then:
+    authority: public_health
+    reason: 'Fièvre jaune suspectée — MALADIE À DÉCLARATION OBLIGATOIRE : notification immédiate aux autorités
+      sanitaires'
+  evidence:
+  - who-yf
+- id: yf-toxic-phase-004
+  action: red_flag
+  priority: 96
+  weight: 0.5
+  description: Phase toxique YF
+  when:
+    all:
+    - disease: yellow_fever
+    - symptom_any:
+      - abnormal_bleeding
+      - hematemesis
+      - melena
+      - dark_urine
+  disease: yellow_fever
+  then:
+    code: yf_toxic_phase
+    severity: critical
+    urgency: immediate
+    message: 'Phase toxique de fièvre jaune suspectée (ictère + hémorragies + insuffisance rénale) — mortalité
+      élevée : réanimation'
+  evidence:
+  - who-yf

@@ -1,0 +1,17 @@
+unit_id: eu-who-yf-001
+source_id: who-yf
+section: Fièvre jaune
+text: La fièvre jaune débute brutalement par fièvre, céphalées, myalgies et lombalgies avec nausées. La
+  phase toxique (environ 15 % des cas après une rémission brève) associe ictère, hémorragies (vomissements
+  noirs, épistaxis, gingivorragies), insuffisance rénale et troubles de la conscience ; la létalité atteint
+  30 à 60 % dans les formes ictéro-hémorragiques. C'est une maladie à déclaration internationale obligatoire
+  (RSI 2005).
+topics:
+- yellow-fever
+- icterus
+- hemorrhage
+- notification
+diseases:
+- yellow_fever
+jurisdiction: INT
+language: fr

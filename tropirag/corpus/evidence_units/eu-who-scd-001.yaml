@@ -1,0 +1,17 @@
+unit_id: eu-who-scd-001
+source_id: who-scd-2024
+section: Fièvre chez le patient drépanocytaire
+text: 'Chez le patient drépanocytaire, toute fièvre ≥ 38 °C constitue une urgence médicale :
+  le risque d''infection bactérienne invasive (pneumocoque, salmonelle non typhi) est majeur
+  en raison de l''asplénie fonctionnelle. La prise en charge impose une évaluation rapide avec
+  hémoculture, NFS et début d''une antibiothérapie probabiliste sans attendre les résultats.'
+topics:
+- sickle_cell
+- fever
+- emergency
+- sepsis
+diseases:
+- sickle_cell_disease
+- invasive_bacterial_infection
+jurisdiction: INT
+language: fr

@@ -1,0 +1,63 @@
+version: 1
+domain: fever_travel
+rules:
+- id: preg-vax-yf-001
+  action: inform
+  priority: 60
+  weight: 0.3
+  description: Vaccin fièvre jaune et grossesse — évaluation risque/bénéfice
+  when:
+    all:
+    - patient: pregnant
+  disease: yellow_fever
+  then:
+    message: 'Vaccin antiamarile (vivant atténué) : en principe contre-indiqué chez la femme enceinte ;
+      en contexte épidémique, l''évaluation risque/bénéfice relève de la santé publique —
+      certificat et avis national requis'
+    topic: yellow_fever_vaccine_pregnancy
+  evidence:
+  - eu-who-mip-001
+- id: preg-esc-obstetric-002
+  action: escalate
+  priority: 94
+  weight: 0.5
+  description: Fièvre + grossesse — orientation structurée
+  when:
+    all:
+    - patient: pregnant
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+  disease: malaria_in_pregnancy
+  then:
+    level: refer_hospital
+    message: 'Femme enceinte fébrile : prise en charge conjointe médecine-obstétrique, accès au
+      suivi fœtal et à la transfusion — ne jamais gérer en ambulatoire sans test paludique ni
+      évaluation obstétricale'
+  evidence:
+  - eu-who-mip-001
+- id: preg-esc-severe-003
+  action: escalate
+  priority: 99
+  weight: 0.5
+  description: Paludisme sévère gravidique — urgence vitale materno-fœtale
+  when:
+    all:
+    - patient: pregnant
+    - any:
+      - symptom: coma
+      - symptom: convulsions
+      - symptom: prostration
+      - symptom: dyspnea
+      - symptom: oliguria
+    - exposure: malaria_exposure
+  disease: severe_malaria
+  then:
+    level: emergency_transfer
+    message: 'Paludisme sévère gravidique : artésunate IV immédiat (pré-référence), surveillance
+      glycémique, transfert médicalisé vers centre avec réanimation + soins néonatals —
+      accouchement à ne pas déclencher pendant la phase critique'
+  evidence:
+  - eu-who-mip-003

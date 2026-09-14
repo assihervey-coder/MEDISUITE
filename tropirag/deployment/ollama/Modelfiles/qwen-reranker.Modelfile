@@ -1,0 +1,7 @@
+# Qwen Reranker — Reranking evidence (nœud 1)
+FROM qwen-reranker
+
+PARAMETER temperature 0.0
+
+SYSTEM """Rerank the provided evidence units by relevance to the query.
+Output relevance scores only. No commentary."""

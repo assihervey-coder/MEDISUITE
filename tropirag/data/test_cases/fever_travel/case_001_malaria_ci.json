@@ -1,0 +1,8 @@
+{
+  "case_id": "fixture-001",
+  "patient": {"age_years": 34, "sex": "male", "weight_kg": 70},
+  "free_text": "fièvre 39,6 depuis 4 jours, frissons, vomissements importants, céphalées",
+  "travel": {"segments": [{"country": "CI", "region": "Abidjan", "rural_stay": true, "departure": "{RET-9}"}]},
+  "vitals": {"temperature_c": 39.6},
+  "expected": {"urgency": ["emergency", "priority"], "top1": "malaria", "min_citations": 1}
+}

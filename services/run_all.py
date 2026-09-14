@@ -28,6 +28,9 @@ def _env(service: dict) -> dict:
                          f"{ROOT / 'packages' / 'clinical-rules'}:"
                          f"{ROOT / service['dir'] / 'src'}")
     env["MEDISUITE_PORT"] = str(service["port"])
+    # Env extras par service (ex. TropiRAG : TROPIRAG_ROOT) — {ROOT} substitué.
+    for key, value in service.get("env", {}).items():
+        env[key] = str(value).replace("{ROOT}", str(ROOT))
     return env
 
 
@@ -71,7 +74,8 @@ def status() -> None:
     for svc in ALL_SERVICES:
         try:
             with urllib.request.urlopen(
-                    f"http://localhost:{svc['port']}/health", timeout=1) as r:
+                    f"http://localhost:{svc['port']}{svc.get('health_path', '/health')}",
+                    timeout=1) as r:
                 print(f"  ● {svc['name']:<28} :{svc['port']}  {r.status}")
         except Exception:
             print(f"  ○ {svc['name']:<28} :{svc['port']}  (inactif)")

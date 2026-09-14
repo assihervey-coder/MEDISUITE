@@ -1,0 +1,66 @@
+{
+  "case_id": "eval-dengue-warning-03",
+  "description": "Dengue avec signes d'alarme — AINS interdits",
+  "payload": {
+    "patient": {
+      "age_years": 34,
+      "sex": "female"
+    },
+    "symptoms": [
+      {
+        "code": "fever",
+        "onset": "2026-09-07"
+      },
+      {
+        "code": "headache"
+      },
+      {
+        "code": "myalgia"
+      },
+      {
+        "code": "abdominal_pain",
+        "severity": "severe"
+      },
+      {
+        "code": "vomiting"
+      },
+      {
+        "code": "gingival_bleeding"
+      }
+    ],
+    "travel": {
+      "segments": [
+        {
+          "country": "CI",
+          "region": "lagunes",
+          "arrival": "2026-08-20",
+          "departure": "2026-09-01"
+        }
+      ]
+    },
+    "lab_results": [
+      {
+        "code": "platelet_count",
+        "value": 80
+      }
+    ],
+    "consultation_date": "2026-09-10"
+  },
+  "expect": {
+    "differential_in_top3": [
+      "dengue",
+      "severe_dengue"
+    ],
+    "urgency_at_least": "emergency",
+    "severity_at_least": "moderate",
+    "drug_constraints_include": [
+      "ibuprofen",
+      "aspirin"
+    ],
+    "suggested_tests_include": [
+      "dengue_ns1",
+      "cbc"
+    ],
+    "ai_synthesis_allowed": false
+  }
+}

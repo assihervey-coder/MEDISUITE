@@ -1,0 +1,20 @@
+unit_id: eu-who-typ-xdr-002
+source_id: cdc-typhoid-xdr-2023
+section: Prise en charge de la typhoïde XDR
+text: 'Prise en charge de la typhoïde XDR confirmée ou suspectée en zone foyer : l''azithromycine
+  orale est le traitement de première intention des formes non compliquées, avec réévaluation clinique
+  à 48-72 heures. Les fluoroquinolones et les céphalosporines de troisième génération sont inutilisables
+  du fait de la résistance. En cas de forme sévère (encéphalopathie, hémorragie digestive, choc),
+  le méropénème intraveineux est l''antibiotique de référence, en milieu hospitalier avec avis référent.
+  La vaccination antityphoïdique conservée et l''hygiène hydrique restent la prévention de base pour
+  les voyageurs vers les zones d''endémie.'
+topics:
+- typhoid
+- xdr
+- treatment
+- azithromycin
+- meropenem
+diseases:
+- enteric_fever
+jurisdiction: INT
+language: fr

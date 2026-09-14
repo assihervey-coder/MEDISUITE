@@ -1,0 +1,17 @@
+unit_id: eu-who-mal-001
+source_id: who-malaria-2023
+section: Suspicion de paludisme
+text: Toute fièvre ou antécédent de fièvre chez une personne ayant séjourné en zone de transmission du
+  paludisme doit être considérée comme un paludisme jusqu'à preuve du contraire. La confirmation parasitologique
+  (test de diagnostic rapide ou microscopie) est recommandée avant l'instauration du traitement dans tous
+  les cas suspects, afin de ne pas traiter à tort et de ne pas manquer d'autres causes fébriles.
+topics:
+- malaria
+- fever
+- suspicion
+- travel
+diseases:
+- malaria
+- severe_malaria
+jurisdiction: INT
+language: fr

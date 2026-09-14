@@ -1,0 +1,163 @@
+_comment: 'Capacités déclaratives du mesh IA — générées depuis le ModelRegistry (source
+  de vérité unique). Invariants gouvernance : autonomous_diagnosis=false PARTOUT ;
+  evidence_required pour toute tâche clinique.'
+capabilities:
+  bge-m3:
+    tasks:
+    - embeddings
+    modalities:
+    - text
+    languages:
+    - multilingual
+    clinical_risk_max: none
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Sensory retrieval layer — hybride multilingue.
+  med42-v2-70b:
+    tasks:
+    - clinical_reasoning
+    - biomedical_synthesis
+    modalities:
+    - text
+    languages:
+    - en
+    - fr
+    clinical_risk_max: supervised
+    autonomous_diagnosis: false
+    evidence_required: true
+    local_execution: false
+    context_required:
+    - symptoms
+    - patient_context
+    min_vram_gb: 42.0
+    notes: Clinical Reasoner — synthèse encadrée par Evidence Pack + règles.
+  medasr-quantized:
+    tasks:
+    - speech_dictation
+    modalities:
+    - audio
+    - text
+    languages:
+    - fr
+    - en
+    clinical_risk_max: none
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Dictée clinique FR/EN — léger, périphérie.
+  medgemma-4b-it:
+    tasks:
+    - image_analysis
+    modalities:
+    - image
+    - text
+    languages:
+    - en
+    - fr
+    clinical_risk_max: assisted
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required:
+    - symptoms
+    - patient_context
+    - localization
+    - duration
+    min_vram_gb: 0.0
+    notes: Analyse d'image contextualisée — premier avis / seconde lecture.
+  qwen-reranker:
+    tasks:
+    - reranking
+    modalities:
+    - text
+    languages:
+    - multilingual
+    clinical_risk_max: none
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Reranking cross-encoder — TOP 30 → TOP 5.
+  deepseek-r1-distill-32b:
+    tasks:
+    - logical_audit
+    modalities:
+    - text
+    languages:
+    - en
+    - fr
+    clinical_risk_max: assisted
+    autonomous_diagnosis: false
+    evidence_required: true
+    local_execution: true
+    context_required: []
+    min_vram_gb: 20.0
+    notes: Auditeur logique — cohérence, contradictions. Ne décide JAMAIS.
+  openbiollm-70b:
+    tasks:
+    - biomedical_synthesis
+    modalities:
+    - text
+    languages:
+    - en
+    - fr
+    clinical_risk_max: supervised
+    autonomous_diagnosis: false
+    evidence_required: true
+    local_execution: false
+    context_required: []
+    min_vram_gb: 42.0
+    notes: Biomedical Synthesizer — littérature et dossiers complexes.
+  whisper-large-v3:
+    tasks:
+    - conversation_transcription
+    modalities:
+    - audio
+    - text
+    languages:
+    - fr
+    - en
+    - multilingual
+    clinical_risk_max: none
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Conversation terrain multilingue / code-switching.
+  minicpm-v-2.6:
+    tasks:
+    - image_triage
+    modalities:
+    - image
+    - text
+    languages:
+    - en
+    - zh
+    clinical_risk_max: assisted
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Triage / screening image — sensibilité-spécificité équilibrées.
+  sam2-medical:
+    tasks:
+    - image_segmentation
+    modalities:
+    - image
+    languages:
+    - en
+    clinical_risk_max: assisted
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Segmentation — masques et mesures. Sort l'évidence → pas le diagnostic.

@@ -1,0 +1,43 @@
+{
+  "case_id": "eval-scd-crisis-08",
+  "description": "Drépanocytose + fièvre — urgence asplénique",
+  "payload": {
+    "patient": {
+      "age_years": 19,
+      "sex": "male",
+      "chronic_conditions": [
+        "sickle_cell"
+      ]
+    },
+    "symptoms": [
+      {
+        "code": "fever",
+        "onset": "2026-09-09"
+      },
+      {
+        "code": "pallor"
+      },
+      {
+        "code": "bone_pain"
+      }
+    ],
+    "travel": {},
+    "consultation_date": "2026-09-11"
+  },
+  "expect": {
+    "differential_in_top3": [
+      "invasive_bacterial_infection",
+      "malaria",
+      "acute_hemolysis",
+      "osteomyelitis"
+    ],
+    "urgency_at_least": "emergency",
+    "escalation_includes": [],
+    "drug_constraints_include": [
+      "ceftriaxone"
+    ],
+    "expected_rule_families": [
+      "scd"
+    ]
+  }
+}

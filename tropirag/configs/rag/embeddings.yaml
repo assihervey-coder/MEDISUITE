@@ -1,0 +1,5 @@
+embeddings:
+  primary: bge-m3
+  offline_fallback: deterministic_hashing_256d
+  multilingual: true
+  note: 'V1 : hashing déterministe pour reproductibilité absolue'

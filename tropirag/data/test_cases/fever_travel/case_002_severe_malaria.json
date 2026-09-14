@@ -1,0 +1,8 @@
+{
+  "case_id": "fixture-002",
+  "patient": {"age_years": 42, "sex": "male"},
+  "free_text": "fièvre 40,2, convulsions puis coma, prostration",
+  "travel": {"segments": [{"country": "BF", "rural_stay": true, "departure": "{RET-8}"}]},
+  "vitals": {"temperature_c": 40.2},
+  "expected": {"urgency": ["emergency", "immediate"], "red_flags": ["cerebral_malaria"]}
+}

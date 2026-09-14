@@ -1,0 +1,46 @@
+version: 1
+domain: fever_travel
+rules:
+- id: west-nile-susp-001
+  action: inform
+  priority: 30
+  weight: 0.5
+  description: Arbovirose atypique
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: rash
+    - exposure: malaria_exposure
+  then:
+    message: Arbovirose non différenciée possible (West Nile, O'nyong-nyong) — sérologies de référence
+      si tableau atypique
+    topic: differential
+- id: ricket-susp-001
+  action: raise_suspicion
+  priority: 45
+  weight: 0.25
+  description: Suspicion rickettsiose
+  when:
+    all:
+    - *id001
+    - symptom_any:
+      - rash
+      - petechiae
+    - travel: rural_stay
+    - symptom: headache
+  disease: rickettsial
+  then:
+    disease: rickettsial
+    weight: 0.25
+    note: 'Fièvre + éruption + séjour rural (tiques/puces) — rickettsiose (fièvre boutonneuse) à considérer
+      : escarre à rechercher'
+  evidence:
+  - msf-rickettsia
+# NOTE V1.3 : la suspicion de leptospirose (ancienne lepto-susp-001) a migré
+# vers le module dédié rules/fever_travel/leptospirosis/ (5 règles,
+# suspicion + Weil + traitement) — sources eu-who-lepto-001/002/003/004.

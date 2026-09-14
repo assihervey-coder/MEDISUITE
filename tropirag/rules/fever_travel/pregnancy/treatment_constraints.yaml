@@ -1,0 +1,132 @@
+version: 1
+domain: fever_travel
+rules:
+- id: preg-tx-primaquine-001
+  action: contraindicate_drug
+  priority: 99
+  weight: 0.5
+  description: Primaquine CONTRE-INDIQUÉE pendant la grossesse
+  when:
+    all:
+    - patient: pregnant
+  disease: malaria
+  then:
+    drug: primaquine
+    reason: 'Primaquine contre-indiquée pendant TOUTE la grossesse (hémolyse fœtale) — la cure
+      radicale P. vivax/ovale est différée au post-partum'
+  evidence:
+  - eu-who-mip-002
+- id: preg-tx-sp-1st-trim-002
+  action: contraindicate_drug
+  priority: 98
+  weight: 0.5
+  description: SP contre-indiqué au 1er trimestre
+  when:
+    all:
+    - patient: first_trimester
+  disease: malaria_in_pregnancy
+  then:
+    drug: sulfadoxine_pyrimethamine
+    reason: 'Sulfadoxine-pyriméthamine contre-indiquée avant 14 SA (antifolate, risque fœtal) —
+      IPTp uniquement à partir du 2e trimestre'
+  evidence:
+  - eu-who-mip-002
+- id: preg-tx-nsaid-3rd-trim-003
+  action: contraindicate_drug
+  priority: 97
+  weight: 0.5
+  description: AINS contre-indiqués au 3e trimestre
+  when:
+    all:
+    - patient: third_trimester
+  disease: malaria_in_pregnancy
+  then:
+    drug: ibuprofen
+    reason: 'AINS contre-indiqués au 3e trimestre : fermeture prématurée du canal artériel, oligoamnios —
+      antalgique de référence : paracétamol'
+  evidence:
+  - eu-who-mip-002
+- id: preg-tx-doxycycline-004
+  action: contraindicate_drug
+  priority: 96
+  weight: 0.5
+  description: Tétracyclines contre-indiquées pendant la grossesse
+  when:
+    all:
+    - patient: pregnant
+  disease: enteric_fever
+  then:
+    drug: doxycycline
+    reason: 'Doxycycline contre-indiquée pendant la grossesse (dyschromie dentaire, inhibition
+      osseuse fœtale) — alternatives selon protocole (azithromycine)'
+  evidence:
+  - eu-who-mip-002
+- id: preg-tx-artesunate-severe-005
+  action: recommend_drug
+  priority: 95
+  weight: 0.5
+  description: Artésunate IV = référence du paludisme sévère gravidique
+  when:
+    all:
+    - patient: pregnant
+    - any:
+      - symptom: coma
+      - symptom: convulsions
+      - symptom: prostration
+      - symptom: dyspnea
+    - exposure: malaria_exposure
+  disease: severe_malaria
+  then:
+    drug: artesunate_iv
+    reason: 'Paludisme sévère gravidique : artésunate IV préféré à la quinine (efficacité supérieure,
+      moins d''hypoglycémie) — dose par protocole national, surveillance glycémique rapprochée'
+  evidence:
+  - eu-who-mip-002
+  - eu-who-mip-003
+- id: preg-tx-al-safe-006
+  action: inform
+  priority: 70
+  weight: 0.3
+  description: CTA autorisées pendant la grossesse
+  when:
+    all:
+    - patient: pregnant
+    - exposure: malaria_exposure
+  disease: malaria_in_pregnancy
+  then:
+    message: 'Paludisme simple confirmé chez femme enceinte : les CTA (dont l''artéméther-luméfantrine)
+      sont utilisables pendant TOUS les trimestres (OMS 2023) — jamais de primaquine ni de
+      prophylaxie par doxycycline'
+    topic: malaria_pregnancy_treatment
+  evidence:
+  - eu-who-mip-002
+- id: preg-tx-folic-007
+  action: recommend_drug
+  priority: 45
+  weight: 0.3
+  description: Acide folique systématique
+  when:
+    all:
+    - patient: pregnant
+  disease: malaria_in_pregnancy
+  then:
+    drug: folic_acid
+    reason: 'Femme enceinte : acide folique systématique selon protocole national (renforcé si
+      anémie / traitement par SP)'
+  evidence:
+  - eu-who-mip-002
+- id: preg-tx-hydroxycarbamide-008
+  action: contraindicate_drug
+  priority: 97
+  weight: 0.5
+  description: Hydroxycarbamide contre-indiquée si grossesse
+  when:
+    all:
+    - patient: pregnant
+  disease: sickle_cell_disease
+  then:
+    drug: hydroxycarbamide
+    reason: 'Hydroxycarbamide (traitement de fond SCD) cytotoxique : contre-indiquée pendant la
+      grossesse — information immédiate de l''équipe hématologie-obstétrique'
+  evidence:
+  - eu-who-scd-002

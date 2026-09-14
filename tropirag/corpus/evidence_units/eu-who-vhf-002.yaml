@@ -1,0 +1,18 @@
+unit_id: eu-who-vhf-002
+source_id: who-ebola-2024
+section: Isolement et protection
+text: 'Le cas suspect de MVH est isolé dans une pièce dédiée à pression négative si possible. Le personnel
+  applique l''équipement de protection individuel complet (PPE) avant tout contact, limiter strictement
+  le nombre d''intervenants, ne réaliser AUCUN acte invasif non essentiel. Le diagnostic différentiel
+  inclut paludisme sévère et typhoïde : le TDR paludisme reste indiqué sous PPE.'
+topics:
+- vhf
+- ppe
+- isolation
+- safety
+diseases:
+- ebola
+- marburg
+- lassa
+jurisdiction: INT
+language: fr

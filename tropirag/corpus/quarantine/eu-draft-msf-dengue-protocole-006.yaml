@@ -1,0 +1,26 @@
+unit_id: eu-draft-msf-dengue-protocole-006
+source_id: msf-dengue-protocole
+text: 'L''hypovolémie doit être corrigée prudemment : un remplissage vasculaire excessif
+  peut précéder une surcharge pulmonaire iatrogène. La surveillance est horaire pendant
+  la phase critique : diurèse, tension artérielle, hématocrite. Le choc décompensé
+  relève d''un remplissage prudent puis des vasopresseurs en soins intensifs. Le transfert
+  vers un hôpital de référence doit être décidé dès les premiers signes d''alarme
+  chez l''enfant. Document de travail - ne pas distribuer hors du protocole interne.'
+section: 5. Prise en charge de la phase critique
+topics:
+- severity
+- strong_recommendation
+- treatment
+diseases: []
+symptom_codes: []
+drug_codes: []
+test_codes: []
+recommendation_strength: strong
+chunk_index: 5
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: aa54d1afee7df7bf65d235d496e1194473298f23d74388ce31687f37fdcd2b0c
+  source_path: data/raw/protocols/msf-dengue-protocole.html
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

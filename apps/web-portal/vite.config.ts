@@ -15,6 +15,8 @@ const proxy: Record<string, { target: string; rewrite?: (p: string) => string }>
   "/api/analytics": { target: "http://localhost:8204", rewrite: strip("/api/analytics") },
   // eCRF (v0.7) : le préfixe /api/ecrf est retiré comme le fait l'api-gateway
   "/api/ecrf": { target: "http://localhost:8205", rewrite: strip("/api/ecrf") },
+  // Aide à la décision clinique TropiRAG (moteur déterministe + RAG, :8304)
+  "/api/tropirag": { target: "http://localhost:8304", rewrite: strip("/api/tropirag") },
   // Étiquetage UDI public servi par l'api-gateway
   "/api/v1/about": { target: "http://localhost:8000" },
 };

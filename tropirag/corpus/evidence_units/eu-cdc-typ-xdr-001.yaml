@@ -1,0 +1,19 @@
+unit_id: eu-cdc-typ-xdr-001
+source_id: cdc-typhoid-xdr-2023
+section: Épidémiologie et définition XDR
+text: 'La fièvre typhoïde extrêmement résistante aux antimicrobiens (XDR) est causée par des souches
+  de Salmonella Typhi résistantes aux fluoroquinolones ET aux céphalosporines de troisième génération.
+  Un foyer majeur sévit au Pakistan depuis 2016, avec diffusion vers l''Inde et l''Afghanistan et des
+  cas importés décrits mondialement chez des voyageurs. Toute fièvre au retour d''Asie du Sud (séjour
+  au Pakistan en particulier) doit faire suspecter une souche XDR jusqu''à preuve du contraire :
+  l''hémoculture avec antibiogramme est indispensable avant toute adaptation antibiotique.'
+topics:
+- typhoid
+- xdr
+- resistance
+- travel
+- epidemiology
+diseases:
+- enteric_fever
+jurisdiction: INT
+language: fr

@@ -1,0 +1,68 @@
+{
+  "suite": "grounding_unsupported",
+  "generated_at": "2026-09-14T23:46:18",
+  "passed": true,
+  "metrics": [
+    {
+      "name": "ai_claims_grounded",
+      "value": 1.0,
+      "threshold": 1.0,
+      "passed": true,
+      "details": {
+        "cases": 8,
+        "with_ai_text": 0
+      }
+    },
+    {
+      "name": "deterministic_traceability",
+      "value": 1.0,
+      "threshold": 0.9,
+      "passed": true,
+      "details": {
+        "cases": 8
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case": "eval-malaria-severe-01",
+      "ai_clean": true,
+      "traceable": true
+    },
+    {
+      "case": "eval-malaria-pregnancy-02",
+      "ai_clean": true,
+      "traceable": true
+    },
+    {
+      "case": "eval-dengue-warning-03",
+      "ai_clean": true,
+      "traceable": true
+    },
+    {
+      "case": "eval-typhoid-xdr-04",
+      "ai_clean": true,
+      "traceable": true
+    },
+    {
+      "case": "eval-vhf-isolation-05",
+      "ai_clean": true,
+      "traceable": true
+    },
+    {
+      "case": "eval-lepto-weil-06",
+      "ai_clean": true,
+      "traceable": true
+    },
+    {
+      "case": "eval-meningo-purpura-07",
+      "ai_clean": true,
+      "traceable": true
+    },
+    {
+      "case": "eval-scd-crisis-08",
+      "ai_clean": true,
+      "traceable": true
+    }
+  ]
+}

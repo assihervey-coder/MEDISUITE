@@ -1,0 +1,19 @@
+unit_id: eu-who-lepto-003
+source_id: who-lepto
+section: Traitement et contraintes médicamenteuses
+text: 'Traitement de la leptospirose : formes légères à modérées — doxycycline orale
+  (également chimioprophylaxie des exposés à haut risque en zone d''épidémie selon
+  protocole national) ; formes sévères (Weil, hémorragie alvéolaire) — pénicilline G IV,
+  alternative ceftriaxone IV. Les AINS (ibuprofène, aspirine, diclofénac) sont
+  contre-indiqués : néphrotoxicité propre majorant l''insuffisance rénale et risque
+  hémorragique aggravé ; l''antipyrétique de référence est le paracétamol. Les doses
+  relèvent du protocole national et du clinicien (jamais générées par un modèle de
+  langage). Réévaluation clinique systématique à 48 heures.'
+topics:
+- treatment
+- antibiotics
+- contraindications
+diseases:
+- leptospirosis
+jurisdiction: INT
+language: fr

@@ -1,0 +1,1 @@
+"""Segmentation d'images médicales."""

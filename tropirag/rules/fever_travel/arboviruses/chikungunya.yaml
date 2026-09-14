@@ -1,0 +1,27 @@
+version: 1
+domain: fever_travel
+rules:
+- id: chik-susp-001
+  action: raise_suspicion
+  priority: 52
+  weight: 0.35
+  description: Suspicion chikungunya
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: arthralgia
+    - any:
+      - symptom: myalgia
+      - symptom: headache
+      - symptom: rash
+  disease: chikungunya
+  then:
+    disease: chikungunya
+    weight: 0.35
+    note: Arthralgies souvent intenses et symétriques + fièvre — tableau chikungunya typique
+  evidence:
+  - who-chikungunya

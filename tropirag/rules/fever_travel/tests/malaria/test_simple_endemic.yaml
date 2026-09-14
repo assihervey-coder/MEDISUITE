@@ -1,0 +1,19 @@
+name: paludisme-simple-zone-endemique
+description: Fièvre + retour de zone d'endémie → suspicion palu + TDR
+case:
+  patient:
+    age_years: 30
+    sex: male
+  symptoms:
+  - code: fever
+    onset: '2026-09-05'
+  travel:
+    segments:
+    - country: CI
+      arrival: '2026-08-20'
+      departure: '2026-09-02'
+  consultation_date: '2026-09-08'
+expect:
+  rules_include:
+  - mal-susp-core-001
+  urgency_at_least: routine

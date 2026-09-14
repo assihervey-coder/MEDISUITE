@@ -1,0 +1,392 @@
+{
+  "suite": "retrieval",
+  "generated_at": "2026-09-14T23:46:18",
+  "passed": true,
+  "metrics": [
+    {
+      "name": "recall@5",
+      "value": 0.8425925925925926,
+      "threshold": 0.8,
+      "passed": true,
+      "details": {}
+    },
+    {
+      "name": "recall@10",
+      "value": 0.8981481481481483,
+      "threshold": 0.85,
+      "passed": true,
+      "details": {}
+    },
+    {
+      "name": "precision@5_capped",
+      "value": 0.8425925925925926,
+      "threshold": 0.75,
+      "passed": true,
+      "details": {
+        "note": "hits/min(5, |pertinents|)"
+      }
+    },
+    {
+      "name": "mrr",
+      "value": 0.9074074074074073,
+      "threshold": 0.7,
+      "passed": true,
+      "details": {}
+    },
+    {
+      "name": "ndcg@10",
+      "value": 0.8444719733616324,
+      "threshold": 0.75,
+      "passed": true,
+      "details": {}
+    },
+    {
+      "name": "map",
+      "value": 0.7505291005291005,
+      "threshold": 0.6,
+      "passed": true,
+      "details": {}
+    }
+  ],
+  "cases": [
+    {
+      "query": "fièvre voyage zone paludéenne suspicion",
+      "top10": [
+        "eu-who-mal-001",
+        "eu-who-yf-002",
+        "eu-who-scd-002",
+        "eu-who-mip-001",
+        "eu-who-vhf-001",
+        "eu-who-men-002",
+        "eu-who-mals-006",
+        "eu-who-scd-003",
+        "eu-who-chik-001",
+        "eu-who-scd-001"
+      ],
+      "expected": [
+        "eu-who-mal-001",
+        "eu-ci-mal-009"
+      ]
+    },
+    {
+      "query": "paludisme sévère artésunate IV critères",
+      "top10": [
+        "eu-who-mals-007",
+        "eu-who-mals-006",
+        "eu-who-mip-003",
+        "eu-who-mals-005",
+        "eu-who-mip-002",
+        "eu-who-mal-renal-001",
+        "eu-who-mal-renal-002",
+        "eu-who-vhf-002",
+        "eu-who-lepto-004",
+        "eu-who-scd-002"
+      ],
+      "expected": [
+        "eu-who-mals-005",
+        "eu-who-mals-006",
+        "eu-who-mal-001"
+      ]
+    },
+    {
+      "query": "paludisme grossesse artésunate quinine",
+      "top10": [
+        "eu-who-mip-002",
+        "eu-who-mals-006",
+        "eu-who-mals-007",
+        "eu-who-mip-003",
+        "eu-ci-mal-009",
+        "eu-who-mal-renal-001",
+        "eu-who-mal-renal-002",
+        "eu-who-mal-003",
+        "eu-who-mal-004",
+        "eu-who-zik-001"
+      ],
+      "expected": [
+        "eu-who-mip-001",
+        "eu-who-mip-002"
+      ]
+    },
+    {
+      "query": "dengue signes d'alarme AINS interdits",
+      "top10": [
+        "eu-who-den-002",
+        "eu-msf-den-005",
+        "eu-who-den-preg-001",
+        "eu-who-den-001",
+        "eu-who-den-003",
+        "eu-who-scd-003",
+        "eu-who-den-004",
+        "eu-who-lepto-003",
+        "eu-who-lepto-002",
+        "eu-who-den-peds-001"
+      ],
+      "expected": [
+        "eu-who-den-002",
+        "eu-who-den-003"
+      ]
+    },
+    {
+      "query": "dengue enfant remplissage choc critique",
+      "top10": [
+        "eu-msf-den-005",
+        "eu-who-den-peds-001",
+        "eu-who-den-peds-002",
+        "eu-who-men-001",
+        "eu-who-den-001",
+        "eu-who-den-003",
+        "eu-who-men-003",
+        "eu-who-mals-006",
+        "eu-who-den-004",
+        "eu-who-den-002"
+      ],
+      "expected": [
+        "eu-who-den-peds-001",
+        "eu-who-den-peds-002"
+      ]
+    },
+    {
+      "query": "typhoïde hémoculture diagnostic",
+      "top10": [
+        "eu-who-typ-002",
+        "eu-who-vhf-002",
+        "eu-cdc-typ-xdr-001",
+        "eu-who-den-004",
+        "eu-who-scd-001",
+        "eu-who-typ-001",
+        "eu-who-den-002",
+        "eu-who-den-001",
+        "eu-who-lepto-001",
+        "eu-who-mal-002"
+      ],
+      "expected": [
+        "eu-who-typ-001",
+        "eu-who-typ-002"
+      ]
+    },
+    {
+      "query": "typhoïde XDR azithromycine résistance",
+      "top10": [
+        "eu-who-typ-xdr-002",
+        "eu-cdc-typ-003",
+        "eu-cdc-typ-xdr-001",
+        "eu-who-typ-002",
+        "eu-who-typ-001",
+        "eu-who-vhf-002",
+        "eu-msf-den-005",
+        "eu-msf-mal-008",
+        "eu-msf-rick-001",
+        "eu-who-den-001"
+      ],
+      "expected": [
+        "eu-cdc-typ-xdr-001",
+        "eu-who-typ-xdr-002"
+      ]
+    },
+    {
+      "query": "fièvre jaune ictère vaccination",
+      "top10": [
+        "eu-who-yf-001",
+        "eu-who-yf-002",
+        "eu-who-lepto-004",
+        "eu-who-lepto-001",
+        "eu-who-lepto-002",
+        "eu-who-scd-003",
+        "eu-who-chik-001",
+        "eu-who-den-004",
+        "eu-who-scd-001",
+        "eu-who-typ-001"
+      ],
+      "expected": [
+        "eu-who-yf-001",
+        "eu-who-yf-002"
+      ]
+    },
+    {
+      "query": "ebola isolement 21 jours épidémie",
+      "top10": [
+        "eu-who-vhf-001",
+        "eu-who-vhf-002",
+        "eu-who-mal-003",
+        "eu-cdc-typ-003",
+        "eu-who-typ-001",
+        "eu-msf-rick-001",
+        "eu-who-den-001",
+        "eu-who-lepto-001",
+        "eu-who-yf-002",
+        "eu-who-lepto-003"
+      ],
+      "expected": [
+        "eu-who-vhf-001",
+        "eu-who-vhf-002"
+      ]
+    },
+    {
+      "query": "méningite ceftriaxone urgence",
+      "top10": [
+        "eu-who-men-001",
+        "eu-who-men-003",
+        "eu-who-lepto-002",
+        "eu-who-men-004",
+        "eu-who-mals-007",
+        "eu-cdc-typ-003",
+        "eu-who-scd-001",
+        "eu-who-mip-003",
+        "eu-who-scd-004",
+        "eu-who-lepto-003"
+      ],
+      "expected": [
+        "eu-who-men-001",
+        "eu-who-men-002"
+      ]
+    },
+    {
+      "query": "purpura fulminans enfant",
+      "top10": [
+        "eu-who-men-003",
+        "eu-who-men-001",
+        "eu-who-men-002",
+        "eu-who-mals-006",
+        "eu-who-den-003",
+        "eu-who-mals-005",
+        "eu-who-scd-004",
+        "eu-who-mal-renal-001",
+        "eu-who-den-peds-001",
+        "eu-cdc-typ-003"
+      ],
+      "expected": [
+        "eu-who-men-002",
+        "eu-who-men-003"
+      ]
+    },
+    {
+      "query": "leptospirose eaux stagnantes ictère Weil",
+      "top10": [
+        "eu-who-lepto-002",
+        "eu-who-lepto-001",
+        "eu-who-lepto-004",
+        "eu-who-lepto-003",
+        "eu-who-mals-005",
+        "eu-who-yf-001",
+        "eu-cdc-typ-xdr-001",
+        "eu-msf-den-005",
+        "eu-msf-mal-008",
+        "eu-who-den-001"
+      ],
+      "expected": [
+        "eu-who-lepto-001",
+        "eu-who-lepto-002"
+      ]
+    },
+    {
+      "query": "chikungunya arthralgies éruption",
+      "top10": [
+        "eu-who-chik-001",
+        "eu-who-den-001",
+        "eu-who-zik-001",
+        "eu-msf-rick-001",
+        "eu-cdc-typ-003",
+        "eu-ci-mal-009",
+        "eu-msf-den-005",
+        "eu-msf-mal-008",
+        "eu-who-den-002",
+        "eu-who-den-004"
+      ],
+      "expected": [
+        "eu-who-chik-001"
+      ]
+    },
+    {
+      "query": "zika grossesse microcéphalie",
+      "top10": [
+        "eu-who-zik-001",
+        "eu-who-den-preg-001",
+        "eu-who-mip-002",
+        "eu-cdc-typ-xdr-001",
+        "eu-ci-mal-009",
+        "eu-msf-mal-008",
+        "eu-who-chik-001",
+        "eu-who-den-001",
+        "eu-who-den-002",
+        "eu-who-den-003"
+      ],
+      "expected": [
+        "eu-who-zik-001"
+      ]
+    },
+    {
+      "query": "TDR paludisme négatif interprétation",
+      "top10": [
+        "eu-who-mal-002",
+        "eu-who-vhf-002",
+        "eu-who-scd-002",
+        "eu-ci-mal-009",
+        "eu-msf-mal-008",
+        "eu-who-lepto-004",
+        "eu-who-mals-007",
+        "eu-who-mal-003",
+        "eu-who-mal-004",
+        "eu-who-mals-006"
+      ],
+      "expected": [
+        "eu-who-mal-002"
+      ]
+    },
+    {
+      "query": "thrombopénie NS1 diagnostic dengue",
+      "top10": [
+        "eu-who-den-004",
+        "eu-who-den-002",
+        "eu-who-den-001",
+        "eu-who-den-003",
+        "eu-who-den-preg-001",
+        "eu-who-lepto-004",
+        "eu-who-den-peds-001",
+        "eu-who-den-peds-002",
+        "eu-who-typ-002",
+        "eu-msf-den-005"
+      ],
+      "expected": [
+        "eu-who-den-004"
+      ]
+    },
+    {
+      "query": "paludisme insuffisance rénale dialyse",
+      "top10": [
+        "eu-who-mals-005",
+        "eu-who-lepto-004",
+        "eu-who-mal-renal-001",
+        "eu-who-yf-001",
+        "eu-who-lepto-003",
+        "eu-who-lepto-002",
+        "eu-who-mal-renal-002",
+        "eu-who-mals-007",
+        "eu-who-mal-003",
+        "eu-who-mal-004"
+      ],
+      "expected": [
+        "eu-who-mal-renal-001",
+        "eu-who-mal-renal-002"
+      ]
+    },
+    {
+      "query": "drépanocytose fièvre pneumocoque urgence",
+      "top10": [
+        "eu-who-scd-001",
+        "eu-who-scd-003",
+        "eu-who-men-001",
+        "eu-who-scd-002",
+        "eu-who-scd-004",
+        "eu-who-lepto-002",
+        "eu-who-mals-007",
+        "eu-who-chik-001",
+        "eu-who-den-004",
+        "eu-who-mip-003"
+      ],
+      "expected": [
+        "eu-who-scd-001",
+        "eu-who-scd-002"
+      ]
+    }
+  ]
+}

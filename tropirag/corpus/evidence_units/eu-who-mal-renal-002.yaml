@@ -1,0 +1,22 @@
+unit_id: eu-who-mal-renal-002
+source_id: who-malaria-severe-2023
+section: Épuration extrarénale en contexte tropical
+text: 'L''épuration extrarénale en Afrique subsaharienne doit être adaptée au niveau de la structure
+  de santé : la dialyse péritonéale reste réalisable au niveau du district hospitalier avec un
+  matériel simple, tandis que l''hémodialyse intermittente et la CVVHDF sont réservées aux centres
+  hospitaliers universitaires. Chez le paludisme sévère avec AKI, la suppléance rénale est une
+  mesure d''attente : après clairance parasitaire sous artésunate, la récupération rénale est la
+  règle chez la majorité des patients. L''hyperkaliémie menaçante (≥ 6,5 mmol/L) impose un
+  traitement médical immédiat (calcium IV, insuline-glucose) avant et pendant la mise en route
+  de l''épuration.'
+topics:
+- malaria
+- renal
+- dialysis
+- rrt
+- resources
+diseases:
+- severe_malaria
+- malaria
+jurisdiction: INT
+language: fr

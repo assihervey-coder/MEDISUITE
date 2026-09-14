@@ -1,0 +1,23 @@
+unit_id: eu-who-den-peds-002
+source_id: who-dengue-2024
+section: Soins critiques et intubation de la dengue pédiatrique
+text: 'En réanimation pédiatrique, l''intubation trachéale au cours de la dengue sévère obéit à des
+  critères stricts : trouble de conscience profond ne protégeant plus les voies aériennes, détresse
+  respiratoire réfractaire avec hypoxémie malgré l''oxygène (œdème pulmonaire ou SDRA lié à la
+  fuite plasmatique), ou choc réfractaire malgré un remplissage adapté et les amines vasoactives.
+  La ventilation mécanique doit être protectrice : petits volumes courants et pressions plateau
+  limitées en raison des épanchements pleuraux et de l''ascite qui réduisent la capacité
+  thoracique ; la sédation est prudente sur terrain hypovolémique. Le monitorage de la phase
+  critique (défervescence) est horaire : tension artérielle, fréquences cardiaque et
+  respiratoire, diurèse, glycémie et hématocrite sériel.'
+topics:
+- dengue
+- pediatric
+- intubation
+- critical_care
+- ventilation
+diseases:
+- severe_dengue
+- dengue
+jurisdiction: INT
+language: fr

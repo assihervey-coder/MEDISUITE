@@ -1,0 +1,22 @@
+unit_id: eu-who-men-004
+source_id: who-meningitis
+section: Prévention et prophylaxie des contacts
+text: 'Après un cas d''infection invasive à méningocoque, une chimioprophylaxie de
+  l''entourage proche est recommandée dans les 24 heures (contacts à risque : ménage,
+  gouttelettes, bouche-à-bouche, couchage partagé) : rifampicine par voie orale ou
+  ceftriaxone IM selon l''âge et les recommandations nationales, selon le protocole
+  du ministère. La notification immédiate au district sanitaire est obligatoire
+  (recherche de cas groupés, campagne de vaccination réactive si cluster confirmé —
+  vaccins conjugués A/C/W/Y selon le sérogroupe). En zone de ceinture africaine de
+  la méningite (saison sèche), la vaccination préventive des groupes d''âge cibles
+  est la mesure la plus efficace ; les doses et schémas relèvent du programme
+  élargi de vaccination national.'
+topics:
+- chemoprophylaxis
+- contacts
+- vaccination
+- notification
+diseases:
+- meningococcal
+jurisdiction: INT
+language: fr

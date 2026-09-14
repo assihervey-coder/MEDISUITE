@@ -1,0 +1,23 @@
+version: 1
+domain: fever_travel
+rules:
+- id: typ-dx-culture-001
+  action: require_test
+  priority: 60
+  weight: 0.5
+  description: Hémoculture requise
+  when:
+    all:
+    - disease: enteric_fever
+    - any:
+      - fever_duration_days:
+          gte: 3
+      - symptom: splenomegaly
+  disease: enteric_fever
+  then:
+    tests:
+    - blood_culture
+    - cbc
+    reason: Hémoculture = gold standard (avant antibiothérapie) ; Widal peu sensible/spécifique
+  evidence:
+  - who-typhoid-2018

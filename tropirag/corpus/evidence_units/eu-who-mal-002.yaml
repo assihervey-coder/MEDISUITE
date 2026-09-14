@@ -1,0 +1,16 @@
+unit_id: eu-who-mal-002
+source_id: who-malaria-2023
+section: Test de confirmation
+text: 'Le test de diagnostic rapide (TDR) détecte les antigènes HRP2 ou pLDH de Plasmodium en 15 à 20
+  minutes à la périphérie. La microscopie (goutte épaisse et frottis mince) reste la référence : elle
+  fournit l''espèce et la densité parasitaire. Un TDR négatif n''exclut pas formellement le paludisme
+  en cas de forte suspicion clinique : rechercher une densité parasitaire faible, une infection à P. vivax,
+  ou recontrôler.'
+topics:
+- malaria
+- diagnostics
+- rdt
+diseases:
+- malaria
+jurisdiction: INT
+language: fr

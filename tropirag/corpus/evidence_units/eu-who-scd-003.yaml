@@ -1,0 +1,18 @@
+unit_id: eu-who-scd-003
+source_id: who-scd-2024
+section: Syndrome thoracique aigu
+text: 'Le syndrome thoracique aigu est la complication pulmonaire de la drépanocytose et l''une
+  des premières causes de mortalité : il associe fièvre, douleur thoracique, toux et/ou signes
+  radiologiques nouveaux. Toute douleur thoracique ou dyspnée fébrile chez un drépanocytaire
+  impose une hospitalisation urgente : oxygène, hydratation contrôlée, antibiothérapie et
+  prise en charge spécialisée (transfusion/échange).'
+topics:
+- sickle_cell
+- acute_chest_syndrome
+- emergency
+- respiratory
+diseases:
+- sickle_cell_disease
+- acute_chest_syndrome
+jurisdiction: INT
+language: fr

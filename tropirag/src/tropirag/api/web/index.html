@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TropiRAG — Compagnon Clinique de Terrain</title>
+<style>
+:root{
+  --bg:#0d1b2a;--bg2:#13263a;--panel:#1b3049;--line:#274764;
+  --txt:#e8f1f8;--mut:#9fb8cc;--acc:#38bdf8;--acc2:#34d399;
+  --warn:#fbbf24;--dan:#f87171;--pur:#a78bfa;
+  --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+header{background:linear-gradient(135deg,#0f2237,#14324d);border-bottom:1px solid var(--line);padding:18px 28px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50}
+.logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#06202e}
+header h1{font-size:19px;font-weight:700;letter-spacing:.3px}
+header .sub{font-size:12px;color:var(--mut)}
+header .spacer{flex:1}
+.badge{padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid}
+.badge.det{color:var(--acc2);border-color:var(--acc2);background:rgba(52,211,153,.08)}
+.badge.ai{color:var(--pur);border-color:var(--pur);background:rgba(167,139,250,.08)}
+main{max-width:1280px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 340px;gap:20px}
+@media(max-width:1000px){main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+.card h2{font-size:14px;text-transform:uppercase;letter-spacing:1.2px;color:var(--mut);margin-bottom:14px}
+label{display:block;font-size:12px;color:var(--mut);margin:12px 0 5px}
+input,select,textarea{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:9px 12px;font-size:14px;font-family:inherit}
+textarea{resize:vertical;min-height:84px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--acc)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+button{background:linear-gradient(135deg,var(--acc),#0284c7);color:#04121d;border:none;border-radius:10px;padding:13px 26px;font-size:15px;font-weight:700;cursor:pointer;margin-top:18px;width:100%;transition:.15s}
+button:hover{filter:brightness(1.12)}
+button:disabled{opacity:.5;cursor:wait}
+#verdict{margin:18px 0;padding:14px 18px;border-radius:12px;font-weight:700;display:none}
+.v-emergency{background:rgba(248,113,113,.15);border:1px solid var(--dan);color:#fca5a5}
+.v-priority{background:rgba(251,191,36,.12);border:1px solid var(--warn);color:#fcd34d}
+.v-routine{background:rgba(52,211,153,.1);border:1px solid var(--acc2);color:#6ee7b7}
+pre{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:16px;font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;max-height:560px;overflow:auto}
+.diff{margin-top:14px}
+.diff-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--bg2)}
+.diff-rank{font-weight:800;color:var(--acc);font-size:18px;min-width:26px}
+.diff-name{font-weight:600;flex:1}
+.diff-score{font-family:var(--mono);font-size:13px;color:var(--acc2)}
+.miss{border-color:var(--dan)}
+.cit{font-size:11.5px;color:var(--mut);padding:8px 12px;border-left:3px solid var(--acc);background:var(--bg2);border-radius:0 8px 8px 0;margin-bottom:6px;line-height:1.5}
+.cit b{color:var(--txt)}
+#status p{font-size:13px;margin:7px 0;color:var(--mut)}
+#status .ok{color:var(--acc2)}
+#status .val{color:var(--txt);font-family:var(--mono)}
+.mesh-model{display:flex;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--line);font-size:12.5px}
+.mesh-model:last-child{border-bottom:none}
+.mesh-fam{color:var(--acc);font-weight:600}
+.mesh-state{font-family:var(--mono);font-size:11px;color:var(--mut)}
+footer{max-width:1280px;margin:10px auto 30px;padding:0 24px;font-size:11.5px;color:var(--mut);line-height:1.6}
+.spin{animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">T</div>
+  <div>
+    <h1>TropiRAG</h1>
+    <div class="sub">Compagnon clinique de terrain — fièvre + voyage · Afrique de l'Ouest</div>
+  </div>
+  <div class="spacer"></div>
+  <a href="/map.html" style="font-size:12px;color:var(--mut);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 13px;margin-right:8px">🗺 Carte des éclosions</a>
+  <a href="/mobile" style="font-size:12px;color:var(--mut);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 13px;margin-right:8px">📱 PWA terrain</a>
+  <span class="badge det" id="modeBadge">MODE DÉTERMINISTE</span>
+</header>
+
+<main>
+  <!-- ============ COLONNE GAUCHE : CAS ============ -->
+  <div>
+    <div class="card">
+      <h2>Nouveau cas — fièvre &amp; voyage</h2>
+      <div class="row">
+        <div><label>Âge (ans)</label><input id="age" type="number" value="34"></div>
+        <div><label>Sexe</label>
+          <select id="sex"><option value="male">Masculin</option><option value="female">Féminin</option></select></div>
+        <div><label>Grossesse</label>
+          <select id="preg"><option value="not_applicable">Non applicable</option><option value="not_pregnant">Non</option><option value="pregnant">Oui</option><option value="unknown">?</option></select></div>
+        <div><label>Poids (kg)</label><input id="weight" type="number" value="70"></div>
+      </div>
+      <div class="row" style="grid-template-columns:1fr 1fr">
+        <div><label>Pays / région visités</label>
+          <select id="country">
+            <option value="CI">🇨🇮 Côte d'Ivoire</option><option value="BF">🇧🇫 Burkina Faso</option>
+            <option value="GH">🇬🇭 Ghana</option><option value="SN">🇸🇳 Sénégal</option>
+            <option value="ML">🇲🇱 Mali</option><option value="GN">🇬🇳 Guinée</option>
+            <option value="NG">🇳🇬 Nigéria</option><option value="CD">🇨🇩 RD Congo</option>
+          </select></div>
+        <div><label>Date de retour</label><input id="ret" type="date"></div>
+      </div>
+      <div class="row" style="grid-template-columns:1fr 1fr 1fr">
+        <div><label>Séjour rural</label><select id="rural"><option value="true">Oui</option><option value="false">Non</option></select></div>
+        <div><label>T° (°C)</label><input id="temp" type="number" step="0.1" value="39.5"></div>
+        <div><label>RDT palu</label><select id="rdt"><option value="">Non fait</option><option value="positive">Positif</option><option value="negative">Négatif</option></select></div>
+      </div>
+      <label>Anamnèse (texte libre — FR)</label>
+      <textarea id="text">fièvre depuis 4 jours, frissons, céphalées, vomissements, courbatures</textarea>
+      <button id="go" onclick="analyze()">⚡ Analyser le cas</button>
+      <div id="verdict"></div>
+      <pre id="out" style="display:none"></pre>
+      <div class="diff" id="diffs"></div>
+      <div id="cits"></div>
+    </div>
+  </div>
+
+  <!-- ============ COLONNE DROITE : ÉTAT SYSTÈME ============ -->
+  <div>
+    <div class="card" style="margin-bottom:20px">
+      <h2>État du système</h2>
+      <div id="status"><p>Chargement…</p></div>
+    </div>
+    <div class="card">
+      <h2>AI Model Mesh</h2>
+      <div id="mesh"><p style="font-size:12px;color:var(--mut)">…</p></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <b>Avertissement :</b> TropiRAG est une aide à la décision destinée aux professionnels de santé.
+  Il ne pose pas de diagnostic et ne remplace pas l'évaluation clinique. Toute décision thérapeutique relève du clinicien.
+  Les sorties sont adossées à des règles déterministes auditables et à des sources citées (OMS, MSF, CDC, MSP-CI).
+  <br>Sécurité : IA ≠ autorité clinique — le moteur de règles et la Safety Gate gouvernent toutes les réponses.
+</footer>
+
+<script>
+const API = location.origin.includes('8000') ? '' : '';
+let APIKEY = localStorage.getItem('tropirag_key') || '';
+
+function headers(){ return {'Content-Type':'application/json', ...(APIKEY?{'X-API-Key':APIKEY}:{})}; }
+function setVerdict(level, text){
+  const v = document.getElementById('verdict');
+  v.style.display='block';
+  v.className = level==='routine'?'v-routine':(level==='priority'?'v-priority':'v-emergency');
+  v.textContent = text;
+}
+
+async function analyze(){
+  const btn = document.getElementById('go'); btn.disabled = true; btn.textContent='⏳ Analyse du pipeline…';
+  const ret = document.getElementById('ret').value || new Date(Date.now()-6*864e5).toISOString().slice(0,10);
+  const payload = {
+    patient: {age_years:+document.getElementById('age').value,
+              sex:document.getElementById('sex').value,
+              pregnant:document.getElementById('preg').value,
+              weight_kg:+document.getElementById('weight').value},
+    free_text: document.getElementById('text').value,
+    vitals: {temperature_c:+document.getElementById('temp').value},
+    travel: {segments:[{country:document.getElementById('country').value,
+                       rural_stay:document.getElementById('rural').value==='true',
+                       departure:ret}]},
+    language:'fr', use_ai:true
+  };
+  const rdt = document.getElementById('rdt').value;
+  if(rdt) payload.lab_results = [{test:'rdt_malaria', value:rdt}];
+  try{
+    const r = await fetch(API+'/api/v1/clinical/analyze',{method:'POST',headers:headers(),body:JSON.stringify(payload)});
+    if(r.status===401){const k=prompt('Clé API requise :');if(k){APIKEY=k;localStorage.setItem('tropirag_key',k);return analyze();}throw new Error('non autorisé');}
+    const d = await r.json();
+    const urg = {immediate:'🚨 URGENCE VITALE IMMÉDIATE',emergency:'🔴 URGENCE',priority:'🟠 PRIORITAIRE',routine:'🟢 Routine'}[d.urgency]||d.urgency;
+    setVerdict(d.urgency, urg + '  —  gravité : ' + d.severity);
+    const out = document.getElementById('out');
+    out.style.display='block';
+    out.textContent = (d.refusal?'⛔ '+d.refusal+'\n\n':'') + (d.ai_synthesis?'🤖 SYNTHÈSE IA VALIDÉE :\n'+d.ai_synthesis+'\n\n':'')
+      + '────────── SYNTHÈSE DÉTERMINISTE ──────────\n' + d.narrative
+      + (d.ai_synthesis?'':'\n\n(couche IA : '+d.ai_layer+')');
+    // différentiel
+    const diffs = document.getElementById('diffs'); diffs.innerHTML='';
+    (d.differentials||[]).forEach(x=>{
+      const el = document.createElement('div'); el.className='diff-item'+(x.must_not_miss?' miss':'');
+      el.innerHTML = `<span class="diff-rank">${x.rank}</span><span class="diff-name">${x.label}${x.must_not_miss?' ⚠':''}</span><span class="diff-score">${Math.round(x.score*100)} %</span>`;
+      diffs.appendChild(el);
+    });
+    // citations
+    const cits = document.getElementById('cits'); cits.innerHTML='';
+    if((d.citations||[]).length){
+      const h = document.createElement('h2'); h.textContent='Preuves citées'; h.style.cssText='margin:18px 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--mut)';
+      cits.appendChild(h);
+      d.citations.forEach(c=>{
+        const el = document.createElement('div'); el.className='cit';
+        el.innerHTML = `<b>${c.marker}</b> ${c.full}<br><i style="opacity:.7">« ${c.quote.slice(0,160)}… »</i>`;
+        cits.appendChild(el);
+      });
+    }
+  }catch(e){ setVerdict('emergency','Erreur : '+e.message); }
+  btn.disabled=false; btn.textContent='⚡ Analyser le cas';
+}
+
+async function loadStatus(){
+  try{
+    const h = await (await fetch(API+'/api/v1/health')).json();
+    const m = await (await fetch(API+'/api/v1/models')).json();
+    const s = document.getElementById('status');
+    const comps = h.components||{};
+    s.innerHTML = `
+      <p>Statut global : <span class="ok">● ${h.status.toUpperCase()}</span></p>
+      <p>Règles cliniques : <span class="val">${comps.rule_engine?.rules ?? 0}</span></p>
+      <p>Unités de preuve : <span class="val">${comps.evidence_engine?.units ?? 0}</span></p>
+      <p>Mode d'inférence : <span class="val">${comps.ai_mesh?.mode ?? 'deterministic'}</span></p>
+      <p>Modèles déclarés : <span class="val">${m.models?.length ?? 0}</span> · invariants : <span class="${m.invariants_violations?.length?'':'ok'}">${m.invariants_violations?.length? 'VIOLATIONS':'✓ conformes'}</span></p>`;
+    const mesh = document.getElementById('mesh');
+    mesh.innerHTML = m.models?.map(x=>`<div class="mesh-model"><span class="mesh-fam">${x.display_name}</span><span class="mesh-state">${x.gateway} · ${x.tasks.length} capacité(s) · ${x.clinically_validated?'validé':'non validé'}</span></div>`).join('') || '';
+    const badge = document.getElementById('modeBadge');
+    if(comps.ai_mesh?.mode && comps.ai_mesh.mode!=='deterministic'){badge.className='badge ai';badge.textContent='MESH IA ACTIF';}
+  }catch(e){ document.getElementById('status').innerHTML='<p style="color:var(--dan)">API injoignable</p>'; }
+}
+document.getElementById('ret').value = new Date(Date.now()-6*864e5).toISOString().slice(0,10);
+loadStatus();
+</script>
+</body>
+</html>

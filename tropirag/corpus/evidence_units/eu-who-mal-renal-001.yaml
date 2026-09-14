@@ -1,0 +1,22 @@
+unit_id: eu-who-mal-renal-001
+source_id: who-malaria-severe-2023
+section: Atteinte rénale du paludisme sévère
+text: 'L''insuffisance rénale aiguë est un critère de définition du paludisme sévère chez l''adulte
+  comme chez l''enfant : créatininémie supérieure à 265 µmol/L (environ 3 mg/dL) avec ou sans
+  oligurie/anurie. Elle résulte de l''obstruction capillaire rénale par les érythrocytes infectés et
+  de l''hypoperfusion. La prise en charge associe artésunate intraveineux immédiat (le traitement
+  étiologique conditionne la récupération rénale), correction des désordres hydro-électrolytiques
+  et anticipation de l''épuration extrarénale : hyperkaliémie réfractaire, surcharge œdémateuse
+  avec œdème pulmonaire, encéphalopathie urémique ou acidose métabolique sévère en sont les
+  indications principales.'
+topics:
+- malaria
+- severe
+- kidney
+- aki
+- renal
+diseases:
+- severe_malaria
+- malaria
+jurisdiction: INT
+language: fr

@@ -1,0 +1,5 @@
+security:
+  require_api_key: true
+  api_key_env: TROPIRAG_API_KEY
+  audit_enabled: true
+  pii_redact_in_logs: true

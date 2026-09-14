@@ -1,0 +1,15 @@
+unit_id: eu-who-mal-004
+source_id: who-malaria-2023
+section: Prophylaxie
+text: Les voyageurs vers les zones de transmission doivent utiliser une chimioprophylaxie adaptée (atovaquone-proguanil,
+  doxycycline ou méfloquine selon les contre-indications) associée aux protections antimoustiques. L'absence
+  de prophylaxie expose à un risque élevé d'infection, particulièrement pendant la saison des pluies en
+  Afrique subsaharienne.
+topics:
+- malaria
+- prophylaxis
+- travel
+diseases:
+- malaria
+jurisdiction: INT
+language: fr

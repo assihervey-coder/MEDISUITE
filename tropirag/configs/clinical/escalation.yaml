@@ -1,0 +1,13 @@
+escalation:
+  order:
+  - isolation
+  - emergency_transfer
+  - refer_hospital
+  - senior_clinician
+  - notify_public_health
+  critical_suspicion_notify:
+  - yellow_fever
+  - ebola
+  - marburg
+  - lassa
+  - meningococcal

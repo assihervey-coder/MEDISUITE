@@ -1,0 +1,156 @@
+version: 1
+domain: fever_travel
+rules:
+- id: scd-sev-fever-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Fièvre chez drépanocytaire = urgence
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+  disease: sickle_cell_disease
+  then:
+    code: scd_febrile_emergency
+    severity: severe
+    urgency: emergency
+    message: 'URGENCE drépanocytaire fébrile : asplénie fonctionnelle — hémocultures + NFS immédiates,
+      antibiothérapie probabiliste anti-pneumococcique (protocole national) sans attendre, TDR palu
+      systématique'
+  evidence:
+  - eu-who-scd-001
+- id: scd-lab-mandatory-001
+  action: require_test
+  priority: 92
+  weight: 0.5
+  description: Bilan biologique obligatoire drépanocytaire fébrile
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+  disease: sickle_cell_disease
+  then:
+    tests:
+    - cbc
+    - blood_culture
+    - rdt_malaria
+    reason: 'Drépanocytose fébrile : NFS (hémolyse), hémocultures (asplénie), TDR palu — triplet
+      obligatoire avant toute orientation'
+  evidence:
+  - eu-who-scd-001
+- id: scd-sev-acs-002
+  action: red_flag
+  priority: 97
+  weight: 0.5
+  description: Syndrome thoracique aigu
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+    - any:
+      - symptom: chest_pain
+      - symptom: dyspnea
+      - symptom: cough
+  disease: acute_chest_syndrome
+  then:
+    code: scd_acute_chest_syndrome
+    severity: critical
+    urgency: immediate
+    message: 'Syndrome thoracique aigu probable (drépanocytose + fièvre + signes thoraciques) :
+      oxygène, hydratation CONTRÔLÉE, transfusion urgente — première cause de mortalité SCD'
+  evidence:
+  - eu-who-scd-003
+- id: scd-sev-stroke-003
+  action: red_flag
+  priority: 98
+  weight: 0.5
+  description: AVC drépanocytaire
+  when:
+    all:
+    - patient: sickle_cell
+    - symptom: focal_deficit
+  disease: sickle_cell_disease
+  then:
+    code: scd_stroke
+    severity: critical
+    urgency: immediate
+    message: 'Déficit neurologique focal chez drépanocytaire = AVC jusqu''à preuve du contraire :
+      transfusion urgente en unité spécialisée, ne pas différer'
+  evidence:
+  - eu-who-scd-004
+- id: scd-sev-sequestration-004
+  action: red_flag
+  priority: 96
+  weight: 0.5
+  description: Séquestration splénique
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: pallor
+      - symptom: fatigue
+    - symptom: splenomegaly
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - symptom: abdominal_pain
+  disease: sickle_cell_disease
+  then:
+    code: scd_splenic_sequestration
+    severity: critical
+    urgency: immediate
+    message: 'Séquestration splénique probable (pâleur + rate douloureuse + fièvre/abdominal) :
+      urgence vitale de l''enfant SCD — réhydratation prudente, transfusion urgente'
+  evidence:
+  - eu-who-scd-004
+- id: scd-sev-anemia-005
+  action: red_flag
+  priority: 94
+  weight: 0.5
+  description: Anémie sévère drépanocytaire
+  when:
+    all:
+    - patient: sickle_cell
+    - lab_numeric:
+        test: cbc
+        component: hb
+        lt: 6.0
+  disease: sickle_cell_disease
+  then:
+    code: scd_severe_anemia
+    severity: critical
+    urgency: immediate
+    message: 'Anémie très sévère (Hb < 6 g/dL) chez drépanocytaire : transfusion urgente + recherche
+      cause (paludisme, hémolyse, carence) — évaluer la tolérance cardiorespiratoire'
+  evidence:
+  - eu-who-scd-002
+- id: scd-sev-voc-006
+  action: escalate
+  priority: 82
+  weight: 0.5
+  description: Crise vaso-occlusive sévère
+  when:
+    all:
+    - patient: sickle_cell
+    - symptom: bone_pain
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+  disease: sickle_cell_disease
+  then:
+    level: refer_hospital
+    message: 'Crise vaso-occlusive fébrile : analgésie graduée (paracétamol → opioïde selon protocole),
+      hydratation prudente sans surcharge, éliminer infection/ostéomyélite (douleur localisée)'
+  evidence:
+  - eu-who-scd-004

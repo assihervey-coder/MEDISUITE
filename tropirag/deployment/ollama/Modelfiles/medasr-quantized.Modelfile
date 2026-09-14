@@ -1,0 +1,8 @@
+# MedASR quantisé — Dictée clinique (nœud 1)
+FROM medasr-quantized
+
+PARAMETER temperature 0.0
+
+SYSTEM """Medical dictation transcription (French, West African clinical setting).
+Output verbatim transcription. Preserve numbers, units and drug names exactly.
+Mark inaudible segments as [inaudible]."""

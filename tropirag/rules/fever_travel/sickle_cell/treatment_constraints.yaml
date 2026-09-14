@@ -1,0 +1,76 @@
+version: 1
+domain: fever_travel
+rules:
+- id: scd-tx-antibio-001
+  action: recommend_drug
+  priority: 88
+  weight: 0.5
+  description: Antibiothérapie probabiliste anti-pneumococcique
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+  disease: invasive_bacterial_infection
+  then:
+    drug: ceftriaxone
+    reason: 'Drépanocytose fébrile : couverture probabiliste anti-pneumococcique (protocole
+      national) — dose par protocole, jamais extrapolée par l''IA'
+  evidence:
+  - eu-who-scd-001
+- id: scd-tx-folic-002
+  action: recommend_drug
+  priority: 40
+  weight: 0.3
+  description: Supplémentation en acide folique
+  when:
+    all:
+    - patient: sickle_cell
+  disease: sickle_cell_disease
+  then:
+    drug: folic_acid
+    reason: 'Drépanocytose : supplémentation chronique en acide folique recommandée (protocole
+      national)'
+  evidence:
+  - eu-who-scd-002
+- id: scd-tx-hydration-003
+  action: inform
+  priority: 55
+  weight: 0.5
+  description: Hydratation contrôlée en crise
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: bone_pain
+      - symptom: chest_pain
+      - symptom: dyspnea
+  disease: sickle_cell_disease
+  then:
+    message: 'Hydratation PRUDENTE (apports contrôlés, éviter la surcharge) : le contrôle strict
+      de la volémie réduit le risque de syndrome thoracique aigu et d''œdème pulmonaire'
+    topic: sickle_cell_hydration
+  evidence:
+  - eu-who-scd-003
+- id: scd-tx-nsaid-caution-004
+  action: inform
+  priority: 50
+  weight: 0.5
+  description: Prudence AINS chez drépanocytaire déshydraté
+  when:
+    all:
+    - patient: sickle_cell
+    - any:
+      - symptom: fever
+      - symptom: bone_pain
+  disease: sickle_cell_disease
+  then:
+    message: 'AINS à utiliser avec prudence chez le drépanocytaire (risque rénal + masque de la
+      fièvre) : privilégier paracétamol en première intention, opioïdes faibles si douleur sévère
+      selon protocole'
+    topic: sickle_cell_analgesia
+  evidence:
+  - eu-who-scd-004

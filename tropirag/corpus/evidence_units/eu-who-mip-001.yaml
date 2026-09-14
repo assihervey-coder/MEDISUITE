@@ -1,0 +1,18 @@
+unit_id: eu-who-mip-001
+source_id: who-malaria-pregnancy-2023
+section: Paludisme gestationnel — risque maternel et fœtal
+text: 'Le paludisme chez la femme enceinte, même asymptomatique ou pauci-symptomatique, expose
+  à l''anémie maternelle sévère, à l''hypotrophie fœtale, à la prématurité et à la mortalité
+  périnatale. En zone d''endémie, toute fièvre chez une femme enceinte doit être considérée
+  comme un paludisme jusqu''à preuve du contraire et tester immédiatement. Le traitement
+  présomptif ne doit jamais être différé.'
+topics:
+- malaria
+- pregnancy
+- maternal_risk
+- fetal_risk
+diseases:
+- malaria
+- malaria_in_pregnancy
+jurisdiction: INT
+language: fr

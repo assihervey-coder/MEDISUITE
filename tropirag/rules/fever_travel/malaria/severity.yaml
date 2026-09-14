@@ -1,0 +1,84 @@
+version: 1
+domain: fever_travel
+rules:
+- id: mal-sev-cerebral-001
+  action: red_flag
+  priority: 98
+  weight: 0.5
+  description: Paludisme cérébral
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom_any:
+      - coma
+      - confusion
+      - convulsions
+    - exposure: malaria_exposure
+  disease: malaria
+  then:
+    code: cerebral_malaria
+    severity: critical
+    urgency: immediate
+    message: Neuropaludisme probable — artésunate IV IMMÉDIAT (pré-référence), ne pas attendre le transfert
+  evidence:
+  - who-malaria-severe-2023
+- id: mal-sev-anemia-002
+  action: red_flag
+  priority: 96
+  weight: 0.5
+  description: Anémie sévère (paludisme)
+  when:
+    lab_numeric:
+      test: cbc
+      component: hb
+      lt: 7.0
+  disease: malaria
+  then:
+    code: severe_anemia_malaria
+    severity: critical
+    urgency: immediate
+    message: 'Anémie sévère — critère OMS de paludisme sévère : transfusion + artésunate IV'
+  evidence:
+  - who-malaria-severe-2023
+- id: mal-sev-jaundice-003
+  action: red_flag
+  priority: 88
+  weight: 0.5
+  description: Forme ictérique
+  when:
+    all:
+    - *id001
+    - symptom: jaundice
+    - exposure: malaria_exposure
+  disease: malaria
+  then:
+    code: icteric_malaria
+    severity: severe
+    urgency: emergency
+    message: Ictère fébrile en zone paludéenne — paludisme sévère à éliminer en urgence (bilirubine, NFS)
+  evidence:
+  - who-malaria-severe-2023
+- id: mal-sev-oliguria-renal-004
+  action: red_flag
+  priority: 86
+  weight: 0.5
+  description: Atteinte rénale possible
+  when:
+    all:
+    - *id001
+    - symptom: dark_urine
+    - exposure: malaria_exposure
+  disease: malaria
+  then:
+    code: renal_malaria_risk
+    severity: severe
+    urgency: emergency
+    message: 'Urines foncées (bilurie/hémoglobinurie) — atteinte rénale possible du paludisme sévère :
+      créatinine urgente'
+  evidence:
+  - who-malaria-severe-2023

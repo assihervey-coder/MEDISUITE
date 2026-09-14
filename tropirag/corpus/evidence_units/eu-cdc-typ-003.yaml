@@ -1,0 +1,15 @@
+unit_id: eu-cdc-typ-003
+source_id: cdc-typhoid
+section: Traitement et résistances
+text: Le traitement repose sur les céphalosporines de 3e génération (ceftriaxone) ou les macrolides (azithromycine)
+  selon les profils de résistance locale ; les fluoroquinolones sont souvent inadaptées en Afrique de
+  l'Ouest du fait des résistances de Salmonella Typhi. La durée habituelle est de 7 à 14 jours selon la
+  molécule et la gravité.
+topics:
+- typhoid
+- treatment
+- resistance
+diseases:
+- enteric_fever
+jurisdiction: INT
+language: fr

@@ -38,6 +38,13 @@ SERVICES: list[dict] = [
      "module": "src.main:app", "group": "gateway"},
     {"name": "explainability-service", "dir": "services/explainability-service",
      "port": 8303, "module": "src.main:app", "group": "gateway"},
+    # --- aide à la décision clinique (TropiRAG intégré — docs/TROPIRAG-INTEGRATION.md)
+    {"name": "tropirag-service", "dir": "tropirag", "port": 8304,
+     "module": "tropirag.api.app:app", "group": "gateway",
+     "health_path": "/api/v1/health",
+     "env": {"TROPIRAG_ROOT": "{ROOT}/tropirag",
+             "TROPIRAG_DB_PATH": "{ROOT}/data/tropirag.db",
+             "TROPIRAG_DATA_DIR": "{ROOT}/tropirag"}},
 ]
 
 SPECIALTIES: list[tuple[int, str, str]] = [

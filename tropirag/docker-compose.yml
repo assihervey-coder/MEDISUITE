@@ -1,0 +1,52 @@
+# TropiRAG — déploiement local complet
+# API déterministe : docker compose up api
+# Avec mesh IA    : docker compose --profile mesh up
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      - TROPIRAG_API_KEY=${TROPIRAG_API_KEY:-change-me}
+      - TROPIRAG_INFERENCE_MODE=${TROPIRAG_INFERENCE_MODE:-deterministic}
+      - TROPIRAG_OLLAMA_URL=http://ollama:11434
+    volumes:
+      - tropirag_db:/app/db
+      - tropirag_logs:/app/runtime/logs
+    depends_on:
+      ollama:
+        condition: service_healthy
+        required: false
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["mesh"]
+    volumes: ["ollama_models:/root/.ollama"]
+    ports: ["11434:11434"]
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["ha"]
+    environment:
+      - POSTGRES_DB=tropirag
+      - POSTGRES_USER=tropirag
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-tropirag}
+    volumes: ["pg_data:/var/lib/postgresql/data"]
+
+volumes:
+  tropirag_db:
+  tropirag_logs:
+  ollama_models:
+  pg_data:

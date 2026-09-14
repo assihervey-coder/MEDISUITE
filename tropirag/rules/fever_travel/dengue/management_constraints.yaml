@@ -1,0 +1,64 @@
+version: 1
+domain: fever_travel
+rules:
+- id: den-mgmt-no-nsaid-001
+  action: contraindicate_drug
+  priority: 91
+  weight: 0.5
+  description: Pas d'AINS en contexte dengue
+  when:
+    exposure_risk_gte:
+      disease: dengue
+      level: moderate
+  disease: dengue
+  then:
+    drug: ibuprofen
+    reason: 'AINS FORMELLEMENT DÉCONSEILLÉS en zone/suspicion de dengue : risque hémorragique'
+  evidence:
+  - who-dengue-2024
+- id: den-mgmt-no-aspirin-002
+  action: contraindicate_drug
+  priority: 91
+  weight: 0.5
+  description: Pas d'aspirine en contexte dengue
+  when:
+    exposure_risk_gte:
+      disease: dengue
+      level: moderate
+  disease: dengue
+  then:
+    drug: aspirin
+    reason: 'Aspirine CONTRE-INDIQUÉE en dengue : risque hémorragique + syndrome de Reye chez l''enfant'
+  evidence:
+  - who-dengue-2024
+- id: den-mgmt-no-diclofenac-003
+  action: contraindicate_drug
+  priority: 90
+  weight: 0.5
+  description: Pas de diclofénac en contexte dengue
+  when:
+    exposure_risk_gte:
+      disease: dengue
+      level: moderate
+  disease: dengue
+  then:
+    drug: diclofenac
+    reason: 'Diclofénac formellement déconseillé en dengue : risque hémorragique'
+  evidence:
+  - msf-dengue
+- id: den-mgmt-paracetamol-004
+  action: recommend_drug
+  priority: 71
+  weight: 0.5
+  description: Paracétamol seul
+  when:
+    exposure_risk_gte:
+      disease: dengue
+      level: moderate
+  disease: dengue
+  then:
+    drug: paracetamol
+    reason: Antalgique de première intention en dengue (paracétamol) — doses espacées, éviter l'overdose
+      hépatotoxique
+  evidence:
+  - who-dengue-2024

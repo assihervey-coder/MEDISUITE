@@ -1,0 +1,6 @@
+differential:
+  max_display: 6
+  must_not_miss_boost: 0.1
+  temporal_exclusion:
+    mode: soft
+    exclude_if: impossible_window

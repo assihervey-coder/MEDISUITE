@@ -1,0 +1,37 @@
+{
+  "id": "syn-malaria-peds-12y",
+  "variant": "paludisme_pediatricque_12ans",
+  "payload": {
+    "patient": {
+      "age_years": 12,
+      "sex": "male"
+    },
+    "symptoms": [
+      {
+        "code": "fever",
+        "onset": "2026-09-05"
+      },
+      {
+        "code": "vomiting"
+      }
+    ],
+    "travel": {
+      "segments": [
+        {
+          "country": "CI",
+          "arrival": "2026-08-10",
+          "departure": "2026-09-01"
+        }
+      ]
+    },
+    "consultation_date": "2026-09-07"
+  },
+  "expect": {
+    "differential_in_top3": [
+      "malaria"
+    ],
+    "invariants": [
+      "no_ai_dosing"
+    ]
+  }
+}

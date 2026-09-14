@@ -1,0 +1,26 @@
+unit_id: eu-draft-cdc-typhoid-xdr-note-004
+source_id: cdc-typhoid-xdr-note
+text: En cas de sejour dans un pays a haut risque XDR, l'azithromycine orale est recommandee
+  en premiere intention pour les formes non compliquees. Les fluoroquinolones sont
+  contre-indiquees, ainsi que les cephalosporines de troisieme generation orales comme
+  la cefixime, en cas de XDR confirmee. Les formes graves, avec perforation digestive
+  ou choc septique, relèvent du meropeneme intraveineux en milieu hospitalier.
+section: 3 PRISE EN CHANCE EN CONTEXTE XDR
+topics:
+- strong_recommendation
+diseases: []
+symptom_codes: []
+drug_codes:
+- azithromycin
+- cefixime
+- meropenem
+test_codes: []
+recommendation_strength: strong
+chunk_index: 3
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 3e96b5561d98480461d0f9478ff313335bd75872b59443e288bbbdbdf46eaece
+  source_path: data/raw/documents/cdc-typhoid-xdr-note.txt
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

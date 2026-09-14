@@ -1,0 +1,7 @@
+{
+  "case_id": "fixture-004",
+  "patient": {"age_years": 31, "sex": "male"},
+  "free_text": "fièvre 39, myalgies, saignements des gencives",
+  "travel": {"segments": [{"country": "GN", "departure": "{RET-15}", "burial_attended": true}]},
+  "expected": {"urgency": ["emergency", "immediate"], "escalation_level": "isolation"}
+}

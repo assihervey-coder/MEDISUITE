@@ -1,0 +1,258 @@
+version: 1
+domain: fever_travel
+rules:
+- id: rf-coma-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Trouble de la conscience (coma)
+  when:
+    symptom: coma
+  then:
+    code: coma
+    severity: critical
+    urgency: immediate
+    message: 'Trouble de la conscience (coma) — urgence vitale : paludisme sévère, méningite, sepsis'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-convulsions-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Convulsions fébriles itératives ou chez l'adulte
+  when:
+    symptom: convulsions
+  then:
+    code: convulsions
+    severity: critical
+    urgency: immediate
+    message: 'Convulsions fébriles itératives ou chez l''adulte — urgence : paludisme sévère cérébral,
+      méningite'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-confusion-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Confusion / désorientation fébrile
+  when:
+    symptom: confusion
+  then:
+    code: confusion
+    severity: critical
+    urgency: immediate
+    message: Confusion / désorientation fébrile — évoquer neuropaludisme ou méningite
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-prostration-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Prostration
+  when:
+    symptom: prostration
+  then:
+    code: prostration
+    severity: critical
+    urgency: immediate
+    message: Prostration — critère OMS de paludisme sévère chez l'enfant et l'adulte
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-neck-stiffness-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Raideur de nuque fébrile
+  when:
+    symptom: neck_stiffness
+  then:
+    code: neck-stiffness
+    severity: critical
+    urgency: immediate
+    message: 'Raideur de nuque fébrile — méningite : ceftriaxone IMMÉDIATE, ne pas attendre la PL'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-petechiae-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Purpura fébrile
+  when:
+    symptom: petechiae
+  then:
+    code: petechiae
+    severity: critical
+    urgency: immediate
+    message: 'Purpura fébrile — purpura fulminans (méningocoque) : antibiotique immédiat avant tout transfert'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-hypotension-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Hypotension (PAS < 90 mmHg)
+  when:
+    vital: systolic_bp
+    lt: 90
+  then:
+    code: hypotension
+    severity: critical
+    urgency: immediate
+    message: 'Hypotension (PAS < 90 mmHg) — choc : remplissage et référence urgente'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-hypoxia-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Hypoxie (SpO2 < 92 %)
+  when:
+    vital: spo2_pct
+    lt: 92.0
+  then:
+    code: hypoxia
+    severity: critical
+    urgency: immediate
+    message: 'Hypoxie (SpO2 < 92 %) — détresse respiratoire : oxygène + urgence'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-tachypnea-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Polypnée ≥ 30/min
+  when:
+    vital: respiratory_rate
+    gte: 30
+  then:
+    code: tachypnea
+    severity: severe
+    urgency: emergency
+    message: Polypnée ≥ 30/min — détresse respiratoire (acidose du paludisme sévère, SDRA dengue)
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-hematemesis-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Hématémèse
+  when:
+    symptom: hematemesis
+  then:
+    code: hematemesis
+    severity: critical
+    urgency: immediate
+    message: 'Hématémèse — hémorragie digestive active : urgence absolue'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-melena-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Méléna
+  when:
+    symptom: melena
+  then:
+    code: melena
+    severity: critical
+    urgency: immediate
+    message: 'Méléna — saignement digestif haut : urgence'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-abnormal-bleeding-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Saignements anormaux + fièvre
+  when:
+    symptom: abnormal_bleeding
+  then:
+    code: abnormal-bleeding
+    severity: critical
+    urgency: immediate
+    message: Saignements anormaux + fièvre — fièvre hémorragique virale jusqu'à preuve du contraire
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-hemoptysis-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Hémoptysie
+  when:
+    symptom: hemoptysis
+  then:
+    code: hemoptysis
+    severity: severe
+    urgency: emergency
+    message: Hémoptysie — rechercher tuberculose, embolie, leptospirose pulmonaire
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-jaundice-bleeding-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Ictère + syndrome hémorragique fébrile
+  when:
+    all:
+    - symptom: jaundice
+    - symptom_any:
+      - abnormal_bleeding
+      - petechiae
+      - epistaxis
+      - bleeding_gums
+  then:
+    code: jaundice-bleeding
+    severity: critical
+    urgency: immediate
+    message: 'Ictère + syndrome hémorragique fébrile — fièvre jaune hémorragique / paludisme sévère :
+      isolement + urgence'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag
+- id: rf-child-unable-estimate-001
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: 'Enfant : vomissements + prostration'
+  when:
+    all:
+    - patient: child
+    - symptom_any:
+      - vomiting
+    - symptom: prostration
+  then:
+    code: child-unable-estimate
+    severity: critical
+    urgency: immediate
+    message: 'Enfant : vomissements + prostration — risque de déshydratation grave et d''hypoglycémie'
+  evidence:
+  - who-malaria-severe-2023
+  tags:
+  - red_flag

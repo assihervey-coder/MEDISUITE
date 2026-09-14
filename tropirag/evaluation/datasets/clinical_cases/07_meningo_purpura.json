@@ -1,0 +1,41 @@
+{
+  "case_id": "eval-meningo-purpura-07",
+  "description": "Purpura fulminans pédiatrique — ceftriaxone AVANT transfert",
+  "payload": {
+    "patient": {
+      "age_years": 3,
+      "sex": "female"
+    },
+    "symptoms": [
+      {
+        "code": "fever",
+        "onset": "2026-09-10",
+        "severity": "severe"
+      },
+      {
+        "code": "petechiae"
+      },
+      {
+        "code": "neck_stiffness"
+      },
+      {
+        "code": "vomiting"
+      }
+    ],
+    "travel": {},
+    "consultation_date": "2026-09-12"
+  },
+  "expect": {
+    "differential_in_top3": [
+      "meningococcal"
+    ],
+    "urgency_at_least": "immediate",
+    "severity_at_least": "critical",
+    "suggested_tests_include": [
+      "blood_culture_men",
+      "cbc"
+    ],
+    "ai_synthesis_allowed": false,
+    "top_differential": "meningococcal"
+  }
+}

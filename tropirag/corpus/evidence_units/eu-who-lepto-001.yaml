@@ -1,0 +1,16 @@
+unit_id: eu-who-lepto-001
+source_id: who-lepto
+section: Leptospirose
+text: 'La leptospirose survient 5 à 14 jours après contact avec des eaux contaminées par des urines d''animaux
+  (travaux agricoles, inondations, baignade en eaux douces). Tableau biphasique : fièvre + myalgies intenses
+  + injection conjonctivale + céphalées, puis atteinte hépatique (ictère), rénale ou pulmonaire (hémorragies
+  alvéolaires graves). Diagnostic : PCR sanguine ou sérologie ; traitement : pénicilline G ou doxycycline
+  selon gravité.'
+topics:
+- leptospirosis
+- water
+- icterus
+diseases:
+- leptospirosis
+jurisdiction: INT
+language: fr

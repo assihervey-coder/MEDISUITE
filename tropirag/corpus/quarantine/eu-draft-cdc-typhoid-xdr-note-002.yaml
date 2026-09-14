@@ -1,0 +1,24 @@
+unit_id: eu-draft-cdc-typhoid-xdr-note-002
+source_id: cdc-typhoid-xdr-note
+text: 'Cas suspect : toute personne presentant une fievre persistante superieure a
+  trois jours, avec cephaees, douleurs abdominales, et constipation ou diarrhee, dans
+  les 3 a 60 jours suivant un sejour dans une zone de transmission.'
+section: 1 DEFINITION DE CAS
+topics: []
+diseases: []
+symptom_codes:
+- abdominal_pain
+- constipation
+- diarrhea
+- fever
+drug_codes: []
+test_codes: []
+recommendation_strength: none
+chunk_index: 1
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 3e96b5561d98480461d0f9478ff313335bd75872b59443e288bbbdbdf46eaece
+  source_path: data/raw/documents/cdc-typhoid-xdr-note.txt
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

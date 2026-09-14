@@ -1,0 +1,21 @@
+name: typhoide-xdr-zone
+description: Retour Pakistan + fièvre ≥3 j → drapeau XDR, hémoculture
+case:
+  patient:
+    age_years: 41
+    sex: male
+  symptoms:
+  - code: fever
+    onset: '2026-08-28'
+  travel:
+    segments:
+    - country: PK
+      arrival: '2026-08-01'
+      departure: '2026-08-25'
+  consultation_date: '2026-09-04'
+expect:
+  rules_include:
+  - typ-xdr-travel-risk-001
+  - typ-dx-culture-001
+  tests_include:
+  - blood_culture

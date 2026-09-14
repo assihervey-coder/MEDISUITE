@@ -1,0 +1,17 @@
+unit_id: eu-msf-den-005
+source_id: msf-dengue
+section: Gestion terrain MSF
+text: 'La surveillance en phase critique (défervescence) est l''élément central : recherche quotidienne
+  des signes d''alarme, hématocrite et plaquettes. Le remplissage est réservé à la fuite plasmatique avec
+  choc, prudent et réévalué (risque de surcharge). Aucun antibiotique n''est indiqué. Éducation du patient
+  et de l''entourage aux signes de retour immédiat.'
+topics:
+- dengue
+- management
+- monitoring
+- msf
+diseases:
+- dengue
+- severe_dengue
+jurisdiction: INT
+language: fr

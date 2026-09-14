@@ -1,0 +1,21 @@
+name: regression-pipeline-complet
+description: Cas modéré → pas de blocage AI, citations présentes, réponse complète
+case:
+  patient:
+    age_years: 28
+    sex: female
+  symptoms:
+  - code: fever
+    onset: '2026-09-06'
+  - code: headache
+  travel:
+    segments:
+    - country: CI
+      arrival: '2026-08-28'
+      departure: '2026-09-04'
+  consultation_date: '2026-09-08'
+expect:
+  rules_include:
+  - mal-susp-core-001
+  urgency_at_least: routine
+  urgency_at_most: emergency

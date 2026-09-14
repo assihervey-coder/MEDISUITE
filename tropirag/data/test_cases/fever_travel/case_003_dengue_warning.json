@@ -1,0 +1,7 @@
+{
+  "case_id": "fixture-003",
+  "patient": {"age_years": 29, "sex": "female"},
+  "free_text": "fièvre, douleur derrière les yeux, douleurs abdominales intenses, vomissements incoercibles",
+  "travel": {"segments": [{"country": "CI", "region": "Abidjan", "departure": "{RET-10}"}]},
+  "expected": {"red_flags_contains": "dengue_warning", "forbidden_drugs": ["ibuprofen", "aspirin"]}
+}

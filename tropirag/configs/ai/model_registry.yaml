@@ -1,0 +1,251 @@
+models:
+- model_id: med42-v2-70b
+  display_name: Med42 v2 (70B)
+  family: text
+  provider_gateway: ollama
+  vram_gb: 42.0
+  priority: 90
+  deployment: server
+  clinically_validated: false
+  fallback_for: []
+  capabilities:
+    tasks:
+    - clinical_reasoning
+    - biomedical_synthesis
+    modalities:
+    - text
+    languages:
+    - en
+    - fr
+    clinical_risk_max: supervised
+    autonomous_diagnosis: false
+    evidence_required: true
+    local_execution: false
+    context_required:
+    - symptoms
+    - patient_context
+    min_vram_gb: 42.0
+    notes: Clinical Reasoner — synthèse encadrée par Evidence Pack + règles.
+- model_id: openbiollm-70b
+  display_name: OpenBioLLM (70B)
+  family: text
+  provider_gateway: ollama
+  vram_gb: 42.0
+  priority: 75
+  deployment: server
+  clinically_validated: false
+  fallback_for: []
+  capabilities:
+    tasks:
+    - biomedical_synthesis
+    modalities:
+    - text
+    languages:
+    - en
+    - fr
+    clinical_risk_max: supervised
+    autonomous_diagnosis: false
+    evidence_required: true
+    local_execution: false
+    context_required: []
+    min_vram_gb: 42.0
+    notes: Biomedical Synthesizer — littérature et dossiers complexes.
+- model_id: deepseek-r1-distill-32b
+  display_name: DeepSeek-R1-Distill (32B)
+  family: text
+  provider_gateway: ollama
+  vram_gb: 20.0
+  priority: 80
+  deployment: local
+  clinically_validated: false
+  fallback_for: []
+  capabilities:
+    tasks:
+    - logical_audit
+    modalities:
+    - text
+    languages:
+    - en
+    - fr
+    clinical_risk_max: assisted
+    autonomous_diagnosis: false
+    evidence_required: true
+    local_execution: true
+    context_required: []
+    min_vram_gb: 20.0
+    notes: Auditeur logique — cohérence, contradictions. Ne décide JAMAIS.
+- model_id: medgemma-4b-it
+  display_name: MedGemma 4B IT
+  family: vision
+  provider_gateway: ollama
+  vram_gb: 4.0
+  priority: 85
+  deployment: local
+  clinically_validated: false
+  fallback_for: []
+  capabilities:
+    tasks:
+    - image_analysis
+    modalities:
+    - image
+    - text
+    languages:
+    - en
+    - fr
+    clinical_risk_max: assisted
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required:
+    - symptoms
+    - patient_context
+    - localization
+    - duration
+    min_vram_gb: 0.0
+    notes: Analyse d'image contextualisée — premier avis / seconde lecture.
+- model_id: minicpm-v-2.6
+  display_name: MiniCPM-V 2.6
+  family: vision
+  provider_gateway: ollama
+  vram_gb: 6.0
+  priority: 70
+  deployment: local
+  clinically_validated: false
+  fallback_for:
+  - medgemma-4b-it
+  capabilities:
+    tasks:
+    - image_triage
+    modalities:
+    - image
+    - text
+    languages:
+    - en
+    - zh
+    clinical_risk_max: assisted
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Triage / screening image — sensibilité-spécificité équilibrées.
+- model_id: sam2-medical
+  display_name: SAM2 Medical (segmentation)
+  family: vision
+  provider_gateway: vllm
+  vram_gb: 8.0
+  priority: 60
+  deployment: local
+  clinically_validated: false
+  fallback_for: []
+  capabilities:
+    tasks:
+    - image_segmentation
+    modalities:
+    - image
+    languages:
+    - en
+    clinical_risk_max: assisted
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Segmentation — masques et mesures. Sort l'évidence → pas le diagnostic.
+- model_id: medasr-quantized
+  display_name: MedASR (quantifié)
+  family: speech
+  provider_gateway: ollama
+  vram_gb: 1.0
+  priority: 90
+  deployment: local
+  clinically_validated: false
+  fallback_for: []
+  capabilities:
+    tasks:
+    - speech_dictation
+    modalities:
+    - audio
+    - text
+    languages:
+    - fr
+    - en
+    clinical_risk_max: none
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Dictée clinique FR/EN — léger, périphérie.
+- model_id: whisper-large-v3
+  display_name: Whisper Large v3
+  family: speech
+  provider_gateway: ollama
+  vram_gb: 3.0
+  priority: 75
+  deployment: local
+  clinically_validated: false
+  fallback_for: []
+  capabilities:
+    tasks:
+    - conversation_transcription
+    modalities:
+    - audio
+    - text
+    languages:
+    - fr
+    - en
+    - multilingual
+    clinical_risk_max: none
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Conversation terrain multilingue / code-switching.
+- model_id: bge-m3
+  display_name: BGE-M3
+  family: embeddings
+  provider_gateway: deterministic
+  vram_gb: 2.0
+  priority: 90
+  deployment: local
+  clinically_validated: false
+  fallback_for: []
+  capabilities:
+    tasks:
+    - embeddings
+    modalities:
+    - text
+    languages:
+    - multilingual
+    clinical_risk_max: none
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Sensory retrieval layer — hybride multilingue.
+- model_id: qwen-reranker
+  display_name: Qwen Reranker
+  family: reranking
+  provider_gateway: deterministic
+  vram_gb: 4.0
+  priority: 85
+  deployment: local
+  clinically_validated: false
+  fallback_for: []
+  capabilities:
+    tasks:
+    - reranking
+    modalities:
+    - text
+    languages:
+    - multilingual
+    clinical_risk_max: none
+    autonomous_diagnosis: false
+    evidence_required: false
+    local_execution: true
+    context_required: []
+    min_vram_gb: 0.0
+    notes: Reranking cross-encoder — TOP 30 → TOP 5.

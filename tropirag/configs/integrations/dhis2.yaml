@@ -1,0 +1,114 @@
+# =============================================================================
+# V1.3 — Intégration DHIS2 (District Health Information System 2)
+# Ministère de la Santé Publique et de l'Hygiène, Côte d'Ivoire (MSP-CI)
+# =============================================================================
+# Export des indicateurs de surveillance agrégés depuis TropiRAG vers le
+# système national DHIS2 : format dataValueSets (JSON) et ADX 2.0 (XML).
+#
+# PRINCIPE DE SÉCURITÉ : aucun envoi réseau par défaut. Mode offline_queue —
+# les payloads sont produits localement et mis en file jusqu'à configuration
+# explicite du serveur + identifiants par le MSP-CI.
+#
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │ CORRESPONDANCE OFFICIELLE MSP-CI — CE FICHIER EST LE SEUL À ÉDITER      │
+# └─────────────────────────────────────────────────────────────────────────┘
+# Procédure (voir docs/integrations/dhis2-correspondance-msp-ci.md) :
+#   1. Ouvrir le dictionnaire de données DHIS2 national MSP-CI
+#      (Maintenance > Data elements > Search).
+#   2. Rechercher chaque indicateur par son libellé (colonne `label`),
+#      puis recopier l'UID (11 caractères, ex. « H9nYv2q3LkM ») dans `de`.
+#   3. Récupérer l'UID du jeu de données de surveillance hebdomadaire
+#      (section data_sets) et l'UID de la structure de saisie
+#      (section organisation_units) auprès de l'équipe SI du MSP-CI.
+#   4. Lancer : python scripts/validate_dhis2_uids.py
+#      → le validateur confirme le format de chaque UID, détecte les
+#        placeholders restants et autorise le passage en mode « push ».
+#
+# Règles de format UID DHIS2 : 11 caractères, premier caractère alphabétique,
+# suivis de 10 caractères alphanumériques (regex ^[A-Za-z][A-Za-z0-9]{10}$).
+# Les placeholders provisoires TropiRAG suivent le préfixe « DE-TRPG- »
+# (éléments de données), « DS-TRPG- » (jeux de données), « COC-TRPG- »
+# (combos de catégories) et « OU-TRPG- » (unités d'organisation).
+# =============================================================================
+dhis2:
+  enabled: true
+  mode: offline_queue            # off | offline_queue | push
+  server:
+    base_url: null               # ex. https://dhis2.msp-ci.gouv.example/api
+    username: null
+    password_env: TROPIRAG_DHIS2_PASSWORD
+    timeout_s: 30
+    verify_tls: true
+  period:
+    strategy: weekly             # agrégation hebdomadaire ISO (YYYYWww)
+
+  # ---------------------------------------------------------------------------
+  # Jeu de données de surveillance (regroupement des envois côté DHIS2)
+  # ---------------------------------------------------------------------------
+  data_sets:
+    weekly_surveillance:
+      ds: DS-TRPG-0001           # UID DHIS2 du jeu « Surveillance hebdomadaire »
+      label: "Surveillance hebdomadaire intégrée (fièvre + voyage)"
+      frequency: weekly
+
+  # ---------------------------------------------------------------------------
+  # Unité d'organisation — structure de saisie TropiRAG
+  # La clé `default` sert à tous les exports ; le mapping par district permet
+  # de désagréger plus tard sans toucher au code.
+  # ---------------------------------------------------------------------------
+  organisation_unit:
+    default: OU-TRPG-0001        # code org unit DHIS2 de la structure de saisie
+    label: "À compléter — code organisation DHIS2 fourni par le MSP-CI"
+    # Correspondance district sanitaire → UID org unit DHIS2 (optionnel,
+    # placeholders jusqu'à confirmation MSP-CI — 14 districts de 1er niveau).
+    units:
+      abidjan:          {ou: OU-TRPG-ABJ, label: "District autonome d'Abidjan"}
+      yamoussoukro:     {ou: OU-TRPG-YAM, label: "District autonome de Yamoussoukro"}
+      bas-sassandra:    {ou: OU-TRPG-BSS, label: "Bas-Sassandra (San-Pédro)"}
+      comoe:            {ou: OU-TRPG-COM, label: "Comoé (Aboisso)"}
+      denguele:         {ou: OU-TRPG-DEN, label: "Denguélé (Odienné)"}
+      goh-djiboua:      {ou: OU-TRPG-GDJ, label: "Gôh-Djiboua (Gagnoa)"}
+      indenie-djuablin: {ou: OU-TRPG-IND, label: "Indénié-Djuablin (Abengourou)"}
+      lacs:             {ou: OU-TRPG-LAC, label: "Lacs (Dimbokro)"}
+      montagnes:        {ou: OU-TRPG-MON, label: "Montagnes (Man)"}
+      sassandra-marahoue: {ou: OU-TRPG-SMA, label: "Sassandra-Marahoué (Daloa)"}
+      savanes:          {ou: OU-TRPG-SAV, label: "Savanes (Korhogo)"}
+      vallee-du-bandama: {ou: OU-TRPG-VBA, label: "Vallée du Bandama (Bouaké)"}
+      worodougou:       {ou: OU-TRPG-WOR, label: "Worodougou (Séguéla)"}
+      zanzan:           {ou: OU-TRPG-ZAN, label: "Zanzan (Bondoukou)"}
+
+  # ---------------------------------------------------------------------------
+  # Combos de catégories (désagrégation) — « default » si aucune pour V1
+  # ---------------------------------------------------------------------------
+  category_option_combo: default
+  category_option_combos:
+    default: COC-TRPG-0001       # UID DHIS2 du combo par défaut
+
+  # ---------------------------------------------------------------------------
+  # Mapping indicateurs TropiRAG → éléments de données DHIS2
+  # Clés logiques STABLES — la correspondance officielle se fait en éditant
+  # uniquement la colonne `de`. `definition` documente le compte exact.
+  # ---------------------------------------------------------------------------
+  data_elements:
+    total_cases:            {de: DE-TRPG-0001, label: "Cas fièvre+voyage analysés", definition: "Cas analysés par le pipeline déterministe"}
+    suspect_malaria:        {de: DE-TRPG-0101, label: "Cas suspects de paludisme", definition: "Differential malaria ou severe_malaria non exclu"}
+    suspect_severe_malaria: {de: DE-TRPG-0102, label: "Paludisme sévère suspecté (critères OMS)", definition: "Differential severe_malaria ou règle mal-sev-*"}
+    malaria_renal_rrt:      {de: DE-TRPG-0103, label: "Paludisme avec AKI — EER indiquée", definition: "Règles mal-renal-* (critères OMS créat/oligurie)"}
+    suspect_dengue:         {de: DE-TRPG-0201, label: "Cas suspects de dengue", definition: "Differential dengue ou severe_dengue non exclu"}
+    suspect_severe_dengue:  {de: DE-TRPG-0202, label: "Dengue sévère suspectée", definition: "Differential severe_dengue ou règles den-sev-/den-warn-"}
+    dengue_peds_critical:   {de: DE-TRPG-0203, label: "Dengue pédiatrique — soins critiques", definition: "Règles den-peds-* (choc, intubation, remplissage)"}
+    suspect_enteric_fever:  {de: DE-TRPG-0301, label: "Cas suspects de fièvre typhoïde", definition: "Differential enteric_fever non exclu"}
+    typhoid_xdr:            {de: DE-TRPG-0302, label: "Typhoïde XDR suspectée/confirmée", definition: "Règles typ-xdr-* (voyage zone foyer, antibiogramme)"}
+    suspect_yellow_fever:   {de: DE-TRPG-0401, label: "Cas suspects de fièvre jaune", definition: "Differential yellow_fever non exclu"}
+    suspected_vhf:          {de: DE-TRPG-0402, label: "Alertes fièvres hémorragiques virales", definition: "Differential MVH ou règles *vhf*"}
+    suspect_leptospirosis:  {de: DE-TRPG-0403, label: "Cas suspects de leptospirose", definition: "Differential leptospirosis non exclu — contexte eaux stagnantes/Weil"}
+    suspect_meningococcal:  {de: DE-TRPG-0404, label: "Suspictions IIM (méningocoque, tout âge)", definition: "Differential meningococcal non exclu — purpura/méningite"}
+    suspect_zika:           {de: DE-TRPG-0501, label: "Cas suspects de zika", definition: "Differential zika non exclu"}
+    zika_pregnant:          {de: DE-TRPG-0502, label: "Zika chez femme enceinte", definition: "Règles zik-*pregn*"}
+    scd_fever:              {de: DE-TRPG-0601, label: "Drépanocytose — fièvre (urgence asplénie)", definition: "Règles scd-*"}
+    pregnancy_malaria:      {de: DE-TRPG-0602, label: "Paludisme gestationnel suspecté", definition: "Differential malaria + règles preg-*"}
+    urgent_cases:           {de: DE-TRPG-0701, label: "Cas urgents (emergency/immediate)", definition: "Urgence max de l'analyse = emergency/immediate"}
+    critical_cases:         {de: DE-TRPG-0702, label: "Cas critiques (severity critical)", definition: "Sévérité max de l'analyse = critical"}
+  queue:
+    path: runtime/state/dhis2_queue.json
+    max_entries: 5000

@@ -1,0 +1,128 @@
+version: 1
+domain: fever_travel
+rules:
+- id: hcid-susp-ebola-000
+  action: raise_suspicion
+  priority: 100
+  weight: 0.9
+  description: Suspicion Ebola (différentiel)
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - exposure: ebola_outbreak_zone
+    - days_since_return:
+        lte: 21
+  disease: ebola
+  then:
+    disease: ebola
+    weight: 0.9
+    note: Fièvre + zone d'épidémie Ebola < 21 j — MVH jusqu'à preuve du contraire
+  evidence:
+  - who-ebola-2024
+- id: hcid-susp-lassa-000
+  action: raise_suspicion
+  priority: 98
+  weight: 0.85
+  description: Suspicion Lassa (différentiel)
+  when:
+    all:
+    - *id001
+    - exposure: lassa_zone
+    - any:
+      - travel: burial_attended
+      - travel: sick_contacts
+      - symptom: abnormal_bleeding
+  disease: lassa
+  then:
+    disease: lassa
+    weight: 0.85
+    note: Fièvre + zone Lassa + contexte à risque — Lassa à éliminer
+  evidence:
+  - who-lassa
+- id: hcid-ebola-suspicion-001
+  action: red_flag
+  priority: 100
+  weight: 0.5
+  description: Suspicion Ebola
+  when:
+    all:
+    - *id001
+    - exposure: ebola_outbreak_zone
+    - days_since_return:
+        lte: 21
+  disease: ebola
+  then:
+    code: vhf_suspected
+    severity: critical
+    urgency: immediate
+    message: 'Fièvre + séjour en zone d''épidémie Ebola < 21 jours — MVH jusqu''à preuve du contraire
+      : ISOLER, PPE, ne prélever QU''EN ZONE PROTÉGÉE'
+  evidence:
+  - who-ebola-2024
+- id: hcid-marburg-suspicion-002
+  action: red_flag
+  priority: 100
+  weight: 0.5
+  description: Suspicion Marburg
+  when:
+    all:
+    - *id001
+    - exposure: marburg_outbreak_zone
+    - days_since_return:
+        lte: 21
+  disease: marburg
+  then:
+    code: vhf_suspected_marburg
+    severity: critical
+    urgency: immediate
+    message: Fièvre + zone d'épidémie Marburg < 21 jours — protocole MVH immédiat
+  evidence:
+  - who-marburg
+- id: hcid-lassa-suspicion-003
+  action: red_flag
+  priority: 98
+  weight: 0.5
+  description: Suspicion Lassa
+  when:
+    all:
+    - *id001
+    - exposure: lassa_zone
+    - any:
+      - travel: burial_attended
+      - travel: sick_contacts
+      - symptom: abnormal_bleeding
+  disease: lassa
+  then:
+    code: lassa_suspected
+    severity: critical
+    urgency: immediate
+    message: 'Fièvre + zone Lassa + contacts à risque (funérailles, malades) ou saignements — Fièvre de
+      Lassa à éliminer : isolement + avis référent'
+  evidence:
+  - who-lassa
+- id: hcid-unexplained-bleeding-004
+  action: red_flag
+  priority: 97
+  weight: 0.5
+  description: Saignements inexpliqués post-voyage
+  when:
+    all:
+    - *id001
+    - symptom: abnormal_bleeding
+    - days_since_return:
+        lte: 21
+    - exposure: malaria_exposure
+  disease: ebola
+  then:
+    code: vhf_generic_suspected
+    severity: critical
+    urgency: immediate
+    message: 'Fièvre + saignements inexpliqués dans les 21 jours après un séjour en zone tropicale — protocole
+      MVH : isolement préventif avant confirmation'
+  evidence:
+  - who-ebola-2024

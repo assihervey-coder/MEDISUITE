@@ -1,0 +1,17 @@
+unit_id: eu-who-mals-005
+source_id: who-malaria-severe-2023
+section: Critères de paludisme sévère
+text: 'Le paludisme sévère est défini par au moins un des critères suivants : troubles de la conscience
+  (score de Glasgow < 11 chez l''adulte), prostration, convulsions multiples, acidose métabolique, hypoglycémie,
+  anémie sévère (Hb < 5 g/dL chez l''enfant, < 7 g/dL chez l''adulte selon contexte), insuffisance rénale,
+  ictère avec hyperparasitémie, œdème pulmonaire, hyperparasitémie ≥ 10 % chez le non-immun. Un seul critère
+  suffit à définir la sévérité et impose le traitement parentéral.'
+topics:
+- malaria
+- severity
+- critical
+diseases:
+- severe_malaria
+- malaria
+jurisdiction: INT
+language: fr

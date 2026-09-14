@@ -1,0 +1,152 @@
+version: 1
+domain: fever_travel
+rules:
+- id: den-warn-persistent-vomiting-001
+  action: red_flag
+  priority: 87
+  weight: 0.5
+  description: 'Signe d''alarme : vomissements persistants'
+  when:
+    all:
+    - &id001
+      any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: vomiting
+      severity: severe
+  disease: dengue
+  then:
+    code: dengue_warning_vomiting
+    severity: severe
+    urgency: emergency
+    message: 'Vomissements persistants — signe d''alarme OMS : dengue avec signes d''alarme → hospitalisation
+      pour monitorage'
+  evidence:
+  - who-dengue-2024
+- id: den-warn-abdominal-002
+  action: red_flag
+  priority: 87
+  weight: 0.5
+  description: 'Signe d''alarme : douleur abdominale'
+  when:
+    all:
+    - *id001
+    - symptom: abdominal_pain
+      severity: severe
+  disease: dengue
+  then:
+    code: dengue_warning_abdominal
+    severity: severe
+    urgency: emergency
+    message: 'Douleur abdominale intense — signe d''alarme OMS de dengue : hospitalisation'
+  evidence:
+  - who-dengue-2024
+- id: den-warn-bleeding-003
+  action: red_flag
+  priority: 92
+  weight: 0.5
+  description: Saignements muqueux (dengue sévère)
+  when:
+    all:
+    - *id001
+    - symptom_any:
+      - bleeding_gums
+      - epistaxis
+      - petechiae
+      - hematemesis
+      - melena
+  disease: severe_dengue
+  then:
+    code: dengue_warning_bleeding
+    severity: critical
+    urgency: immediate
+    message: 'Saignements muqueux — dengue hémorragique probable : hospitalisation immédiate, bilan de
+      coagulation'
+  evidence:
+  - who-dengue-2024
+- id: den-warn-lethargy-004
+  action: red_flag
+  priority: 84
+  weight: 0.5
+  description: 'Signe d''alarme : léthargie'
+  when:
+    all:
+    - *id001
+    - symptom_any:
+      - prostration
+      - confusion
+    - exposure_risk_gte:
+        disease: dengue
+        level: low
+  disease: dengue
+  then:
+    code: dengue_warning_lethargy
+    severity: severe
+    urgency: emergency
+    message: 'Prostration/léthargie fébrile en zone de dengue — signe d''alarme : monitorage hospitalier'
+  evidence:
+  - who-dengue-2024
+- id: den-warn-hepatomegaly-005
+  action: red_flag
+  priority: 83
+  weight: 0.5
+  description: 'Signe d''alarme : hépatomégalie'
+  when:
+    all:
+    - *id001
+    - symptom: hepatomegaly
+    - exposure_risk_gte:
+        disease: dengue
+        level: moderate
+  disease: dengue
+  then:
+    code: dengue_warning_hepatomegaly
+    severity: severe
+    urgency: emergency
+    message: Hépatomégalie douloureuse — signe d'alarme OMS de dengue
+  evidence:
+  - who-dengue-2024
+- id: den-sev-shock-006
+  action: red_flag
+  priority: 98
+  weight: 0.5
+  description: Choc dengue
+  when:
+    all:
+    - *id001
+    - vital: systolic_bp
+      lt: 90
+    - exposure_risk_gte:
+        disease: dengue
+        level: moderate
+  disease: severe_dengue
+  then:
+    code: dengue_shock
+    severity: critical
+    urgency: immediate
+    message: 'Choc dans un contexte de dengue — dengue sévère de type choc : réanimation immédiate (remplissage
+      prudent)'
+  evidence:
+  - who-dengue-2024
+- id: den-sev-plasma-leak-007
+  action: red_flag
+  priority: 93
+  weight: 0.5
+  description: Extravasation plasmatique
+  when:
+    all:
+    - *id001
+    - symptom: dyspnea
+    - exposure_risk_gte:
+        disease: dengue
+        level: moderate
+  disease: severe_dengue
+  then:
+    code: dengue_plasma_leakage
+    severity: critical
+    urgency: immediate
+    message: 'Détresse respiratoire fébrile en zone de dengue — épanchement plasmatique : urgence absolue'
+  evidence:
+  - who-dengue-2024

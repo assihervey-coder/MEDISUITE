@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TropiRAG — Carte des éclosions</title>
+<style>
+:root{
+  --bg:#0d1b2a;--bg2:#13263a;--panel:#1b3049;--line:#274764;
+  --txt:#e8f1f8;--mut:#9fb8cc;--acc:#38bdf8;--acc2:#34d399;
+  --warn:#fbbf24;--dan:#f87171;--pur:#a78bfa;
+  --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+header{background:linear-gradient(135deg,#0f2237,#14324d);border-bottom:1px solid var(--line);padding:16px 28px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50}
+.logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--dan),var(--warn));display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:#2a0d06}
+header h1{font-size:17px;font-weight:700}
+header .sub{font-size:12px;color:var(--mut)}
+header .spacer{flex:1}
+.kpi{font-size:12px;color:var(--mut);text-align:right;line-height:1.5}
+.kpi b{color:var(--txt);font-size:15px}
+main{max-width:1280px;margin:0 auto;padding:22px;display:grid;grid-template-columns:1fr 330px;gap:18px}
+@media(max-width:1000px){main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--mut);margin-bottom:12px}
+#controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+#controls select,#controls input{background:var(--bg2);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:8px 12px;font-size:13px;font-family:inherit}
+#controls label{font-size:12px;color:var(--mut)}
+#map{width:100%;height:auto;display:block}
+.tile{cursor:pointer;transition:.15s}
+.tile:hover{stroke-width:3;stroke:var(--acc)}
+.tile.selected{stroke:var(--acc);stroke-width:3}
+.tile text{pointer-events:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin-top:12px;align-items:center}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:5px;vertical-align:-2px}
+#detail .big{font-size:26px;font-weight:800;margin:4px 0}
+#detail .sub{font-size:12px;color:var(--mut);margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td{padding:6px 4px;border-bottom:1px solid var(--line)}
+td:last-child{text-align:right;font-family:var(--mono);color:var(--acc2)}
+#outbreaks{margin-top:14px}
+.ob{background:rgba(248,113,113,.09);border:1px solid rgba(248,113,113,.4);border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:13px;line-height:1.55}
+.ob b{color:#fca5a5}
+a.back{color:var(--mut);font-size:12px;text-decoration:none}
+a.back:hover{color:var(--acc)}
+.bar{height:6px;border-radius:3px;background:var(--bg2);margin-top:4px;overflow:hidden}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--acc2),var(--acc))}
+.empty{color:var(--mut);font-size:13px;line-height:1.7;padding:8px 2px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">CI</div>
+  <div>
+    <h1>Carte des éclosions — fièvre + voyage</h1>
+    <div class="sub">Surveillance par district sanitaire · Côte d'Ivoire · 14 districts de 1<sup>er</sup> niveau (cohérents DHIS2 MSP-CI)</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="kpi"><b id="kpi-total">—</b> cas · <span id="kpi-days">30</span> jours<br><span id="kpi-updated">—</span></div>
+</header>
+<main>
+  <section class="card">
+    <h2>Clusters par district</h2>
+    <div id="controls">
+      <label>Fenêtre
+        <select id="selDays">
+          <option value="7">7 jours</option>
+          <option value="14">14 jours</option>
+          <option value="30" selected>30 jours</option>
+          <option value="90">90 jours</option>
+        </select>
+      </label>
+      <label>Clé API <input id="apikey" type="password" placeholder="X-API-Key (si activée)" size="18"></label>
+      <label><input type="checkbox" id="chkRatio" checked> Intensité relative aux suspicions</label>
+      <a class="back" href="/">← dashboard clinique</a> · <a class="back" href="/mobile">PWA terrain</a>
+    </div>
+    <svg id="map" viewBox="0 0 760 560" role="img" aria-label="Carte schématique des districts sanitaires de Côte d'Ivoire">
+      <text x="380" y="24" text-anchor="middle" fill="#9fb8cc" font-size="12" font-family="Segoe UI">NORD ↑ — carte schématique (alignée géographiquement, sans connexion)</text>
+      <g id="tiles"></g>
+    </svg>
+    <div class="legend">
+      <span><span class="sw" style="background:#22364d"></span>aucun cas</span>
+      <span><span class="sw" style="background:#1e5a4f"></span>1–2 cas</span>
+      <span><span class="sw" style="background:#c7922a"></span>3–5 cas</span>
+      <span><span class="sw" style="background:#c05454"></span>≥ 6 cas / signal d'éclosion</span>
+      <span style="margin-left:auto">⚠ signal d'éclosion : +2 cas vs semaine précédente</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="card" id="detail">
+      <h2>District</h2>
+      <div id="detail-body" class="empty">Cliquez sur un district pour afficher ses suspicions par maladie, la courbe hebdomadaire et les signaux d'éclosion.</div>
+    </div>
+    <div class="card" style="margin-top:18px" id="national">
+      <h2>National — suspicions cumulées</h2>
+      <div id="national-body" class="empty">Chargement…</div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <h2>Auditabilité</h2>
+      <div class="empty">Comptes dérivés exclusivement des <b>analyses déterministes</b> persistées (moteur de règles) — même source de vérité que l'export DHIS2 MSP-CI. Aucune IA ne participe au comptage. Cas sans district résolu : compartiment « non localisés », jamais perdus.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+"use strict";
+const API = (location.origin||'');
+const $ = (id)=>document.getElementById(id);
+const CACHE = {data:null, key:null};
+
+// grille des districts (colonne, ligne) — alignée géographie réelle
+const GRID = {
+  "denguele":[0,0], "savanes":[1,0], "zanzan":[2,0],
+  "worodougou":[0,1], "vallee-du-bandama":[1,1], "indenie-djuablin":[2,1],
+  "montagnes":[0,2], "sassandra-marahoue":[1,2], "lacs":[2,2], "yamoussoukro":[3,2],
+  "bas-sassandra":[0,3], "goh-djiboua":[1,3], "abidjan":[2,3], "comoe":[3,3]
+};
+const LABELS = {
+  "denguele":"Denguélé", "savanes":"Savanes", "zanzan":"Zanzan",
+  "worodougou":"Worodougou", "vallee-du-bandama":"Vallée du Bandama", "indenie-djuablin":"Indénié-Djuablin",
+  "montagnes":"Montagnes", "sassandra-marahoue":"Sassandra-Marahoué", "lacs":"Lacs",
+  "yamoussoukro":"Yamoussoukro", "bas-sassandra":"Bas-Sassandra", "goh-djiboua":"Gôh-Djiboua",
+  "abidjan":"Abidjan", "comoe":"Comoé"
+};
+const TOWNS = {
+  "denguele":"Odienné", "savanes":"Korhogo", "zanzan":"Bondoukou",
+  "worodougou":"Séguéla", "vallee-du-bandama":"Bouaké", "indenie-djuablin":"Abengourou",
+  "montagnes":"Man", "sassandra-marahoue":"Daloa", "lacs":"Dimbokro",
+  "yamoussoukro":"Yamoussoukro", "bas-sassandra":"San-Pédro", "goh-djiboua":"Gagnoa",
+  "abidjan":"Abidjan", "comoe":"Aboisso"
+};
+const DISEASE_FR = {
+  malaria:"Paludisme", severe_malaria:"Paludisme sévère", dengue:"Dengue",
+  severe_dengue:"Dengue sévère", enteric_fever:"Fièvre typhoïde",
+  leptospirosis:"Leptospirose", meningococcal:"Méningocoque (IIM)",
+  yellow_fever:"Fièvre jaune", zika:"Zika", chikungunya:"Chikungunya",
+  marburg:"Marburg", ebola:"Ébola", lassa:"Lassa",
+  sickle_cell_disease:"Drépanocytose", malaria_in_pregnancy:"Palu gestationnel",
+  rickettsial:"Rickettsiose", influenza:"Grippe", covid19:"COVID-19"
+};
+const fr = (d)=> DISEASE_FR[d]||d;
+
+function headers(){ const k=$("apikey").value.trim(); return {'Content-Type':'application/json', ...(k?{'X-API-Key':k}:{})}; }
+
+function color(cases, max){
+  if(!cases) return "#22364d";
+  const rel = $("chkRatio").checked && max>0 ? cases/max : cases/8;
+  if(rel>=0.75 || cases>=6) return "#c05454";
+  if(rel>=0.45 || cases>=3)  return "#c7922a";
+  return "#1e5a4f";
+}
+
+function renderTiles(data){
+  const g = $("tiles"); g.innerHTML="";
+  const byKey = {}; (data.districts||[]).forEach(d=>byKey[d.key]=d);
+  const max = Math.max(1, ...(data.districts||[]).map(d=>d.cases));
+  const W=178,H=118,GX=8,GY=8, X0=14,Y0=42;
+  for(const [key,[col,row]] of Object.entries(GRID)){
+    const d = byKey[key]||{key, cases:0, urgent:0, critical:0, by_disease:{}, by_week:{}};
+    const x = X0+col*(W+GX), y = Y0+row*(H+GY);
+    const t = document.createElementNS("http://www.w3.org/2000/svg","g");
+    t.setAttribute("class","tile"); t.dataset.key=key;
+    t.innerHTML =
+      `<rect x="${x}" y="${y}" width="${W}" height="${H}" rx="12" fill="${color(d.cases,max)}" stroke="#274764" stroke-width="1.5"/>`+
+      `<text x="${x+W/2}" y="${y+26}" text-anchor="middle" fill="#e8f1f8" font-size="13.5" font-weight="700" font-family="Segoe UI">${LABELS[key]}</text>`+
+      `<text x="${x+W/2}" y="${y+43}" text-anchor="middle" fill="#9fb8cc" font-size="10.5" font-family="Segoe UI">${TOWNS[key]}</text>`+
+      `<text x="${x+W/2}" y="${y+78}" text-anchor="middle" fill="#e8f1f8" font-size="30" font-weight="800" font-family="Segoe UI">${d.cases}</text>`+
+      `<text x="${x+W/2}" y="${y+96}" text-anchor="middle" fill="#9fb8cc" font-size="10.5" font-family="Segoe UI">${d.cases?"cas":"—"}</text>`+
+      (d.urgent?`<circle cx="${x+W-14}" cy="${y+14}" r="8" fill="#f87171"/><text x="${x+W-14}" y="${y+17.5}" text-anchor="middle" fill="#2a0d06" font-size="10" font-weight="800" font-family="Segoe UI">!</text>`:"");
+    t.addEventListener("click", ()=>selectDistrict(key));
+    g.appendChild(t);
+  }
+}
+
+function selectDistrict(key){
+  document.querySelectorAll(".tile").forEach(t=>t.classList.toggle("selected", t.dataset.key===key));
+  const data = CACHE.data; if(!data) return;
+  const d = (data.districts||[]).find(x=>x.key===key);
+  const body = $("detail-body");
+  if(!d){ body.innerHTML = `<div class="big">${LABELS[key]}</div><div class="sub">${TOWNS[key]} — aucun cas sur la fenêtre</div>`; return; }
+  let rows = Object.entries(d.by_disease).map(([k,n])=>`<tr><td>${fr(k)}</td><td>${n}</td></tr>`).join("");
+  const weeks = Object.entries(d.by_week);
+  const wmax = Math.max(1,...weeks.map(w=>w[1]));
+  let bars = weeks.map(([w,n])=>`<div style="display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--mut);margin-top:3px"><span style="font-family:var(--mono);min-width:56px">${w}</span><span class="bar" style="flex:1"><div style="width:${100*n/wmax}%"></div></span><span>${n}</span></div>`).join("");
+  body.innerHTML = `<div class="big">${d.cases} cas</div>
+    <div class="sub">${d.label} · ${d.chief_town} · ${d.urgent} urgent(s) · ${d.critical} critique(s) · dernier cas ${d.last_case_at||"—"}</div>
+    <table>${rows||"<tr><td class='empty'>Aucune suspicion localisée</td></tr>"}</table>
+    <div style="margin-top:12px"><b style="font-size:12px;color:var(--mut)">ÉVOLUTION HEBDOMADAIRE</b>${bars||"<div class='empty'>—</div>"}</div>`;
+}
+
+function renderNational(data){
+  const rows = Object.entries(data.national_by_disease||{}).map(([k,n])=>
+    `<tr><td>${fr(k)}</td><td>${n}</td></tr>`).join("");
+  const nl = data.non_localises||{cases:0};
+  $("national-body").innerHTML = rows
+    ? `<table>${rows}</table><div class="empty" style="margin-top:8px">+ ${nl.cases} cas non localisés (région non renseignée) sur ${data.total_cases} au total</div>`
+    : "<div class='empty'>Aucun cas analysé sur la fenêtre — les cas apparaissent ici après analyse via le dashboard ou la PWA terrain (renseigner la région du voyage).</div>";
+}
+
+function renderOutbreaks(data){
+  const box = document.createElement("div");
+  box.id="outbreaks";
+  (data.outbreaks||[]).forEach(o=>{
+    const div=document.createElement("div"); div.className="ob";
+    div.innerHTML=`<b>⚠ ${o.label}</b> — semaine ${o.last_week} : ${o.cases_last_week} cas (vs ${o.cases_previous_week} la semaine précédente)${o.top_disease?` — principale suspicion : <b>${fr(o.top_disease)}</b>`:""}`;
+    box.appendChild(div);
+  });
+  if((data.outbreaks||[]).length) $("detail").appendChild(box);
+}
+
+async function load(){
+  const days = +$("selDays").value;
+  const key = days+"|"+$("apikey").value.trim();
+  $("kpi-days").textContent = days;
+  try{
+    const r = await fetch(`${API}/api/v1/surveillance/map?days=${days}`,{headers:headers()});
+    if(!r.ok){ $("detail-body").innerHTML = `<div class="empty">Erreur ${r.status} — ${r.status===401?"clé API requise":(await r.text()).slice(0,120)}</div>`; return; }
+    const data = await r.json();
+    CACHE.data = data; CACHE.key = key;
+    $("kpi-total").textContent = data.total_cases;
+    $("kpi-updated").textContent = new Date().toLocaleTimeString("fr-FR");
+    renderTiles(data); renderNational(data);
+    const old=$("outbreaks"); if(old) old.remove();
+    renderOutbreaks(data);
+    selectDistrict("abidjan");
+  }catch(e){
+    $("detail-body").innerHTML = `<div class="empty">Serveur injoignable (${e.message}). La carte nécessite l'API TropiRAG locale.</div>`;
+  }
+}
+$("selDays").addEventListener("change", load);
+$("chkRatio").addEventListener("change", ()=>CACHE.data&&renderTiles(CACHE.data));
+$("apikey").addEventListener("change", load);
+load();
+</script>
+</body>
+</html>

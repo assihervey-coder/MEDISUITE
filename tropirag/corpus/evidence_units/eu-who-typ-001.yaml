@@ -1,0 +1,16 @@
+unit_id: eu-who-typ-001
+source_id: who-typhoid-2018
+section: Suspiction typhoïde
+text: La fièvre typhoïde se présente comme une fièvre progressive atteignant un plateau en quelques jours,
+  avec céphalées, douleurs abdominales, constipation plus souvent que diarrhée chez l'adulte, anorexie
+  et malaise. Sans traitement, la fièvre persiste des semaines. Les complications (perforation intestinale,
+  hémorragie digestive) surviennent typiquement à partir de la 2e-3e semaine.
+topics:
+- typhoid
+- enteric
+- fever
+- suspicion
+diseases:
+- enteric_fever
+jurisdiction: INT
+language: fr

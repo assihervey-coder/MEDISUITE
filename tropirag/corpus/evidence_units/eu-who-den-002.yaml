@@ -1,0 +1,16 @@
+unit_id: eu-who-den-002
+source_id: who-dengue-2024
+section: Signes d'alarme
+text: 'Les signes d''alarme imposant une hospitalisation urgente sont : douleur abdominale intense ou
+  sensibilité, vomissements persistants (plus de 3 épisodes par jour), accumulation de liquide (ascite,
+  épanchement pleural), saignements muqueux (gingivorragies, épistaxis), léthargie ou agitation, hépatomégalie
+  douloureuse, et hématocrite croissant avec chute rapide des plaquettes.'
+topics:
+- dengue
+- warning
+- alarm
+diseases:
+- dengue
+- severe_dengue
+jurisdiction: INT
+language: fr

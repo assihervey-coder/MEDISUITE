@@ -1,0 +1,22 @@
+unit_id: eu-draft-msf-dengue-protocole-002
+source_id: msf-dengue-protocole
+text: La dengue est une arbovirose transmise par les moustiques Aedes, endémique en
+  Côte d'Ivoire pendant et après la saison des pluies. L'incubation est de 4 à 10
+  jours. La forme sévère survient typiquement entre le 3e et le 7e jour, au moment
+  de la défervescence.
+section: 1. Définition et contexte
+topics: []
+diseases:
+- dengue
+symptom_codes: []
+drug_codes: []
+test_codes: []
+recommendation_strength: none
+chunk_index: 1
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: aa54d1afee7df7bf65d235d496e1194473298f23d74388ce31687f37fdcd2b0c
+  source_path: data/raw/protocols/msf-dengue-protocole.html
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

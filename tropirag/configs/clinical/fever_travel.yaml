@@ -1,0 +1,5 @@
+fever_travel:
+  fever_threshold_c: 38.0
+  high_fever_c: 39.5
+  window_days_hcid: 21
+  malaria_priority: exclusion-first

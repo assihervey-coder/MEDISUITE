@@ -1,0 +1,10 @@
+metrics:
+  enabled: true
+  endpoint: /metrics
+  format: prometheus
+  namespaces:
+  - tropirag_http
+  - tropirag_stage
+  - tropirag_inference
+  - tropirag_retrieval
+  - tropirag_cases

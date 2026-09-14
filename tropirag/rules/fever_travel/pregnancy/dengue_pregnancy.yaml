@@ -1,0 +1,52 @@
+version: 1
+domain: fever_travel
+rules:
+- id: preg-den-monitor-001
+  action: escalate
+  priority: 89
+  weight: 0.5
+  description: Dengue + grossesse — surveillance rapprochée obligatoire
+  when:
+    all:
+    - patient: pregnant
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+    - any:
+      - symptom: retro_orbital_pain
+      - symptom: myalgia
+      - symptom: arthralgia
+      - symptom: rash
+      - symptom: petechiae
+  disease: dengue
+  then:
+    level: refer_hospital
+    message: 'Dengue suspectée chez femme enceinte : risque accru de forme sévère maternelle et de
+      transmission verticale périnatale — NFS répétées, surveillance des signes d''alarme,
+      accouchement planifié en structure équipée, équipe obstétricale-néonatale informée'
+  evidence:
+  - eu-who-den-preg-001
+- id: preg-den-warning-signs-002
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Dengue + grossesse + signes d'alarme hémorragiques
+  when:
+    all:
+    - patient: pregnant
+    - any:
+      - symptom: abnormal_bleeding
+      - symptom: petechiae
+      - symptom: ecchymoses
+      - symptom: bleeding_gums
+      - symptom: hematemesis
+      - symptom: vaginal_bleeding
+  disease: dengue
+  then:
+    code: dengue_pregnancy_hemorrhagic
+    severity: critical
+    urgency: immediate
+    message: 'Signes hémorragiques chez femme enceinte (dengue possible) : URGENCE absolue — NFS +
+      hématocrite immédiats, groupe-RAI, évaluation obstétricale conjointe, éviter tout AINS'
+  evidence:
+  - eu-who-den-preg-001

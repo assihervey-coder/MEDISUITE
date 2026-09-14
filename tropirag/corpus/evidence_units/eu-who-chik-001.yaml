@@ -1,0 +1,15 @@
+unit_id: eu-who-chik-001
+source_id: who-chikungunya
+section: Chikungunya
+text: Le chikungunya se caractérise par une fièvre brutale et des arthralgies INTENSES, souvent symétriques
+  et invalidantes (poignets, chevilles, phalanges), accompagnées de myalgies, céphalées et d'une éruption
+  maculopapuleuse dans 40 à 50 % des cas. Les arthralgies peuvent persister des mois. La létalité est
+  faible mais les formes sévères touchent nourrissons et sujets âgés.
+topics:
+- chikungunya
+- arthralgia
+- arbovirus
+diseases:
+- chikungunya
+jurisdiction: INT
+language: fr

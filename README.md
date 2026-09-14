@@ -21,6 +21,10 @@ make smoke            # vérifie la santé des 38 services
 Aucune base de données externe n'est requise en mode développement : chaque service utilise
 SQLite (`data/<service>.db`) avec données de démonstration ivoiriennes (CNAM, FCFA, CHU Cocody…).
 
+> 🧭 **TropiRAG intégré** — l'aide à la décision clinique (fièvre + voyage) tourne comme 40ᵉ
+> microservice (`tropirag-service` :8304) : écran « Aide à la décision » du portail, 170 règles
+> OMS déterministes, citations sourcées. Voir `docs/TROPIRAG-INTEGRATION.md`.
+
 ## 🧭 Cartographie
 
 | Couche | Composants | Ports |
@@ -30,6 +34,7 @@ SQLite (`data/<service>.db`) avec données de démonstration ivoiriennes (CNAM, 
 | **Transverses** | `reporting` · `notification` · `audit` (registre chaîné) · `integration` (HL7v2/FHIR R4/IHE) · `analytics` | 8200-8204 |
 | **Spécialités (24)** | oncology → emergency (modules 03 à 26, voir `docs/MODULES.md`) | 8100-8123 |
 | **IA** | `ai/multimodal` (fusion cross-attention), `ai/mlops` (MLflow·Feast·DVC·Airflow), `explainability-service` | 8303 |
+| **Aide à la décision** | `tropirag/` intégré (170 règles OMS + RAG 47 preuves OMS/CDC/MSF, safety gate) — `tropirag-service` | 8304 |
 | **Interfaces** | `apps/web-portal` (Vite+React+TS, 120+ écrans), `apps/patient-portal`, `apps/admin-console`, `apps/CLI` | 5173 |
 | **Infra** | `infrastructure/` (Terraform·K8s·Helm·ArgoCD·Flux·Ansible), `monitoring/` (Prometheus·Grafana·Loki·Tempo) | — |
 

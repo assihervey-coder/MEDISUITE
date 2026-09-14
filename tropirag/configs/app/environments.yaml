@@ -1,0 +1,14 @@
+local:
+  app:
+    environment: local
+hospital:
+  app:
+    environment: hospital
+  security:
+    require_api_key: true
+    audit_enabled: true
+airgapped:
+  app:
+    environment: airgapped
+  inference:
+    mode: deterministic

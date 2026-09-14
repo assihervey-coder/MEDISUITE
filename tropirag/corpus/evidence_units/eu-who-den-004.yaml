@@ -1,0 +1,16 @@
+unit_id: eu-who-den-004
+source_id: who-dengue-2024
+section: Diagnostics dengue
+text: L'antigène NS1 est détectable du 1er au 5e jour de fièvre ; les IgM apparaissent vers le 5e jour
+  et persistent des semaines. La NFS montre typiquement une leucopénie avec lymphocytose relative et une
+  thrombopénie (< 100 000/mm³). L'hématocrite sériel guide la recherche de fuite plasmatique (concentration
+  ≥ 20 %).
+topics:
+- dengue
+- diagnostics
+- ns1
+- thrombopenia
+diseases:
+- dengue
+jurisdiction: INT
+language: fr

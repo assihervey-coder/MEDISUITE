@@ -1,0 +1,18 @@
+unit_id: eu-who-den-preg-001
+source_id: who-dengue-2024
+section: Dengue chez la femme enceinte
+text: 'La dengue pendant la grossesse expose à un risque accru de forme sévère maternelle et de
+  transmission verticale en période périnatale. Toute femme enceinte avec dengue confirmée ou
+  suspectée nécessite une surveillance rapprochée de la numération et des signes d''alarme,
+  un accouchement planifié en structure équipée, et l''équipe obstétricale-néonatale doit être
+  informée du risque d''hémorragie et de dengue néonatale.'
+topics:
+- dengue
+- pregnancy
+- vertical_transmission
+- monitoring
+diseases:
+- dengue
+- severe_dengue
+jurisdiction: INT
+language: fr

@@ -1,0 +1,16 @@
+unit_id: eu-who-mals-006
+source_id: who-malaria-severe-2023
+section: Artésunate IV
+text: L'artésunate par voie intraveineuse est le traitement de première intention du paludisme sévère
+  chez l'adulte comme chez l'enfant, supérieur à la quinine sur la mortalité. Il doit être débuté dès
+  la suspicion, sans attendre le transfert (dose pré-référence selon protocole national). La quinine IV
+  reste l'alternative si l'artésunate est indisponible.
+topics:
+- malaria
+- treatment
+- artesunate
+- severe
+diseases:
+- severe_malaria
+jurisdiction: INT
+language: fr

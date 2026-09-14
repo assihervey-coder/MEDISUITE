@@ -1,0 +1,15 @@
+unit_id: eu-who-mals-007
+source_id: who-malaria-severe-2023
+section: Paludisme cérébral
+text: 'Le neuropaludisme (coma persistant après correction de l''hypoglycémie ou des convulsions, avec
+  parasitémie) est une urgence vitale : artésunate IV immédiat, contrôle glycémique, position latérale
+  de sécurité, exclusion des autres causes de coma. La mortalité résiduelle reste de 10 à 20 % même traité.'
+topics:
+- malaria
+- cerebral
+- coma
+- emergency
+diseases:
+- severe_malaria
+jurisdiction: INT
+language: fr

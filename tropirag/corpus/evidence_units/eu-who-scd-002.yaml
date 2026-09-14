@@ -1,0 +1,17 @@
+unit_id: eu-who-scd-002
+source_id: who-scd-2024
+section: Paludisme et drépanocytose
+text: 'Le paludisme chez le patient drépanocytaire est plus fréquent et plus sévère : il déclenche
+  ou aggrave les crises hémolytiques, majore le risque d''anémie sévère nécessitant une transfusion
+  et de syndrome thoracique aigu. Toute fièvre chez un drépanocytaire en zone d''endémie exige
+  un test paludique immédiat (TDR ou microscopie) et un traitement antipaludique sans délai si positif.'
+topics:
+- sickle_cell
+- malaria
+- severe_anemia
+- hemolysis
+diseases:
+- malaria
+- sickle_cell_disease
+jurisdiction: INT
+language: fr

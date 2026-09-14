@@ -1,0 +1,19 @@
+unit_id: eu-who-men-002
+source_id: who-meningitis
+section: Méningite bactérienne du nourrisson et du petit enfant
+text: 'Chez le nourrisson et l''enfant de moins de 5 ans, la méningite bactérienne
+  (notamment à méningocoque) se présente sans raideur de nuque dans la majorité des
+  cas : fièvre avec irritabilité inconsolable, pleurs incontrôlables, refus alimentaire
+  ou arrêt des prises de biberon, vomissements, hypotonie, parfois convulsions.
+  Chez le nourrisson de moins de 18 mois à fontanelle ouverte, une fontanelle bombée
+  ou tendue est un signe méningé majeur. L''examen doit rechercher systématiquement
+  un purpura. Toute suspicion justifie une ponction lombaire et une antibiothérapie
+  rapide sans attendre sa réalisation si l''enfant est instable.'
+topics:
+- pediatric-meningitis
+- infant-signs
+- fontanelle
+diseases:
+- meningococcal
+jurisdiction: INT
+language: fr

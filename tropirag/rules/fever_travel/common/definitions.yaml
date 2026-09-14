@@ -1,0 +1,27 @@
+version: 1
+domain: fever_travel
+rules:
+- id: def-fever-001
+  action: inform
+  priority: 10
+  weight: 0.5
+  description: Fièvre documentée ou rapportée
+  when:
+    any:
+    - symptom: fever
+    - symptom: high_fever
+    - vital: temperature_c
+      gte: 38.0
+  then:
+    message: Fièvre documentée ou rapportée — syndrome fébrile actif
+    topic: definitions
+- id: def-travel-endemic-001
+  action: inform
+  priority: 10
+  weight: 0.5
+  description: Exposition paludéenne documentée
+  when:
+    exposure: malaria_exposure
+  then:
+    message: Exposition paludéenne documentée
+    topic: definitions

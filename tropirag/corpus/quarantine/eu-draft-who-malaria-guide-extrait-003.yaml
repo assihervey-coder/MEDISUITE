@@ -1,0 +1,32 @@
+unit_id: eu-draft-who-malaria-guide-extrait-003
+source_id: who-malaria-guide-extrait
+text: La présentation classique associe fièvre, frissons, sueurs et céphalées. Chez
+  l'enfant, la fièvre peut être isolée. Les vomissements sont fréquents et peuvent
+  gêner le traitement oral. Les douleurs musculaires et la fatigue complètent le tableau.
+  Toute fièvre au retour d'une zone d'endémie doit faire évoquer un paludisme jusqu'à
+  preuve du contraire.
+section: 2. Présentation clinique
+topics:
+- strong_recommendation
+- treatment
+diseases:
+- malaria
+symptom_codes:
+- chills
+- fatigue
+- fever
+- headache
+- myalgia
+- sweats
+- vomiting
+drug_codes: []
+test_codes: []
+recommendation_strength: strong
+chunk_index: 2
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 46080ccec5a1551b8c34a3b640d28d1ee881e25e175bd036fbfee2c6cb0fe354
+  source_path: data/raw/guidelines/who-malaria-guide-extrait.md
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

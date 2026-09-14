@@ -1,0 +1,4 @@
+indexing:
+  storage: in_memory
+  rebuild_on: corpus_change
+  persist_dir: data/indexes

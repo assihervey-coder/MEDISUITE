@@ -1,0 +1,86 @@
+{
+  "suite": "clinical_escalation",
+  "generated_at": "2026-09-14T23:46:18",
+  "passed": true,
+  "metrics": [
+    {
+      "name": "escalation_coverage",
+      "value": 1.0,
+      "threshold": 0.85,
+      "passed": true,
+      "details": {
+        "checks": 20
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case": "eval-malaria-severe-01",
+      "checks": {
+        "escalation_transfer": true,
+        "test_rdt_malaria": true,
+        "test_thick_smear": true
+      },
+      "all_passed": true
+    },
+    {
+      "case": "eval-malaria-pregnancy-02",
+      "checks": {
+        "test_rdt_malaria": true,
+        "drug_primaquine": true
+      },
+      "all_passed": true
+    },
+    {
+      "case": "eval-dengue-warning-03",
+      "checks": {
+        "test_dengue_ns1": true,
+        "test_cbc": true,
+        "drug_ibuprofen": true,
+        "drug_aspirin": true
+      },
+      "all_passed": true
+    },
+    {
+      "case": "eval-typhoid-xdr-04",
+      "checks": {
+        "test_blood_culture": true,
+        "test_antibiogram": true,
+        "family_typ-xdr": true
+      },
+      "all_passed": true
+    },
+    {
+      "case": "eval-vhf-isolation-05",
+      "checks": {
+        "escalation_isolation": true
+      },
+      "all_passed": true
+    },
+    {
+      "case": "eval-lepto-weil-06",
+      "checks": {
+        "test_lepto_pcr": true,
+        "test_lepto_serology": true,
+        "drug_ibuprofen": true
+      },
+      "all_passed": true
+    },
+    {
+      "case": "eval-meningo-purpura-07",
+      "checks": {
+        "test_blood_culture_men": true,
+        "test_cbc": true
+      },
+      "all_passed": true
+    },
+    {
+      "case": "eval-scd-crisis-08",
+      "checks": {
+        "drug_ceftriaxone": true,
+        "family_scd": true
+      },
+      "all_passed": true
+    }
+  ]
+}

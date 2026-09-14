@@ -1,0 +1,211 @@
+version: 1
+domain: fever_travel
+# =============================================================================
+# V1.3 — Méningocoque pédiatrique : infection invasive à méningocoque (IIM)
+#
+# Chez le nourrisson et le petit enfant, la méningite bactérienne ne présente
+# PAS la raideur de nuque classique : signes non spécifiques (fièvre +
+# irritabilité/inconsolabilité, refus alimentaire, vomissements, hypotonie)
+# et, chez le nourrisson < 18 mois, fontanelle bombée. Purpura fulminans =
+# urgence absolue : ceftriaxone IM immédiate AVANT transfert, sans attendre
+# la ponction lombaire.
+#
+# Ce module complète les règles générales (hcid/notification.yaml,
+# safety/emergency.yaml) pour la population < 5 ans — groupe d'âge à plus
+# haut risque d'IIM en Afrique de la ceinture.
+# Sources : who-meningitis (eu-who-men-002/003/004).
+# =============================================================================
+rules:
+# --- 1. Nourrisson : signes méningés spécifiques --------------------------------
+- id: men-peds-fontanelle-001
+  action: red_flag
+  priority: 96
+  weight: 0.5
+  description: Fièvre + fontanelle bombée (nourrisson)
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - symptom: bulging_fontanelle
+    - patient_age:
+        lte: 1.5
+  disease: meningococcal
+  then:
+    code: pediatric_meningitis_fontanelle
+    severity: critical
+    urgency: emergency
+    message: 'Fièvre + fontanelle bombée chez le nourrisson — méningite bactérienne jusqu''à
+      preuve du contraire : ceftriaxone IV/IM immédiate sans attendre la PL, transfert
+      hospitalier urgent'
+  evidence:
+  - eu-who-men-002
+- id: men-peds-nonspecific-002
+  action: raise_suspicion
+  priority: 78
+  weight: 0.4
+  description: Fièvre + irritabilité ou refus alimentaire (petit enfant)
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - any:
+      - symptom: irritability
+      - symptom: poor_feeding
+    - patient_age:
+        lt: 5
+  disease: meningococcal
+  then:
+    disease: meningococcal
+    weight: 0.4
+    note: 'Fièvre + irritabilité inconsolable ou refus alimentaire chez l''enfant < 5 ans —
+      IIM possible (la raideur de nuque manque souvent à cet âge) : examen complet
+      (fontanelle, purpura), PL si doute, ne pas différer l''antibiothérapie'
+  evidence:
+  - eu-who-men-002
+# --- 2. Purpura fulminans pédiatrique — urgence absolue -------------------------
+- id: men-peds-purpura-003
+  action: red_flag
+  priority: 99
+  weight: 0.5
+  description: Purpura fulminans de l'enfant — ceftriaxone IM AVANT transfert
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - any:
+      - symptom: petechiae
+      - symptom: ecchymoses
+    - patient_age:
+        lt: 15
+  disease: meningococcal
+  then:
+    code: pediatric_purpura_fulminans
+    severity: critical
+    urgency: immediate
+    message: 'PURPURA FÉBRILE DE L''ENFANT — purpura fulminans à méningocoque jusqu''à preuve
+      du contraire : ceftriaxone IM immédiate en pré-hospitalier (avant transfert), voie
+      veineuse, remplissage prudent, surveillance horaire de l''extension du purpura,
+      transfert réanimation'
+  evidence:
+  - eu-who-men-003
+- id: men-peds-sepsis-004
+  action: red_flag
+  priority: 95
+  weight: 0.5
+  description: Sepsis grave de l'enfant fébrile
+  when:
+    all:
+    - any:
+      - symptom: fever
+      - symptom: high_fever
+      - vital: temperature_c
+        gte: 38.0
+    - any:
+      - symptom: prostration
+      - symptom: coma
+      - symptom: convulsions
+    - patient_age:
+        lt: 15
+    - any:
+      - symptom: pallor
+      - symptom: petechiae
+      - symptom: vomiting
+  disease: meningococcal
+  then:
+    code: pediatric_sepsis_meningococcal
+    severity: critical
+    urgency: immediate
+    message: 'Enfant fébrile prostré ou convulsif avec pâleur/vomissements/purpura — sepsis
+      grave : antibiothérapie immédiate (ceftriaxone), remplissage, surveillance glycémie,
+      transfert réanimation ; ne pas attendre les résultats'
+  evidence:
+  - eu-who-men-003
+# --- 3. Antibiothérapie : ceftriaxone sans délai ---------------------------------
+- id: men-peds-antibio-008
+  action: recommend_drug
+  priority: 97
+  weight: 0.5
+  description: IIM suspectée — ceftriaxone immédiate
+  when:
+    all:
+    - disease: meningococcal
+    - patient_age:
+        lt: 15
+  disease: meningococcal
+  then:
+    drug: ceftriaxone
+    reason: 'Infection invasive à méningocoque suspectée chez l''enfant : ceftriaxone IV
+      (ou IM en pré-hospitalier) SANS attendre la PL ou le transfert — dose selon le
+      poids et le protocole national ; alternative : pénicilline G IV si ceftriaxone
+      indisponible'
+  evidence:
+  - eu-who-men-003
+# --- 4. Escalades et bilans -------------------------------------------------------
+- id: men-peds-escalate-005
+  action: escalate
+  priority: 98
+  weight: 0.5
+  description: IIM pédiatrique suspectée — transfert réanimation
+  when:
+    all:
+    - any:
+      - red_flag_code: pediatric_purpura_fulminans
+      - red_flag_code: pediatric_sepsis_meningococcal
+      - red_flag_code: pediatric_meningitis_fontanelle
+  then:
+    level: emergency_transfer
+    message: 'IIM pédiatrique suspectée — transfert en réanimation pédiatrique : ceftriaxone
+      IM/IV débutée avant le transfert, évaluer l''hémodynamique, oxygène si détresse,
+      PL réalisée à l''arrivée si hémodynamique stable'
+  evidence:
+  - eu-who-men-003
+- id: men-peds-tests-006
+  action: require_test
+  priority: 80
+  weight: 0.5
+  description: Bilan IIM pédiatrique
+  when:
+    all:
+    - disease: meningococcal
+    - patient_age:
+        lt: 15
+  disease: meningococcal
+  then:
+    tests:
+    - lp
+    - blood_culture_men
+    - cbc
+    - crp
+    reason: 'Ponction lombaire (après normalisation hémodynamique) + hémoculture ; NFS-CRP
+      pour l''orientation ; NE JAMAIS retarder l''antibiothérapie pour la PL si purpura
+      fulminans ou instabilité'
+  evidence:
+  - eu-who-men-002
+# --- 4. Prophylaxie des contacts (décision de santé publique) --------------------
+- id: men-peds-prophylaxis-007
+  action: notify
+  priority: 90
+  weight: 0.5
+  description: Prophylaxie de l'entourage — IIM pédiatrique
+  when:
+    all:
+    - disease: meningococcal
+    - patient_age:
+        lt: 15
+  disease: meningococcal
+  then:
+    authority: public_health
+    reason: 'IIM pédiatrique suspectée — prophylaxie de l''entourage familial rapproché à
+      organiser avec le district (protocole national : rifampicine ou ceftriaxone IM selon
+      l''âge et la disponibilité) ; information des crèches/écoles si cas groupés'
+  evidence:
+  - eu-who-men-004

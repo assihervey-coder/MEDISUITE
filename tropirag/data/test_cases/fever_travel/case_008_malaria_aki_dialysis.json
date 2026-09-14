@@ -1,0 +1,16 @@
+{
+  "case_id": "fixture-008",
+  "patient": {"age_years": 37},
+  "free_text": "fièvre depuis 4 jours, frissons, urines foncées, prostration",
+  "travel": {"segments": [{"country": "CI", "rural_stay": true, "departure": "{RET-12}"}]},
+  "vitals": {"temperature_c": 39.4},
+  "lab_results": [
+    {"test": "creatinine", "numeric": 300, "unit": "µmol/L"},
+    {"test": "potassium", "numeric": 6.9, "unit": "mmol/L"}
+  ],
+  "expected": {
+    "differentials": ["malaria", "severe_malaria"],
+    "red_flags": ["malaria_acute_kidney_injury", "hyperkalemia_emergency", "malaria_rrt_indication"],
+    "urgency": ["immediate"]
+  }
+}

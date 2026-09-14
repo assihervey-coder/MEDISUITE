@@ -1,0 +1,26 @@
+unit_id: eu-draft-who-malaria-guide-extrait-007
+source_id: who-malaria-guide-extrait
+text: Chez la femme enceinte, le paludisme à P. falciparum est une urgence thérapeutique
+  quelle que soit la densité parasitaire. Le traitement de référence est l'artésunate
+  IV, préféré à la quinine en raison d'une tolérance meilleure et d'une efficacité
+  supérieure. Le sulfadoxinepyriméthamine est contre-indiqué au premier trimestre.
+  Les AINS sont déconseillés au troisième trimestre.
+section: 6. Grossesse
+topics:
+- strong_recommendation
+- treatment
+diseases:
+- malaria
+symptom_codes: []
+drug_codes:
+- artesunate_iv
+test_codes: []
+recommendation_strength: strong
+chunk_index: 6
+status: draft
+provenance:
+  pipeline: tropirag-ingestion-v1
+  source_sha256: 46080ccec5a1551b8c34a3b640d28d1ee881e25e175bd036fbfee2c6cb0fe354
+  source_path: data/raw/guidelines/who-malaria-guide-extrait.md
+  extracted_at: '2026-09-12T04:50:48'
+  extraction_mode: internal

@@ -1,0 +1,21 @@
+unit_id: eu-who-den-peds-001
+source_id: who-dengue-2024
+section: Remplissage vasculaire en dengue pédiatrique
+text: 'Chez l''enfant atteint de dengue, le remplissage vasculaire doit être prudent et gradué :
+  en cas de choc compensé ou de choc avec tachycardie, froideur des extrémités et recoloration
+  cutanée ≥ 3 secondes, administrer un bolus de 10 à 20 mL/kg de cristalloïde isotonique
+  (Ringer lactate) sur une heure, puis réévaluer la tension artérielle, la fréquence cardiaque,
+  la diurèse et le niveau de conscience avant tout nouveau bolus. En cas de choc, des bolus
+  plus rapides (15-20 minutes) sont justifiés, avec total cumulé de 40 à 60 mL/kg maximum avant
+  d''envisager les catécholamines. La surcharge hydrosodée iatrogène (œdème pulmonaire) est
+  l''erreur principale à éviter en zone à ressources limitées.'
+topics:
+- dengue
+- pediatric
+- fluid_therapy
+- shock
+diseases:
+- severe_dengue
+- dengue
+jurisdiction: INT
+language: fr

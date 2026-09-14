@@ -1,0 +1,17 @@
+unit_id: eu-msf-mal-008
+source_id: msf-malaria-guidelines
+section: Paludisme en contexte MSF
+text: En zone d'endémie, la stratégie MSF combine dépistage communautaire, TDR à la périphérie et prise
+  en charge du paludisme simple par CTA. Chez la femme enceinte, tout épisode fébrile doit être testé
+  et traité rapidement (risque d'anémie maternelle et de faible poids de naissance). Chez le nourrisson
+  de moins de 12 mois, l'évaluation hospitalière est privilégiée.
+topics:
+- malaria
+- pregnancy
+- child
+- msf
+diseases:
+- malaria
+- severe_malaria
+jurisdiction: INT
+language: fr

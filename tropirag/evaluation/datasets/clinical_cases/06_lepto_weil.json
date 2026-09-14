@@ -1,0 +1,56 @@
+{
+  "case_id": "eval-lepto-weil-06",
+  "description": "Leptospirose ictéro-hémorragique (Weil) — exposition eaux stagnantes",
+  "payload": {
+    "patient": {
+      "age_years": 47,
+      "sex": "male"
+    },
+    "symptoms": [
+      {
+        "code": "fever",
+        "onset": "2026-09-01",
+        "severity": "severe"
+      },
+      {
+        "code": "jaundice"
+      },
+      {
+        "code": "hemorrhagic_signs"
+      },
+      {
+        "code": "muscle_tenderness"
+      },
+      {
+        "code": "oliguria"
+      }
+    ],
+    "travel": {
+      "segments": [
+        {
+          "country": "CI",
+          "region": "bas-sassandra",
+          "arrival": "2026-08-20",
+          "departure": "2026-08-30",
+          "rural_stay": true,
+          "stagnant_water": true
+        }
+      ]
+    },
+    "consultation_date": "2026-09-05"
+  },
+  "expect": {
+    "differential_in_top3": [
+      "leptospirosis"
+    ],
+    "urgency_at_least": "immediate",
+    "drug_constraints_include": [
+      "ibuprofen"
+    ],
+    "suggested_tests_include": [
+      "lepto_pcr",
+      "lepto_serology"
+    ],
+    "notifications_nonempty": true
+  }
+}

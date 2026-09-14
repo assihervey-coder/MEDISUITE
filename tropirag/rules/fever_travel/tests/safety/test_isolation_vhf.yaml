@@ -1,0 +1,22 @@
+name: isolement-vhf-enterrement
+description: Retour Guinée + enterrement + hémorragie → isolement + notification
+case:
+  patient:
+    age_years: 35
+    sex: male
+  symptoms:
+  - code: fever
+    onset: '2026-09-03'
+  - code: hemorrhagic_signs
+  travel:
+    segments:
+    - country: GN
+      arrival: '2026-08-15'
+      departure: '2026-09-01'
+      burial_attended: true
+  consultation_date: '2026-09-05'
+expect:
+  rules_include:
+  - hcid-esc-isolate-001
+  isolation_required: true
+  notification_required: true

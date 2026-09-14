@@ -1,0 +1,12 @@
+{
+  "id": "llm-ghost-03",
+  "category": "hallucination",
+  "output": "L'artésunate est la référence [eu-fantome-999].",
+  "pack_units": [
+    "eu-who-mals-005"
+  ],
+  "expect": {
+    "rejected": true,
+    "violation": "ghost_citation"
+  }
+}

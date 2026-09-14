@@ -1,0 +1,14 @@
+unit_id: eu-who-typ-002
+source_id: who-typhoid-2018
+section: Diagnostic typhoïde
+text: L'hémoculture réalisée avant toute antibiothérapie est l'examen de référence (sensibilité maximale
+  la première semaine). Le sérodiagnostic de Widal a une sensibilité et une spécificité insuffisantes
+  pour confirmer ou exclure le diagnostic seul. La NFS peut montrer une leucopénie modérée.
+topics:
+- typhoid
+- diagnostics
+- culture
+diseases:
+- enteric_fever
+jurisdiction: INT
+language: fr

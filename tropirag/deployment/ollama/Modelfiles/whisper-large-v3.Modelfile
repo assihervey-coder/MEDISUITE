@@ -1,0 +1,8 @@
+# Whisper Large v3 — Transcription conversation multilingue (nœud 1)
+FROM whisper-large-v3:latest
+
+PARAMETER temperature 0.0
+
+SYSTEM """Transcribe the audio verbatim. Clinical French/dioula/bambara mixtures
+are possible — transcribe what is said, do not summarize, do not interpret.
+Mark inaudible segments as [inaudible]."""
