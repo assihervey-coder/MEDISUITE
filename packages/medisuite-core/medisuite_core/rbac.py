@@ -33,8 +33,11 @@ ROLES: dict[str, set[str]] = {
     "anesthesiste": {"patient.read", "patient.write", "imaging.read", "lab.order"},
     "urgentiste": {"patient.read", "patient.write", "imaging.read", "lab.order",
                     "ai.infer", "appointment.manage"},
+    # Administrateur CHU : supervision transversale — lecture clinique complète
+    # (aucune écriture clinique : moindre privilège) + administration & audit.
     "administrateur": {"admin.users", "admin.config", "audit.read", "audit.verify",
-                        "patient.read"},
+                        "patient.read", "patient.export", "imaging.read",
+                        "ecrf.read", "ai.infer", "ai.explain"},
     "auditeur": {"audit.read", "audit.verify"},
     "patient": set(),  # portail patient : accès géré par consentement explicite
     # --- Investigation MEDISUITE-CI-01 (protocole R5 §8, v0.7) ---------------

@@ -16,6 +16,21 @@ interface FusionResult {
   detail: { modalites_encodees: number };
 }
 
+/** Résultats du service d'explicabilité (8303) — GOOD TO HAVE.
+ *  gradcam-lite : heatmap normalisée + pic + centroïde de saillance.
+ *  modality-importance : lecture en langage naturel de la contribution. */
+interface Gradcam {
+  heatmap: number[][];
+  pic: { ligne: number; colonne: number };
+  centroid_saliency: { y: number; x: number };
+}
+
+interface Lecture {
+  importance_pct: Record<string, number>;
+  modalite_dominante: string;
+  lecture: string;
+}
+
 interface ModaliteInfo {
   encodeur: string;
   exemples: string[];
@@ -54,6 +69,8 @@ export default function FusionViewer() {
   const [selected, setSelected] = useState<string[]>(DEFAULT_SELECTED);
   const [registry, setRegistry] = useState<Record<string, ModaliteInfo>>({});
   const [busy, setBusy] = useState(false);
+  const [gradcam, setGradcam] = useState<Gradcam | null>(null);
+  const [lecture, setLecture] = useState<Lecture | null>(null);
 
   // Registre des 7 modalités servi par le multimodal-gateway (encodeurs, exemples).
   useEffect(() => {
@@ -111,8 +128,28 @@ export default function FusionViewer() {
         })
         .then((r) => setNominale(r.confiance))
         .catch(() => setNominale(null));
-      setResult(await main);
+      const mainRes = await main;
+      setResult(mainRes);
       await ref;
+
+      // Explicabilité (good-to-have) : heatmap de saillance si imagerie 2D
+      // présente + lecture en langage naturel de l'importance des modalités.
+      setGradcam(null);
+      setLecture(null);
+      const cam = selected.includes("imaging_2d")
+        ? api
+            .post<Gradcam>("/api/explainability/api/v1/gradcam-lite", {
+              grid: (SAMPLES.imaging_2d() as { tensor: number[][] }).tensor,
+            })
+            .catch(() => null)
+        : Promise.resolve(null);
+      const why = api
+        .post<Lecture>("/api/explainability/api/v1/modality-importance", {
+          attention: mainRes.modality_importance_pct,
+        })
+        .catch(() => null);
+      setGradcam(await cam);
+      setLecture(await why);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -214,6 +251,46 @@ export default function FusionViewer() {
               ))}
             </div>
           </div>
+
+          {/* Panneau explicabilité (XAI) — ADR-0015 : décisions audibles. */}
+          {(gradcam || lecture) && (
+            <div className="cards" style={{ marginTop: 16 }}>
+              {gradcam && (
+                <div className="card">
+                  <h3>Carte de saillance (GradCAM-lite)</h3>
+                  <div
+                    className="gradcam-grid"
+                    style={{ gridTemplateColumns: `repeat(${gradcam.heatmap[0].length}, 1fr)` }}
+                  >
+                    {gradcam.heatmap.flatMap((row, y) =>
+                      row.map((v, x) => (
+                        <span
+                          key={`${y}-${x}`}
+                          title={`ligne ${y}, colonne ${x} — saillance ${(v * 100).toFixed(0)} %`}
+                          style={{ background: `rgba(184, 96, 79, ${0.12 + 0.85 * v})` }}
+                        />
+                      )),
+                    )}
+                  </div>
+                  <p className="sub">
+                    pic de saillance : ligne {gradcam.pic.ligne}, col. {gradcam.pic.colonne} ·
+                    centroïde ({gradcam.centroid_saliency.y}, {gradcam.centroid_saliency.x})
+                  </p>
+                </div>
+              )}
+              {lecture && (
+                <div className="card">
+                  <h3>Lecture clinique (explicabilité ADR-0015)</h3>
+                  <p style={{ fontSize: 14.5 }}>💬 {lecture.lecture}</p>
+                  <p className="sub">
+                    Contribution normalisée par le service d'explicabilité —
+                    exigence MDR : toute décision d'assistance IA doit être
+                    interprétable par le praticien.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </>
       )}
     </div>

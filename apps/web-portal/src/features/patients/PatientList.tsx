@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../../services/api";
+import { downloadCsv, toCsv } from "../../utils/csv";
+import { toast } from "../../store/toastStore";
 
 interface Patient {
   id: string;
@@ -32,19 +35,40 @@ export default function PatientList() {
   }, []);
 
   async function toggleConsent(p: Patient) {
-    await api.post(`/api/patients/api/v1/patients/${p.id}/consent`, { consent_ia: !p.consent_ia });
+    try {
+      await api.post(`/api/patients/api/v1/patients/${p.id}/consent`, { consent_ia: !p.consent_ia });
+      toast.ok(`Consentement IA ${p.consent_ia ? "révoqué" : "accordé"} — ${p.nom}`);
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
     load(q);
+  }
+
+  /** Export CSV de la liste courante (good-to-have) — découpage rapide
+   *  pour statistiques de service / rapports Direction. */
+  function exportCsv() {
+    downloadCsv(
+      "patients-medisuite.csv",
+      toCsv(patients as unknown as Array<Record<string, unknown>>,
+        ["numero_dossier", "nom", "prenoms", "sexe", "age", "commune", "cnam", "consent_ia"]),
+    );
+    toast.ok(`${patients.length} dossier(s) exporté(s) en CSV`);
   }
 
   async function create(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget; // capturé AVANT le await (null après)
     const f = new FormData(form);
-    await api.post("/api/patients/api/v1/patients", {
-      nom: f.get("nom"), prenoms: f.get("prenoms"), sexe: f.get("sexe"),
-      date_naissance: f.get("naissance"), commune: f.get("commune"),
-    });
-    form.reset();
+    try {
+      await api.post("/api/patients/api/v1/patients", {
+        nom: f.get("nom"), prenoms: f.get("prenoms"), sexe: f.get("sexe"),
+        date_naissance: f.get("naissance"), commune: f.get("commune"),
+      });
+      form.reset();
+      toast.ok("Dossier patient créé");
+    } catch (err) {
+      toast.error(`Création impossible : ${(err as Error).message}`);
+    }
     load(q);
   }
 
@@ -61,6 +85,9 @@ export default function PatientList() {
       >
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Nom ou n° dossier…" />
         <button type="submit">Rechercher</button>
+        <button type="button" onClick={exportCsv} disabled={patients.length === 0} title="Export CSV (Excel/LibreOffice)">
+          ⬇ Export CSV
+        </button>
       </form>
       <table>
         <thead>
@@ -73,7 +100,11 @@ export default function PatientList() {
           {patients.map((p) => (
             <tr key={p.id}>
               <td><code>{p.numero_dossier}</code></td>
-              <td>{p.nom} {p.prenoms}</td>
+              <td>
+                <Link to={`/patients/${p.id}`}>
+                  {p.nom} {p.prenoms}
+                </Link>
+              </td>
               <td>{p.sexe}</td>
               <td>{p.age}</td>
               <td>{p.commune}</td>
@@ -93,6 +124,10 @@ export default function PatientList() {
         </tbody>
       </table>
       <h3 style={{ marginTop: 22 }}>Nouveau patient</h3>
+      <p className="note" style={{ marginTop: 0 }}>
+        Astuce : cliquez sur un nom pour ouvrir la <strong>fiche détaillée</strong>
+        (consultations, diagnostics CIM-10, consentements, export FHIR).
+      </p>
       <form onSubmit={create} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <input name="nom" placeholder="Nom" required />
         <input name="prenoms" placeholder="Prénoms" required />

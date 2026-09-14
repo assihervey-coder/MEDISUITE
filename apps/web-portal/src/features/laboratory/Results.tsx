@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
+import QcPanel from "./QcPanel";
+import { toast } from "../../store/toastStore";
 
 interface Order {
   id: string;
@@ -64,9 +66,9 @@ export default function Results() {
         `/api/lab/api/v1/orders/${o.id}/collect`, {});
       setOrders((prev) =>
         prev.map((x) => (x.id === o.id ? { ...x, statut: "COLLECTED" } : x)));
-      window.alert(`Prélèvement enregistré — code-barres ${res.barcode}`);
+      toast.ok(`Prélèvement enregistré — code-barres ${res.barcode}`);
     } catch (e) {
-      setError((e as Error).message);
+      toast.error((e as Error).message);
     } finally {
       setBusy("");
     }
@@ -140,6 +142,8 @@ export default function Results() {
           ))}
         </tbody>
       </table>
+
+      <QcPanel />
 
       <p className="note" style={{ marginTop: 12 }}>
         Workflow : ORDERED → COLLECTED → RESULTED → VALIDATED · QC Westgard (1₃ₛ, 2₂ₛ, R₄ₛ…)

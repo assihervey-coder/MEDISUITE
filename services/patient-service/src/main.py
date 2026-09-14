@@ -235,6 +235,16 @@ def list_encounters(pid: str, user: dict = Depends(current_user)) -> list[dict]:
                     Encounter.patient_id == pid))]
 
 
+@app.get("/api/v1/patients/{pid}/conditions", tags=["diagnostics"])
+def list_conditions(pid: str, user: dict = Depends(current_user)) -> list[dict]:
+    """Liste des diagnostics CIM-10 du patient (lecture, sans PHI superflu)."""
+    with SessionLocal() as db:
+        _get(db, pid)
+        return [{k.name: getattr(c, k.name) for k in c.__table__.columns}
+                for c in db.scalars(select(Condition).where(
+                    Condition.patient_id == pid))]
+
+
 @app.post("/api/v1/patients/{pid}/conditions", status_code=201,
           tags=["diagnostics"])
 def add_condition(pid: str, body: ConditionIn,

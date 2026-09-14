@@ -81,7 +81,12 @@
     "scr.ai_features": "Features attendues (plages)",
     "scr.ai_label": "label",
     "scr.ai_consent": "L'utilisation requiert le consentement IA du patient et une supervision humaine (IFU clinicien).",
-    "scr.ai_viewer": "Ouvrir la fusion multimodale"
+    "scr.ai_viewer": "Ouvrir la fusion multimodale",
+    "nav.epidemiologie": "Épidémiologie",
+    "nav.administration": "Administration",
+    "nav.quality_control": "Contrôle qualité (QC)",
+    "pat.consent_recherche": "Consentement recherche",
+    "nav.search": "Rechercher…"
   },
   "en": {
     "app": "MEDISUITE — Clinical Portal",
@@ -165,7 +170,12 @@
     "scr.ai_features": "Expected features (ranges)",
     "scr.ai_label": "label",
     "scr.ai_consent": "Use requires the patient's AI consent and human supervision (clinician IFU).",
-    "scr.ai_viewer": "Open multimodal fusion"
+    "scr.ai_viewer": "Open multimodal fusion",
+    "nav.epidemiologie": "Epidemiology",
+    "nav.administration": "Administration",
+    "nav.quality_control": "Quality control (QC)",
+    "pat.consent_recherche": "Research consent",
+    "nav.search": "Search…"
   },
   "ar": {
     "app": "MEDISUITE — بوابة العيادات",
@@ -249,7 +259,12 @@
     "scr.ai_features": "السمات المتوقعة (النطاقات)",
     "scr.ai_label": "تسمية",
     "scr.ai_consent": "يتطلب الاستخدام موافقة المريض على الذكاء الاصطناعي وإشرافاً بشرياً (دليل الطبيب).",
-    "scr.ai_viewer": "فتح الدمج متعدد الأنماط"
+    "scr.ai_viewer": "فتح الدمج متعدد الأنماط",
+    "nav.epidemiologie": "علم الأوبئة",
+    "nav.administration": "الإدارة",
+    "nav.quality_control": "مراقبة الجودة",
+    "pat.consent_recherche": "موافقة البحث",
+    "nav.search": "بحث…"
   },
   "es": {
     "app": "MEDISUITE — Portal Clínico",
@@ -333,6 +348,11 @@
     "scr.ai_features": "Características esperadas (rangos)",
     "scr.ai_label": "etiqueta",
     "scr.ai_consent": "Su uso requiere el consentimiento IA del paciente y supervisión humana (IFU clínico).",
-    "scr.ai_viewer": "Abrir fusión multimodal"
+    "scr.ai_viewer": "Abrir fusión multimodal",
+    "nav.epidemiologie": "Epidemiología",
+    "nav.administration": "Administración",
+    "nav.quality_control": "Control de calidad (QC)",
+    "pat.consent_recherche": "Consentimiento de investigación",
+    "nav.search": "Buscar…"
   }
 }
