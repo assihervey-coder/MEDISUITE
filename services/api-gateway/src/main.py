@@ -134,8 +134,13 @@ async def proxy(service: str, path: str, request: Request,
     base = REGISTRY.get(service)
     if not base:
         raise HTTPException(404, f"service '{service}' inconnu — /api/v1/registry")
+    # Authorization relayé tel quel : les microservices revalident le JWT
+    # (source de vérité unique — medisuite_core.auth_deps). Les en-têtes
+    # X-User-* du client sont purgés puis réinjectés depuis les claims
+    # validés (anti-usurpation d'identité via la gateway).
     headers = {k: v for k, v in request.headers.items()
-               if k.lower() not in ("host", "content-length", "authorization")}
+               if k.lower() not in ("host", "content-length",
+                                    "x-user-id", "x-user-role")}
     if claims:
         headers["X-User-Id"] = claims.get("sub", "")
         headers["X-User-Role"] = claims.get("role", "")

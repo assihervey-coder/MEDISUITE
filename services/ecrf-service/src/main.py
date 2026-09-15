@@ -46,6 +46,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from medisuite_core import ecrf as ecrf_mod
 from medisuite_core import security
+from medisuite_core import auth_deps
 from medisuite_core.audit_chain import AuditEvent, HashChainLedger
 from medisuite_core.db import Base, engine_for, init_db, new_id
 from medisuite_core.events import bus
@@ -64,12 +65,9 @@ JWT_SECRET = "medisuite-dev-secret-change-in-prod"
 
 
 def current_user(authorization: Annotated[str | None, Header()] = None) -> dict:
-    if not authorization or not authorization.lower().startswith("bearer "):
-        return {"sub": "anon", "role": ""}
-    try:
-        return security.jwt_decode(authorization.split(" ", 1)[1], JWT_SECRET)
-    except security.JWTError:
-        return {"sub": "anon", "role": ""}
+    """Identité : absent → anon ; jeton invalide/expiré → 401 (le portail
+    déconnecte au lieu d'afficher un faux 403) ; valide → claims (RBAC)."""
+    return auth_deps.bearer_identity(authorization, JWT_SECRET)
 
 
 def require_perm(user: dict, permission: str) -> None:

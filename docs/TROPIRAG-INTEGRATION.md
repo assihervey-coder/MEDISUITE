@@ -153,10 +153,21 @@ La surveillance est branchée sur le système national DHIS2 (V1.3 TropiRAG) :
   `TROPIRAG_DHIS2_MODE=push` + `TROPIRAG_DHIS2_BASE_URL` +
   `TROPIRAG_DHIS2_USERNAME` + `TROPIRAG_DHIS2_PASSWORD` (jamais en clair
   dans la config). Sans serveur : la file accumule, l'UI reste fonctionnelle.
+- **Cron hebdomadaire automatique** (`TROPIRAG_DHIS2_AUTO`) : chaque lundi
+  à 06:00 UTC (réglable : `TROPIRAG_DHIS2_PUSH_DAY`, `TROPIRAG_DHIS2_PUSH_HOUR_UTC`),
+  le service exporte la semaine **écoulée** et :
+  - `off` (défaut) : rien d'automatique — push manuel uniquement ;
+  - `queue` : export en file, aucun appel réseau ;
+  - `push` : export + envoi au serveur configuré (payload conservé en file
+    si le transport est indisponible — rien n'est perdu).
+  État persisté (`runtime/state/dhis2_cron.json`), exposé par
+  `GET /api/v1/export/dhis2/cron` (affiché dans le panneau UI) et
+  déclenchable à la main : `POST /api/v1/export/dhis2/cron/run`.
 - **Répétition générale** : `scripts/dev/mock_dhis2_server.py` (port 11440)
   simule le serveur national — validation E2E complète effectuée :
   export 2026W38 (25 analyses → 7 valeurs) → file → push HTTP 200
-  (`imported: 7, ignored: 0`) → file marquée « sent ».
+  (`imported: 7, ignored: 0`) → file marquée « sent » ; cycle cron manuel
+  2026W37 → 4 valeurs → push auto OK.
 - **Prérequis au passage en production** : recopier les UIDs officiels du
   dictionnaire DHIS2 du Ministère dans `dhis2.yaml` (remplacer les
   placeholders `DE-TRPG-*` / `OU-TRPG-*`), puis `python
@@ -165,13 +176,21 @@ La surveillance est branchée sur le système national DHIS2 (V1.3 TropiRAG) :
 
 ## 7. Tests
 
-- TropiRAG : **364/364 pytest** (`cd tropirag && PYTHONPATH=src TROPIRAG_ROOT=$PWD python -m pytest tests`) — dont réplicas multi-nœuds (routage,
-  repli sur réplique) et surcharges env DHIS2 (push, mdp jamais en clair).
-- Portail : vitest **84/84** (logique `tropirag.ts` : payload, badges,
+- TropiRAG : **376/376 pytest** (`cd tropirag && PYTHONPATH=src TROPIRAG_ROOT=$PWD python -m pytest tests`) — dont réplicas multi-nœuds (routage,
+  repli sur réplique), surcharges env DHIS2 (push, mdp jamais en clair) et
+  cron hebdo (créneaux, semaine écoulée, mode queue sans réseau, échec
+  propre sans serveur, état persisté).
+- Noyau + services : **62/62** tests noyau, **39/39** suites services —
+  correctif auth : jeton expiré/falsifié → **401** (le portail déconnecte)
+  au lieu d'un faux 403 « permission requise » ; anonyme sans jeton → 403
+  fail-closed inchangé ; Authorization relayé par l'api-gateway (les
+  services revalident — source de vérité unique), X-User-* client purgés.
+- Portail : vitest **90/90** (logique `tropirag.ts` : payload, badges,
   déduplication, mesh ; `outbreaks.ts` : carte, signaux, libellés ;
-  `dhis2.ts` : semaine ISO, badges, file, synthèse export), `tsc -b`,
+  `dhis2.ts` : semaine ISO, badges, file, cron, synthèse export), `tsc -b`,
   E2E navigateur (login → /decision badge « 4 nœuds » + synthèse IA →
-  /epidemiologie carte des éclosions + panneau DHIS2 export→push).
+  /epidemiologie carte des éclosions + panneau DHIS2 export→push→cron →
+  /study promoteur sans faux 403).
 
 ## 8. Limites assumées (v0.5)
 

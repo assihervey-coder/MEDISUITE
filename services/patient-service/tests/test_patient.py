@@ -36,6 +36,28 @@ def test_rbac_fail_closed():
     assert r.status_code == 403
 
 
+def test_jwt_expire_reponse_401_pas_403():
+    """Jeton périmé → 401 (le portail déconnecte et affiche « session expirée »)
+    au lieu d'un faux 403 « permission requise » qui masquait la cause réelle."""
+    import time as _time
+
+    expired = security.jwt_encode(
+        {"sub": "test-user", "role": "medecin",
+         "exp": int(_time.time()) - 10}, JWT_SECRET)
+    r = client.get("/api/v1/patients",
+                   headers={"Authorization": f"Bearer {expired}"})
+    assert r.status_code == 401
+    assert "expiré" in r.json()["detail"].lower()
+
+
+def test_jwt_altere_reponse_401():
+    """Jeton falsifié (signature invalide) → 401, jamais 200 ni 403 ambigu."""
+    forged = _token[:-4] + "bEEF"
+    r = client.get("/api/v1/patients",
+                   headers={"Authorization": f"Bearer {forged}"})
+    assert r.status_code == 401
+
+
 def test_seed_patients():
     r = client.get("/api/v1/patients", headers=HDR)
     assert r.status_code == 200

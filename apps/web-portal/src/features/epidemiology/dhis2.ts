@@ -39,6 +39,52 @@ export interface Dhis2PushResult {
   details?: Array<{ ok: boolean; status_code: number | null; detail: string }>;
 }
 
+/** État du cron hebdomadaire (GET /export/dhis2/cron). */
+export interface Dhis2CronStatus {
+  config: { auto: string; day: string; hour_utc: number };
+  state: {
+    ran_at?: string; period?: string; values?: number;
+    pushed?: number; ok?: boolean; notes?: string[];
+    last_manual_run?: Dhis2CronStatus["state"];
+    next_run?: string;
+  };
+  next_run?: string | null;
+  period_exported?: string;
+}
+
+const DAY_LABEL: Record<string, string> = {
+  MON: "lundi", TUE: "mardi", WED: "mercredi", THU: "jeudi",
+  FRI: "vendredi", SAT: "samedi", SUN: "dimanche",
+};
+
+/** Libellé du planning d'envoi automatique. */
+export function cronLabel(cron: Dhis2CronStatus | null): string {
+  if (!cron) return "";
+  const { auto, day, hour_utc } = cron.config;
+  const hh = String(hour_utc).padStart(2, "0");
+  const jour = DAY_LABEL[day] ?? day;
+  if (auto === "push") {
+    return `Envoi hebdo automatique : ${jour} ${hh}:00 UTC (export + push serveur)`;
+  }
+  if (auto === "queue") {
+    return `Export hebdo automatique : ${jour} ${hh}:00 UTC (en file, sans envoi réseau)`;
+  }
+  return "Envoi hebdo automatique : désactivé (push manuel via l'UI)";
+}
+
+/** Résumé du dernier cycle exécuté (manuel ou planifié). */
+export function lastRunLabel(cron: Dhis2CronStatus | null): string {
+  if (!cron) return "";
+  const s = cron.state ?? {};
+  const last = (s.ran_at ? s : s.last_manual_run) as Dhis2CronStatus["state"] | undefined;
+  if (!last?.ran_at) return "Aucun cycle exécuté à ce jour";
+  const kind = s.ran_at ? "planifié" : "manuel";
+  const pushed = typeof last.pushed === "number" ? last.pushed : 0;
+  const issue = last.ok ? "succès" : "échec/partiel";
+  return `Dernier cycle (${kind}) : ${last.period ?? "?"} — ` +
+    `${last.values ?? 0} valeur(s), ${pushed} payload(s) poussé(s) · ${issue}`;
+}
+
 /** Semaine ISO courante au format DHIS2 « YYYYWww » (lundi = 1er jour). */
 export function currentIsoWeek(d: Date = new Date()): string {
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));

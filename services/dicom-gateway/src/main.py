@@ -12,6 +12,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel
 
 from medisuite_core import security
+from medisuite_core import auth_deps
 from medisuite_core.http import create_service_app
 
 app: FastAPI = create_service_app(
@@ -21,12 +22,9 @@ JWT_SECRET = "medisuite-dev-secret-change-in-prod"
 
 
 def current_user(authorization: Annotated[str | None, Header()] = None) -> dict:
-    if not authorization or not authorization.lower().startswith("bearer "):
-        return {"sub": "anon", "role": ""}
-    try:
-        return security.jwt_decode(authorization.split(" ", 1)[1], JWT_SECRET)
-    except security.JWTError:
-        return {"sub": "anon", "role": ""}
+    """Identité : absent → anon ; jeton invalide/expiré → 401 (le portail
+    déconnecte au lieu d'afficher un faux 403) ; valide → claims (RBAC)."""
+    return auth_deps.bearer_identity(authorization, JWT_SECRET)
 
 
 class AnonymizeIn(BaseModel):

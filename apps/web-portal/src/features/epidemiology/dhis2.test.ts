@@ -2,8 +2,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  currentIsoWeek, dhis2ModeLabel, dhis2QueueLine, exportSummaryRows,
-  payloadStats, type Dhis2ExportResult, type Dhis2Status,
+  cronLabel, currentIsoWeek, dhis2ModeLabel, dhis2QueueLine, exportSummaryRows,
+  lastRunLabel, payloadStats, type Dhis2CronStatus, type Dhis2ExportResult,
+  type Dhis2Status,
 } from "./dhis2";
 
 const status = (over: Partial<Dhis2Status> = {}): Dhis2Status => ({
@@ -55,6 +56,46 @@ describe("dhis2QueueLine", () => {
     expect(dhis2QueueLine(status({
       queue: { total: 3, pending: 0, by_status: { sent: 2, failed: 1 } },
     }))).toBe("file : 0 en attente · 2 envoyé(s) · 1 échec(s)");
+  });
+});
+
+describe("cronLabel / lastRunLabel", () => {
+  const cron = (over: Partial<Dhis2CronStatus> = {}): Dhis2CronStatus => ({
+    config: { auto: "push", day: "MON", hour_utc: 6 },
+    state: {},
+    next_run: "2026-09-21T06:00:00+00:00",
+    period_exported: "2026W37",
+    ...over,
+  });
+
+  it("push → planning + mode", () => {
+    expect(cronLabel(cron()))
+      .toBe("Envoi hebdo automatique : lundi 06:00 UTC (export + push serveur)");
+  });
+  it("queue → planning sans réseau", () => {
+    expect(cronLabel(cron({ config: { auto: "queue", day: "SUN", hour_utc: 22 } })))
+      .toBe("Export hebdo automatique : dimanche 22:00 UTC (en file, sans envoi réseau)");
+  });
+  it("off → désactivé", () => {
+    expect(cronLabel(cron({ config: { auto: "off", day: "MON", hour_utc: 6 } })))
+      .toBe("Envoi hebdo automatique : désactivé (push manuel via l'UI)");
+  });
+  it("dernier cycle planifié", () => {
+    const c = cron({ state: { ran_at: "2026-09-21T06:00:10+00:00",
+                              period: "2026W37", values: 4, pushed: 1, ok: true } });
+    expect(lastRunLabel(c)).toBe(
+      "Dernier cycle (planifié) : 2026W37 — 4 valeur(s), 1 payload(s) poussé(s) · succès");
+  });
+  it("dernier cycle manuel (imbriqué), échec", () => {
+    const c = cron({ state: { last_manual_run: { ran_at: "2026-09-15T05:37:55+00:00",
+                                                 period: "2026W37", values: 4,
+                                                 pushed: 0, ok: false } } });
+    expect(lastRunLabel(c)).toContain("Dernier cycle (manuel) : 2026W37");
+    expect(lastRunLabel(c)).toContain("échec/partiel");
+  });
+  it("aucun cycle", () => {
+    expect(lastRunLabel(cron())).toBe("Aucun cycle exécuté à ce jour");
+    expect(lastRunLabel(null)).toBe("");
   });
 });
 

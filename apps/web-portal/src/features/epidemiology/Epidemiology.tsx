@@ -11,8 +11,9 @@ import {
   buildMapTiles, nationalChips, outbreakLines, type TrSurveillance,
 } from "./outbreaks";
 import {
-  currentIsoWeek, dhis2ModeLabel, dhis2QueueLine, exportSummaryRows,
-  payloadStats, type Dhis2ExportResult, type Dhis2PushResult, type Dhis2Status,
+  cronLabel, currentIsoWeek, dhis2ModeLabel, dhis2QueueLine, exportSummaryRows,
+  lastRunLabel, payloadStats, type Dhis2CronStatus, type Dhis2ExportResult,
+  type Dhis2PushResult, type Dhis2Status,
 } from "./dhis2";
 
 interface Palu {
@@ -66,6 +67,7 @@ export default function Epidemiology() {
   const [error, setError] = useState("");
   // --- DHIS2 (export hebdo branché sur la surveillance TropiRAG) ---------
   const [dhis2, setDhis2] = useState<Dhis2Status | null>(null);
+  const [dhis2Cron, setDhis2Cron] = useState<Dhis2CronStatus | null>(null);
   const [dhis2Export, setDhis2Export] = useState<Dhis2ExportResult | null>(null);
   const [dhis2Msg, setDhis2Msg] = useState("");
   const [dhis2Busy, setDhis2Busy] = useState(false);
@@ -88,6 +90,10 @@ export default function Epidemiology() {
     api.get<Dhis2Status>("/api/tropirag/api/v1/export/dhis2/status")
       .then(setDhis2)
       .catch(() => setDhis2(null));
+    // Cron hebdo MSP-CI : échec fail-soft (ligne absente si tropirag down).
+    api.get<Dhis2CronStatus>("/api/tropirag/api/v1/export/dhis2/cron")
+      .then(setDhis2Cron)
+      .catch(() => setDhis2Cron(null));
   }, []);
 
   async function refreshDhis2() {
@@ -314,6 +320,13 @@ export default function Epidemiology() {
                 </pre>
               </details>
             </>
+          )}
+          {dhis2Cron && (
+            <p className="note" data-testid="epi-dhis2-cron">
+              🕒 {cronLabel(dhis2Cron)}
+              {dhis2Cron.next_run ? ` — prochain : ${dhis2Cron.next_run.slice(0, 16).replace("T", " ")}` : ""}
+              <br />{lastRunLabel(dhis2Cron)}
+            </p>
           )}
           <p className="note" style={{ marginTop: 8 }}>
             Défaut <strong>offline_queue</strong> : aucun envoi réseau implicite.

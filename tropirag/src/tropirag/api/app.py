@@ -108,6 +108,22 @@ def create_app() -> FastAPI:
     if web_dir.exists():
         app.mount("/", StaticFiles(directory=str(web_dir), html=True), name="dashboard")
 
+    # --- cron hebdomadaire DHIS2 (MSP-CI) — off par défaut -------------------
+    @app.on_event("startup")
+    async def _start_dhis2_cron() -> None:
+        import os
+
+        from tropirag.integrations.dhis2.scheduler import get_scheduler
+
+        if (os.environ.get("TROPIRAG_DHIS2_AUTO", "off") or "off").lower() != "off":
+            get_scheduler().start()
+
+    @app.on_event("shutdown")
+    async def _stop_dhis2_cron() -> None:
+        from tropirag.integrations.dhis2.scheduler import get_scheduler
+
+        await get_scheduler().stop()
+
     return app
 
 

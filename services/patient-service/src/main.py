@@ -20,7 +20,7 @@ from sqlalchemy import String, select
 from sqlalchemy.orm import Mapped, mapped_column
 from typing import Annotated
 
-from medisuite_core import fhir, security
+from medisuite_core import auth_deps, fhir, security
 from medisuite_core.db import Base, engine_for, init_db, new_id
 from medisuite_core.events import bus
 from medisuite_core.http import create_service_app
@@ -39,17 +39,10 @@ PSEUDO_SALT = "medisuite-patient-salt"  # Vault en prod
 JWT_SECRET = "medisuite-dev-secret-change-in-prod"
 
 
-def current_user(
-    authorization: Annotated[str | None, Header()] = None,
-) -> dict:
-    """Dépendance d'authentification : décode le Bearer JWT (fail-open anonyme
-    en dev, à durcir par dépendance stricte en prod — voir auth-service)."""
-    if not authorization or not authorization.lower().startswith("bearer "):
-        return {"sub": "anon", "role": ""}
-    try:
-        return security.jwt_decode(authorization.split(" ", 1)[1], JWT_SECRET)
-    except security.JWTError:
-        return {"sub": "anon", "role": ""}
+def current_user(authorization: Annotated[str | None, Header()] = None) -> dict:
+    """Identité : absent → anon ; jeton invalide/expiré → 401 (le portail
+    déconnecte au lieu d'afficher un faux 403) ; valide → claims (RBAC)."""
+    return auth_deps.bearer_identity(authorization, JWT_SECRET)
 
 
 class Patient(Base):

@@ -63,7 +63,12 @@ SERVICES: list[dict] = [
              "TROPIRAG_DHIS2_USERNAME": os.environ.get("TROPIRAG_DHIS2_USERNAME", ""),
              "TROPIRAG_DHIS2_ORG_UNIT": os.environ.get("TROPIRAG_DHIS2_ORG_UNIT", ""),
              "TROPIRAG_DHIS2_QUEUE_PATH": os.environ.get("TROPIRAG_DHIS2_QUEUE_PATH", ""),
-             "TROPIRAG_DHIS2_PASSWORD": os.environ.get("TROPIRAG_DHIS2_PASSWORD", "")}},
+             "TROPIRAG_DHIS2_PASSWORD": os.environ.get("TROPIRAG_DHIS2_PASSWORD", ""),
+             # Cron hebdo MSP-CI : off (défaut) | queue | push ; créneau lundi 06:00 UTC
+             "TROPIRAG_DHIS2_AUTO": os.environ.get("TROPIRAG_DHIS2_AUTO", ""),
+             "TROPIRAG_DHIS2_PUSH_DAY": os.environ.get("TROPIRAG_DHIS2_PUSH_DAY", ""),
+             "TROPIRAG_DHIS2_PUSH_HOUR_UTC": os.environ.get(
+                 "TROPIRAG_DHIS2_PUSH_HOUR_UTC", "")}},
 ]
 
 SPECIALTIES: list[tuple[int, str, str]] = [
