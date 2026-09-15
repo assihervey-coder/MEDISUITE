@@ -42,7 +42,10 @@ SERVICES: list[dict] = [
     # --- aide à la décision clinique (TropiRAG intégré — docs/TROPIRAG-INTEGRATION.md)
     # Mesh LLM local : TROPIRAG_INFERENCE_MODE=deterministic|ollama|vllm ;
     # TROPIRAG_OLLAMA_URL = nœud unique, TROPIRAG_OLLAMA_NODES = multi-nœuds
-    # (format speech=http://node1:11434,text=http://node2:11434,...).
+    # (format speech=http://node1:11434,text=http://node2:11434,replicas=...|...).
+    # DHIS2 réel : TROPIRAG_DHIS2_MODE=push + TROPIRAG_DHIS2_BASE_URL +
+    # TROPIRAG_DHIS2_USERNAME + TROPIRAG_DHIS2_PASSWORD (serveur MSP-CI) ;
+    # défaut offline_queue (aucun envoi réseau implicite).
     # Surcharges à chaud : export des variables avant `services/run_all.py --up`.
     {"name": "tropirag-service", "dir": "tropirag", "port": 8304,
      "module": "tropirag.api.app:app", "group": "gateway",
@@ -54,7 +57,13 @@ SERVICES: list[dict] = [
                  "TROPIRAG_INFERENCE_MODE", "deterministic"),
              "TROPIRAG_OLLAMA_URL": os.environ.get(
                  "TROPIRAG_OLLAMA_URL", "http://127.0.0.1:11434"),
-             "TROPIRAG_OLLAMA_NODES": os.environ.get("TROPIRAG_OLLAMA_NODES", "")}},
+             "TROPIRAG_OLLAMA_NODES": os.environ.get("TROPIRAG_OLLAMA_NODES", ""),
+             "TROPIRAG_DHIS2_MODE": os.environ.get("TROPIRAG_DHIS2_MODE", ""),
+             "TROPIRAG_DHIS2_BASE_URL": os.environ.get("TROPIRAG_DHIS2_BASE_URL", ""),
+             "TROPIRAG_DHIS2_USERNAME": os.environ.get("TROPIRAG_DHIS2_USERNAME", ""),
+             "TROPIRAG_DHIS2_ORG_UNIT": os.environ.get("TROPIRAG_DHIS2_ORG_UNIT", ""),
+             "TROPIRAG_DHIS2_QUEUE_PATH": os.environ.get("TROPIRAG_DHIS2_QUEUE_PATH", ""),
+             "TROPIRAG_DHIS2_PASSWORD": os.environ.get("TROPIRAG_DHIS2_PASSWORD", "")}},
 ]
 
 SPECIALTIES: list[tuple[int, str, str]] = [

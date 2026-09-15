@@ -138,6 +138,54 @@ class TestRoutageFamilles:
         gw2 = OllamaGateway(base_url=node_b)
         assert not gw2.is_available("whisper-large-v3")
 
+    def test_from_env_replicas(self, node_b, node_replica):
+        """``replicas=URL|URL`` (et ``replica=`` répétable) alimentent le repli."""
+        import os
+
+        os.environ["TROPIRAG_OLLAMA_NODES"] = (
+            f"text={node_b},replicas={node_replica}|http://node4.local:11434,"
+            f"replica=http://node5.local:11434"
+        )
+        try:
+            gw = OllamaGateway.from_env()
+            assert gw.replica_urls == [node_replica, "http://node4.local:11434",
+                                       "http://node5.local:11434"]
+            assert gw.family_urls == {"text": node_b}
+        finally:
+            del os.environ["TROPIRAG_OLLAMA_NODES"]
+
+    def test_from_env_replicas_sans_url_ignores(self):
+        """Entrées vides / malformées : aucune réplique fantôme."""
+        import os
+
+        os.environ["TROPIRAG_OLLAMA_NODES"] = (
+            "replicas=|  ,text=,speech=http://node1:11434"
+        )
+        try:
+            gw = OllamaGateway.from_env()
+            assert gw.replica_urls == []
+            assert gw.family_urls == {"speech": "http://node1:11434"}
+        finally:
+            del os.environ["TROPIRAG_OLLAMA_NODES"]
+
+    def test_topologie_complete_repli_sur_replica(self, node_a, node_replica):
+        """Topologie nodes.yaml complète : text→node2 down → repli node3."""
+        import os
+
+        os.environ["TROPIRAG_OLLAMA_NODES"] = (
+            f"speech={node_a},vision={node_a},embeddings={node_a},"
+            f"reranking={node_a},text=http://127.0.0.1:9,"
+            f"replicas={node_replica}"
+        )
+        try:
+            gw = OllamaGateway.from_env(base_url=node_a)
+            r = gw.infer(InferenceRequest(model_id="med42-v2-70b",
+                                          task="synthesis", prompt="cas"))
+            assert r.ok, f"repli réplique échoué : {r.error}"
+            assert r.text == "OK CLINIQUE"
+        finally:
+            del os.environ["TROPIRAG_OLLAMA_NODES"]
+
 
 # ---------------------------------------------------------------------------
 # Répliques et repli

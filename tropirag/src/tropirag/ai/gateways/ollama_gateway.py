@@ -19,7 +19,12 @@ Topologie supportée (V1.1 — branchement réel des nœuds) :
 Variable d'environnement (format court) :
 
     TROPIRAG_OLLAMA_NODES=speech=http://node1:11434,vision=http://node1:11434,\
-embeddings=http://node1:11434,reranking=http://node1:11434,text=http://node2:11434
+embeddings=http://node1:11434,reranking=http://node1:11434,text=http://node2:11434,\
+replicas=http://node3:11434|http://node4:11434
+
+``replicas=`` (ou ``replica=``, répétable) liste les répliques croisées
+séparées par ``|`` : ce sont les nœuds de repli testés après le nœud de
+famille et le défaut (cf. nodes.yaml — node3 sert de secours à node2).
 
 Aucune IA ne décide ici : la gateway transporte, le registre contraint.
 """
@@ -63,9 +68,12 @@ class OllamaGateway:
                 timeout_s: float = 60.0) -> "OllamaGateway":
         """Construit la gateway en lisant TROPIRAG_OLLAMA_NODES.
 
-        Format : famille=URL,famille=URL — les familles inconnues sont ignorées.
+        Format : famille=URL,famille=URL — les familles inconnues sont ignorées,
+        sauf ``replicas=URL|URL`` (ou ``replica=URL``, répétable) qui alimente
+        les répliques croisées testées en dernier recours.
         """
         family_urls: dict[str, str] = {}
+        replicas: list[str] = []
         spec = os.environ.get("TROPIRAG_OLLAMA_NODES", "")
         for part in spec.split(","):
             part = part.strip()
@@ -73,9 +81,16 @@ class OllamaGateway:
                 continue
             family, url = part.split("=", 1)
             family = family.strip().lower()
-            if family in _KNOWN_FAMILIES and url.strip():
-                family_urls[family] = url.strip()
-        return cls(base_url=base_url, timeout_s=timeout_s, family_urls=family_urls)
+            url = url.strip()
+            if not url:
+                continue
+            if family in ("replicas", "replica"):
+                replicas.extend(u.strip().rstrip("/") for u in url.split("|")
+                                if u.strip())
+            elif family in _KNOWN_FAMILIES:
+                family_urls[family] = url
+        return cls(base_url=base_url, timeout_s=timeout_s,
+                   family_urls=family_urls, replica_urls=replicas)
 
     # ------------------------------------------------------------------
     # Transport

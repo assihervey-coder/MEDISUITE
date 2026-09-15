@@ -49,6 +49,7 @@ REGISTRY: dict[str, str] = {
     "hl7": "http://localhost:8301",
     "multimodal": "http://localhost:8302",
     "explainability": "http://localhost:8303",
+    "tropirag": "http://localhost:8304",   # aide à la décision clinique (CDS)
 }
 
 # Rate limiting : token bucket par client (dév en mémoire ; Redis en prod)

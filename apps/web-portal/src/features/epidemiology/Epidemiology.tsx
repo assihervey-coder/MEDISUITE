@@ -1,7 +1,8 @@
 /** Épidémiologie (GOOD TO HAVE) — surveillance santé publique ivoirienne :
  *  paludisme (courbe hebdomadaire + positivité TDR), cascade VIH, activité
  *  événementielle, carte des éclosions TropiRAG (14 districts, comptes
- *  déterministes). Sources : analytics-service + tropirag-service. */
+ *  déterministes), export DHIS2 (file offline / push serveur MSP-CI).
+ *  Sources : analytics-service + tropirag-service. */
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../../services/api";
@@ -9,6 +10,10 @@ import { downloadCsv, toCsv } from "../../utils/csv";
 import {
   buildMapTiles, nationalChips, outbreakLines, type TrSurveillance,
 } from "./outbreaks";
+import {
+  currentIsoWeek, dhis2ModeLabel, dhis2QueueLine, exportSummaryRows,
+  payloadStats, type Dhis2ExportResult, type Dhis2PushResult, type Dhis2Status,
+} from "./dhis2";
 
 interface Palu {
   annee: number;
@@ -59,6 +64,12 @@ export default function Epidemiology() {
   const [surv, setSurv] = useState<TrSurveillance | null>(null);
   const [survErr, setSurvErr] = useState("");
   const [error, setError] = useState("");
+  // --- DHIS2 (export hebdo branché sur la surveillance TropiRAG) ---------
+  const [dhis2, setDhis2] = useState<Dhis2Status | null>(null);
+  const [dhis2Export, setDhis2Export] = useState<Dhis2ExportResult | null>(null);
+  const [dhis2Msg, setDhis2Msg] = useState("");
+  const [dhis2Busy, setDhis2Busy] = useState(false);
+  const [dhis2Week, setDhis2Week] = useState(() => currentIsoWeek());
 
   useEffect(() => {
     Promise.all([
@@ -73,7 +84,42 @@ export default function Epidemiology() {
     api.get<TrSurveillance>("/api/tropirag/api/v1/surveillance/map?days=30")
       .then(setSurv)
       .catch((e) => setSurvErr((e as Error).message));
+    // Statut DHIS2 : échec fail-soft (le panneau se masque simplement).
+    api.get<Dhis2Status>("/api/tropirag/api/v1/export/dhis2/status")
+      .then(setDhis2)
+      .catch(() => setDhis2(null));
   }, []);
+
+  async function refreshDhis2() {
+    try { setDhis2(await api.get<Dhis2Status>("/api/tropirag/api/v1/export/dhis2/status")); }
+    catch { /* statut seul — l'export reste affiché */ }
+  }
+
+  async function exportDhis2() {
+    setDhis2Busy(true); setDhis2Msg("");
+    try {
+      const r = await api.post<Dhis2ExportResult>("/api/tropirag/api/v1/export/dhis2",
+        { period: dhis2Week, format: "json", enqueue: true });
+      setDhis2Export(r);
+      setDhis2Msg(r.notes.join(" · ") || `export ${r.period} : ${r.data_values.length} valeurs`);
+      await refreshDhis2();
+    } catch (e) { setDhis2Msg(`échec export : ${(e as Error).message}`); }
+    finally { setDhis2Busy(false); }
+  }
+
+  async function pushDhis2() {
+    setDhis2Busy(true); setDhis2Msg("");
+    try {
+      const r = await api.post<Dhis2PushResult>("/api/tropirag/api/v1/export/dhis2/push");
+      if (typeof r.pushed === "number") {
+        setDhis2Msg(`push : ${r.pushed} envoyé(s), ${r.failed ?? 0} échec(s)`);
+      } else {
+        setDhis2Msg(r.detail || "aucun payload en attente");
+      }
+      await refreshDhis2();
+    } catch (e) { setDhis2Msg(`échec push : ${(e as Error).message}`); }
+    finally { setDhis2Busy(false); }
+  }
 
   function exportPalu() {
     if (!palu) return;
@@ -222,9 +268,67 @@ export default function Epidemiology() {
         </div>
       )}
 
+      {dhis2 && (
+        <div className="card" style={{ marginTop: 14 }} data-testid="epi-dhis2">
+          <h3>🏛 Export DHIS2 — surveillance hebdomadaire (MSP-CI)</h3>
+          <p className="note">
+            <strong>{dhis2ModeLabel(dhis2)}</strong> — indicateurs agrégés
+            ({dhis2.config.elements_mapped} éléments mappés, org unit
+            <code style={{ marginLeft: 4 }}>{dhis2.config.org_unit}</code>),
+            format dataValueSets JSON / ADX 2.0. {dhis2QueueLine(dhis2)}.
+          </p>
+          <p style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <label htmlFor="dhis2-week" style={{ fontSize: 13 }}>Semaine ISO :</label>
+            <input id="dhis2-week" value={dhis2Week} data-testid="epi-dhis2-week"
+              onChange={(e) => setDhis2Week(e.target.value.toUpperCase().trim())}
+              placeholder="2026W38" size={9}
+              style={{ padding: "4px 6px" }} />
+            <button type="button" onClick={exportDhis2} disabled={dhis2Busy}
+              data-testid="epi-dhis2-export">⬆ Exporter la semaine</button>
+            <button type="button" onClick={pushDhis2} disabled={dhis2Busy}
+              data-testid="epi-dhis2-push">🚀 Pousser la file vers DHIS2</button>
+          </p>
+          {dhis2Msg && (
+            <p className="note" data-testid="epi-dhis2-msg">{dhis2Msg}</p>
+          )}
+          {dhis2Export && (
+            <>
+              <p style={{ margin: "8px 0 4px" }}>
+                <strong>{dhis2Export.rows_analyzed}</strong> analyses agrégées pour
+                <strong> {dhis2Export.period}</strong> :
+                {exportSummaryRows(dhis2Export).map((r) => (
+                  <span key={r.key} className="modality-chip on"
+                    style={{ cursor: "default", marginLeft: 6 }}>
+                    {r.label} : <strong>{r.value}</strong>
+                  </span>
+                ))}
+                {exportSummaryRows(dhis2Export).length === 0 && (
+                  <span className="note"> aucune valeur &gt; 0 sur la période</span>
+                )}
+              </p>
+              <details>
+                <summary>Payload dataValueSets ({payloadStats(dhis2Export.payload).values} valeurs)</summary>
+                <pre data-testid="epi-dhis2-payload"
+                  style={{ fontSize: 11.5, maxHeight: 240, overflow: "auto" }}>
+                  {dhis2Export.payload}
+                </pre>
+              </details>
+            </>
+          )}
+          <p className="note" style={{ marginTop: 8 }}>
+            Défaut <strong>offline_queue</strong> : aucun envoi réseau implicite.
+            Push serveur MSP-CI réel via <code>TROPIRAG_DHIS2_BASE_URL</code> +
+            <code>TROPIRAG_DHIS2_USERNAME</code> + <code>TROPIRAG_DHIS2_PASSWORD</code>
+            (mode <code>push</code>) — UIDs à confirmer avec le dictionnaire de
+            données national (validateur <code>scripts/validate_dhis2_uids.py</code>).
+          </p>
+        </div>
+      )}
+
       <p className="note" style={{ marginTop: 14 }}>
         Indicateurs agrégés en lecture seule (database-per-service) — aucune donnée
-        nominative. Branchement DHIS2 prévu en production (interopérabilité FHIR/ADX).
+        nominative. Export DHIS2 branché sur la surveillance TropiRAG (comptes
+        déterministes, même source de vérité que le cartographe d'éclosions).
       </p>
     </div>
   );

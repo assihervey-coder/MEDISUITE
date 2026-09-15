@@ -212,6 +212,41 @@ class TestExporteur:
         assert exp.queue.pending()
 
 
+class TestConfiguration:
+    """Surcharges environnementales — branchement serveur réel MSP-CI."""
+
+    def test_surcharges_env_completes(self, monkeypatch, tmp_path):
+        monkeypatch.setenv("TROPIRAG_DHIS2_MODE", "push")
+        monkeypatch.setenv("TROPIRAG_DHIS2_BASE_URL", "https://dhis2.msp-ci.gouv.ci/api")
+        monkeypatch.setenv("TROPIRAG_DHIS2_USERNAME", "tropirag-export")
+        monkeypatch.setenv("TROPIRAG_DHIS2_ORG_UNIT", "OU-CI-ABJ-01")
+        monkeypatch.setenv("TROPIRAG_DHIS2_QUEUE_PATH", str(tmp_path / "q.json"))
+        cfg = Dhis2Config.from_yaml(tmp_path / "absent.yaml")  # défauts + env
+        assert cfg.mode == "push"
+        assert cfg.base_url == "https://dhis2.msp-ci.gouv.ci/api"
+        assert cfg.username == "tropirag-export"
+        assert cfg.org_unit == "OU-CI-ABJ-01"
+        assert str(cfg.queue_path) == str(tmp_path / "q.json")
+        assert cfg.transport_ready  # base_url + username → push possible
+
+    def test_env_vide_ne_surcharge_pas(self, monkeypatch):
+        monkeypatch.setenv("TROPIRAG_DHIS2_MODE", "")
+        monkeypatch.setenv("TROPIRAG_DHIS2_BASE_URL", "")
+        cfg = Dhis2Config.from_yaml()
+        assert cfg.mode == "offline_queue"  # défaut YAML préservé
+        assert cfg.base_url is None
+        assert not cfg.transport_ready
+
+    def test_mdp_jamais_en_clair_dans_la_config(self, monkeypatch):
+        """Le mot de passe ne vit QUE dans la variable d'env dédiée."""
+        monkeypatch.setenv("TROPIRAG_DHIS2_PASSWORD", "s3cr3t-msp")
+        cfg = Dhis2Config.from_yaml()
+        assert "s3cr3t" not in repr(cfg)
+        import os
+
+        assert os.environ["TROPIRAG_DHIS2_PASSWORD"] == "s3cr3t-msp"
+
+
 class TestAPIRoutes:
     """Routes /api/v1/export/dhis2 — intégration avec DB jetable."""
 

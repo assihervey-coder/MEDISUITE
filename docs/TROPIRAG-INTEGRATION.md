@@ -42,24 +42,40 @@ injectés par `run_all.py`). En production, définir `TROPIRAG_API_KEY`
 (l'auth middleware TropiRAG s'active dès que la clé est non vide) et router
 via l'api-gateway.
 
-## 2 bis. Mesh LLM local — activation (`TROPIRAG_OLLAMA_URL`)
+## 2 bis. Mesh LLM local — mono-nœud (`TROPIRAG_OLLAMA_URL`) et multi-nœuds GPU (`TROPIRAG_OLLAMA_NODES`)
 
 ```bash
 # Mono-commande : nœud Ollama réel si binaire présent, sinon nœud SIMULÉ
 # embarqué (tropirag/scripts/mock_ollama_server.py — réponses déterministes
 # ancrées sur les preuves du prompt, aucun contenu clinique inventé),
 # puis redémarrage de tropirag-service en mode mesh :
-scripts/dev/start_ollama_mesh.sh            # port 11434 par défaut
+scripts/dev/start_ollama_mesh.sh            # mono-nœud, port 11434 par défaut
 
-# Équivalent manuel (nœuds réels, multi-nœuds éventuel) :
+# MULTI-NŒUDS GPU — topologie tropirag/deployment/ollama/nodes.yaml (4 nœuds) :
+scripts/dev/start_ollama_mesh.sh --multi
+#   node1 :11434 input-evidence (speech/vision/embeddings/reranking)
+#   node2 :11435 reasoning-a    (text : med42-v2-70b, openbiollm-70b)
+#   node3 :11436 reasoning-b    (réplique de node2 — domaine de panne distinct)
+#   node4 :11437 audit-standby  (deepseek-r1-distill-32b)
+# Avec le binaire ollama : un serveur ollama réel par nœud (OLLAMA_HOST/OLLAMA_MODELS
+# dédiés) ; sinon n nœuds simulés avec les sous-ensembles de modèles par rôle.
+
+# Équivalent manuel (nœuds GPU réels, DNS interne) :
 export TROPIRAG_INFERENCE_MODE=ollama
-export TROPIRAG_OLLAMA_URL=http://127.0.0.1:11434      # nœud unique
-# export TROPIRAG_OLLAMA_NODES=text=http://node1:11434,vision=http://node1:11434
+export TROPIRAG_OLLAMA_URL=http://node2:11434                      # nœud texte par défaut
+export TROPIRAG_OLLAMA_NODES="speech=http://node1:11434,vision=http://node1:11434,\
+embeddings=http://node1:11434,reranking=http://node1:11434,text=http://node2:11434,\
+replicas=http://node3:11434|http://node4:11434"
 PYTHONPATH=. python services/run_all.py --up --only tropirag-service
 ```
 
-- `GET /api/v1/inference/nodes` : topologie réelle (joignabilité, version,
-  modèles, latence, pulls manquants) — consommé par le badge du portail.
+- **Routage par famille** (`OllamaGateway`) : modèle → famille (registre) →
+  nœud ; ordre de repli déterministe famille → défaut → **répliques**
+  (`replicas=URL|URL` ou `replica=` répétable) — si node2 tombe, la synthèse
+  textuelle bascule sur node3 sans intervention.
+- `GET /api/v1/inference/nodes` : topologie réelle (joignabilité par nœud,
+  version, modèles, latence, routage familles, répliques, pulls manquants) —
+  consommé par le badge du portail (« Mesh LLM local actif (4 nœuds) »).
 - Mode mesh actif : `POST /api/v1/cases` accepte `use_ai: true` → synthèse
   Med42 **auditée par le Safety Gate** (couverture de preuves, détection
   d'hallucinations) ; refus possible, repli déterministe automatique.
@@ -118,20 +134,56 @@ rural CI, TDR palu positif →
   sur 3 semaines) : `scripts/dev/seed_tropirag_surveillance.py`
   (idempotent — manifeste `data/tropirag-surv-seed.json`).
 
+## 6 bis. DHIS2 réel — export de la surveillance (MSP-CI)
+
+La surveillance est branchée sur le système national DHIS2 (V1.3 TropiRAG) :
+
+- **API** : `POST /api/v1/export/dhis2` (agrège une semaine ISO en
+  dataValueSets — 19 indicateurs mappés sur le dictionnaire MSP-CI,
+  `configs/integrations/dhis2.yaml`), `GET .../status` (file + config),
+  `POST .../push` (envoi explicite de la file). Formats : JSON, CSV, ADX 2.0.
+- **Sécurité** : mode `offline_queue` par défaut — aucun envoi réseau
+  implicite ; le push est un acte explicite (utilisateur ou cron MSP-CI).
+- **Portail** (écran Épidémiologie, panneau « Export DHIS2 ») : statut
+  (mode, org unit, file en attente/envoyés/échecs), export de la semaine
+  ISO courante ou saisie (`2026W38`), chips d'indicateurs agrégés, aperçu
+  du payload dataValueSets, bouton push.
+- **Serveur réel** (MSP-CI) via variables d'environnement (exposées par
+  `services/registry.py`, surchargeables à chaud) :
+  `TROPIRAG_DHIS2_MODE=push` + `TROPIRAG_DHIS2_BASE_URL` +
+  `TROPIRAG_DHIS2_USERNAME` + `TROPIRAG_DHIS2_PASSWORD` (jamais en clair
+  dans la config). Sans serveur : la file accumule, l'UI reste fonctionnelle.
+- **Répétition générale** : `scripts/dev/mock_dhis2_server.py` (port 11440)
+  simule le serveur national — validation E2E complète effectuée :
+  export 2026W38 (25 analyses → 7 valeurs) → file → push HTTP 200
+  (`imported: 7, ignored: 0`) → file marquée « sent ».
+- **Prérequis au passage en production** : recopier les UIDs officiels du
+  dictionnaire DHIS2 du Ministère dans `dhis2.yaml` (remplacer les
+  placeholders `DE-TRPG-*` / `OU-TRPG-*`), puis `python
+  tropirag/scripts/validate_dhis2_uids.py` — le validateur bloque le mode
+  push tant que des placeholders subsistent.
+
 ## 7. Tests
 
-- TropiRAG : **358/358 pytest** (`cd tropirag && PYTHONPATH=src TROPIRAG_ROOT=$PWD python -m pytest tests`)
-- Portail : vitest (logique `tropirag.ts` : payload, badges, déduplication,
-  mesh ; `outbreaks.ts` : carte, signaux, libellés), `tsc -b`, E2E navigateur
-  (login → /decision avec badge mesh + synthèse IA → /epidemiologie carte
-  des éclosions).
+- TropiRAG : **364/364 pytest** (`cd tropirag && PYTHONPATH=src TROPIRAG_ROOT=$PWD python -m pytest tests`) — dont réplicas multi-nœuds (routage,
+  repli sur réplique) et surcharges env DHIS2 (push, mdp jamais en clair).
+- Portail : vitest **84/84** (logique `tropirag.ts` : payload, badges,
+  déduplication, mesh ; `outbreaks.ts` : carte, signaux, libellés ;
+  `dhis2.ts` : semaine ISO, badges, file, synthèse export), `tsc -b`,
+  E2E navigateur (login → /decision badge « 4 nœuds » + synthèse IA →
+  /epidemiologie carte des éclosions + panneau DHIS2 export→push).
 
 ## 8. Limites assumées (v0.5)
 
 - En mode déterministe pur, la couche LLM reste désactivée ; l'activation
-  se fait via `TROPIRAG_INFERENCE_MODE` + `TROPIRAG_OLLAMA_URL`
-  (cf. § 2 bis) — en sandbox sans GPU, le nœud simulé embarqué joue le
-  rôle du mesh sans inventer de contenu clinique.
+  se fait via `TROPIRAG_INFERENCE_MODE` + `TROPIRAG_OLLAMA_URL`/
+  `TROPIRAG_OLLAMA_NODES` (cf. § 2 bis) — en sandbox sans GPU, les nœuds
+  simulés embarqués jouent le rôle du mesh sans inventer de contenu
+  clinique ; le jour du montage GPU réel, `--multi` avec le binaire ollama
+  reproduit la même topologie.
+- DHIS2 : UIDs placeholders tant que le MSP-CI n'a pas confirmé le
+  dictionnaire national (§ 6 bis) ; le push réel est testé contre le
+  récepteur de répétition, pas contre le serveur de production.
 - Pas de TLS interne entre le portail et le service (réseau de dev) ;
   en production : reverse-proxy + `TROPIRAG_API_KEY`.
 - L'ingestion du corpus (`make -C tropirag index`) est manuelle ; les

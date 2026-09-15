@@ -81,6 +81,8 @@ class Dhis2Config:
             cfg.mode = v
         if v := os.environ.get("TROPIRAG_DHIS2_BASE_URL"):
             cfg.base_url = v
+        if v := os.environ.get("TROPIRAG_DHIS2_USERNAME"):
+            cfg.username = v
         if v := os.environ.get("TROPIRAG_DHIS2_ORG_UNIT"):
             cfg.org_unit = v
         if v := os.environ.get("TROPIRAG_DHIS2_QUEUE_PATH"):
