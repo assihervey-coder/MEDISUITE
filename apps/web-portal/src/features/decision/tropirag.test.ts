@@ -1,8 +1,8 @@
-/** Tests de la logique TropiRAG — payload, badges, déduplication, libellés. */
+/** Tests de la logique TropiRAG — payload, badges, déduplication, libellés, mesh LLM. */
 import { describe, expect, it } from "vitest";
 import {
-  buildCasePayload, dedupeTests, pickLabel, SEVERITY_LABEL, TR_FORM_DEFAULT,
-  urgencyClass, URGENCY_LABEL, type TrForm,
+  buildCasePayload, dedupeTests, meshBadgeLabel, meshFromNodesReport, pickLabel,
+  SEVERITY_LABEL, TR_FORM_DEFAULT, urgencyClass, URGENCY_LABEL, type TrForm,
 } from "./tropirag";
 
 const form: TrForm = {
@@ -33,6 +33,37 @@ describe("buildCasePayload", () => {
     const p = buildCasePayload({ ...TR_FORM_DEFAULT, temperatureC: null, rdtMalaria: "" }) as Record<string, any>;
     expect(p.vitals).toBeNull();
     expect(p.lab_results).toEqual([]);
+  });
+
+  it("active use_ai uniquement sur demande explicite (synthèse mesh)", () => {
+    expect((buildCasePayload(TR_FORM_DEFAULT) as Record<string, any>).use_ai).toBe(false);
+    expect((buildCasePayload(TR_FORM_DEFAULT, true) as Record<string, any>).use_ai).toBe(true);
+  });
+});
+
+describe("mesh LLM local", () => {
+  it("réduit le rapport /inference/nodes en état UI", () => {
+    const m = meshFromNodesReport({
+      inference_mode: "ollama",
+      nodes: { "http://127.0.0.1:11434": { reachable: true, version: "0.5.7-tropirag-mock", models: 9, latency_ms: 8 } },
+    });
+    expect(m).toEqual({ mode: "ollama", nodeUp: true, nodeCount: 1, version: "0.5.7-tropirag-mock" });
+  });
+
+  it("nœud KO → repli déterministe signalé, pas de faux positif", () => {
+    const m = meshFromNodesReport({
+      inference_mode: "ollama",
+      nodes: { "http://127.0.0.1:11434": { reachable: false } },
+    });
+    expect(m.nodeUp).toBe(false);
+    expect(meshBadgeLabel(m)).toContain("injoignable");
+  });
+
+  it("libellés de badge des trois états", () => {
+    expect(meshBadgeLabel({ mode: "ollama", nodeUp: true, nodeCount: 2 })).toBe("Mesh LLM local actif (2 nœuds)");
+    expect(meshBadgeLabel({ mode: "ollama", nodeUp: false, nodeCount: 1 })).toContain("repli déterministe");
+    expect(meshBadgeLabel({ mode: "deterministic", nodeUp: false, nodeCount: 1 })).toBe("IA déterministe hors-ligne");
+    expect(meshBadgeLabel(null)).toBe("mesh : ?");
   });
 });
 

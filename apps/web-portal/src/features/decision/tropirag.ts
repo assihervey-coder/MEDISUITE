@@ -86,10 +86,47 @@ export interface TrCaseResult {
   narrative?: string;
   refusal?: string | null;
   disclaimer?: string;
+  ai_synthesis?: string | null;   // synthèse IA du mesh (auditée par le Safety Gate)
+  ai_layer?: string;              // "deterministic" | "ai-validated"
 }
 
-/** Construit le payload POST /api/v1/cases depuis le formulaire. */
-export function buildCasePayload(f: TrForm): Record<string, unknown> {
+/** État du mesh LLM local (GET /api/v1/inference/nodes). */
+export interface TrMesh {
+  mode: string;            // deterministic | ollama | vllm
+  nodeUp: boolean;         // au moins un nœud joignable
+  nodeCount: number;
+  version?: string;
+}
+
+/** Réduit le rapport /inference/nodes en état exploitable par l'UI. */
+export function meshFromNodesReport(rep: {
+  inference_mode?: string;
+  nodes?: Record<string, { reachable?: boolean; version?: string; models?: number; latency_ms?: number }>;
+}): TrMesh {
+  const nodes = Object.entries(rep.nodes ?? {});
+  const up = nodes.filter(([, v]) => v.reachable);
+  return {
+    mode: rep.inference_mode ?? "deterministic",
+    nodeUp: up.length > 0,
+    nodeCount: nodes.length,
+    version: up[0]?.[1].version,
+  };
+}
+
+/** Libellé du badge mesh (affichage + tests). */
+export function meshBadgeLabel(m: TrMesh | null): string {
+  if (!m) return "mesh : ?";
+  if (m.mode !== "deterministic" && m.nodeUp) {
+    return `Mesh LLM local actif (${m.nodeCount} nœud${m.nodeCount > 1 ? "s" : ""})`;
+  }
+  if (m.mode !== "deterministic") return "Mesh LLM configuré — nœud injoignable (repli déterministe)";
+  return "IA déterministe hors-ligne";
+}
+
+/** Construit le payload POST /api/v1/cases depuis le formulaire.
+ *  useAi : demande la synthèse IA du mesh local (le Safety Gate reste
+ *  l'autorité finale — refus possible, repli déterministe assuré). */
+export function buildCasePayload(f: TrForm, useAi = false): Record<string, unknown> {
   const vitals: Record<string, number> = {};
   if (f.temperatureC !== null && !Number.isNaN(f.temperatureC)) vitals.temperature_c = f.temperatureC;
   const travel: Record<string, unknown> = {
@@ -109,7 +146,7 @@ export function buildCasePayload(f: TrForm): Record<string, unknown> {
     travel,
     lab_results: labResults,
     free_text: f.freeText || null,
-    use_ai: false,
+    use_ai: useAi,
     language: "fr",
   };
 }

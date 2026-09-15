@@ -3,6 +3,7 @@
 Convention de ports : 800x = cœur, 81xx = spécialités (ordre MODULES.md),
 82xx = transverses, 83xx = passerelles spécialisées.
 """
+import os
 
 SERVICES: list[dict] = [
     # --- passerelle principale + cœur
@@ -39,12 +40,21 @@ SERVICES: list[dict] = [
     {"name": "explainability-service", "dir": "services/explainability-service",
      "port": 8303, "module": "src.main:app", "group": "gateway"},
     # --- aide à la décision clinique (TropiRAG intégré — docs/TROPIRAG-INTEGRATION.md)
+    # Mesh LLM local : TROPIRAG_INFERENCE_MODE=deterministic|ollama|vllm ;
+    # TROPIRAG_OLLAMA_URL = nœud unique, TROPIRAG_OLLAMA_NODES = multi-nœuds
+    # (format speech=http://node1:11434,text=http://node2:11434,...).
+    # Surcharges à chaud : export des variables avant `services/run_all.py --up`.
     {"name": "tropirag-service", "dir": "tropirag", "port": 8304,
      "module": "tropirag.api.app:app", "group": "gateway",
      "health_path": "/api/v1/health",
      "env": {"TROPIRAG_ROOT": "{ROOT}/tropirag",
              "TROPIRAG_DB_PATH": "{ROOT}/data/tropirag.db",
-             "TROPIRAG_DATA_DIR": "{ROOT}/tropirag"}},
+             "TROPIRAG_DATA_DIR": "{ROOT}/tropirag",
+             "TROPIRAG_INFERENCE_MODE": os.environ.get(
+                 "TROPIRAG_INFERENCE_MODE", "deterministic"),
+             "TROPIRAG_OLLAMA_URL": os.environ.get(
+                 "TROPIRAG_OLLAMA_URL", "http://127.0.0.1:11434"),
+             "TROPIRAG_OLLAMA_NODES": os.environ.get("TROPIRAG_OLLAMA_NODES", "")}},
 ]
 
 SPECIALTIES: list[tuple[int, str, str]] = [

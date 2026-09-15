@@ -10,9 +10,9 @@ import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { toast } from "../../store/toastStore";
 import {
-  buildCasePayload, dedupeTests, pickLabel, SEVERITY_LABEL, SYMPTOM_FALLBACK,
-  TR_COUNTRIES, TR_FORM_DEFAULT, urgencyClass, URGENCY_LABEL,
-  type TrCaseResult, type TrForm, type TrSymptom,
+  buildCasePayload, dedupeTests, meshBadgeLabel, meshFromNodesReport, pickLabel,
+  SEVERITY_LABEL, SYMPTOM_FALLBACK, TR_COUNTRIES, TR_FORM_DEFAULT, urgencyClass,
+  URGENCY_LABEL, type TrCaseResult, type TrForm, type TrMesh, type TrSymptom,
 } from "./tropirag";
 
 export default function TropiRagConsult() {
@@ -21,12 +21,19 @@ export default function TropiRagConsult() {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<TrCaseResult | null>(null);
   const [error, setError] = useState("");
+  const [mesh, setMesh] = useState<TrMesh | null>(null);
+  const [useAi, setUseAi] = useState(false);
 
   // Taxonomie des symptômes fournie par le backend TropiRAG (repli local sinon).
   useEffect(() => {
     api.get<{ symptoms: TrSymptom[] }>("/api/tropirag/api/v1/symptoms/taxonomy")
       .then((t) => { if (t.symptoms?.length) setSymptoms(t.symptoms); })
       .catch(() => { /* repli SYMPTOM_FALLBACK déjà en place */ });
+    // Mesh LLM local : état des nœuds Ollama (TROPIRAG_OLLAMA_URL / _NODES).
+    api.get<Parameters<typeof meshFromNodesReport>[0]>(
+      "/api/tropirag/api/v1/inference/nodes",
+    ).then((r) => setMesh(meshFromNodesReport(r)))
+      .catch(() => setMesh({ mode: "deterministic", nodeUp: false, nodeCount: 0 }));
   }, []);
 
   const toggleSymptom = (code: string): void =>
@@ -41,7 +48,8 @@ export default function TropiRagConsult() {
     setBusy(true);
     setError("");
     try {
-      const r = await api.post<TrCaseResult>("/api/tropirag/api/v1/cases", buildCasePayload(form));
+      const r = await api.post<TrCaseResult>(
+        "/api/tropirag/api/v1/cases", buildCasePayload(form, useAi));
       setResult(r);
       formEl.reset();
       const n = dedupeTests(r.required_tests).length;
@@ -61,7 +69,15 @@ export default function TropiRagConsult() {
 
   return (
     <div>
-      <h2>🧭 Aide à la décision — TropiRAG</h2>
+      <h2>🧭 Aide à la décision — TropiRAG{" "}
+        <span
+          className={`badge ${mesh && mesh.mode !== "deterministic" && mesh.nodeUp ? "ok" : "warn"}`}
+          data-testid="tr-mesh"
+          title="État du mesh LLM local (nœuds Ollama) — la synthèse IA reste sous Safety Gate"
+        >
+          {meshBadgeLabel(mesh)}
+        </span>
+      </h2>
       <p className="banner warn" style={{ marginTop: 8 }}>
         <strong>IA ≠ autorité clinique.</strong> Le moteur applique 170 règles OMS déterministes et
         cite ses sources (OMS · CDC · MSF) — la décision reste médicale. Usage : fièvre + voyage,
@@ -157,11 +173,24 @@ export default function TropiRagConsult() {
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+        <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "center", flexWrap: "wrap" }}>
           <button type="submit" disabled={busy} data-testid="tr-analyze" className="primary">
             {busy ? "Analyse…" : "▶ Analyser le cas (règles + RAG)"}
           </button>
           <button type="button" onClick={reset} disabled={busy}>Réinitialiser</button>
+          {mesh && mesh.mode !== "deterministic" && mesh.nodeUp && (
+            <label
+              style={{ marginLeft: "auto" }}
+              title="Ajoute une synthèse rédigée par le LLM local du mesh (Med42). Le Safety Gate l'audite : couverture des preuves, aucune invention — refus possible."
+            >
+              <input
+                type="checkbox"
+                checked={useAi}
+                onChange={(e) => setUseAi(e.target.checked)}
+                data-testid="tr-use-ai"
+              />{" Synthèse IA du mesh (auditée)"}
+            </label>
+          )}
         </div>
       </form>
 
@@ -238,9 +267,24 @@ export default function TropiRagConsult() {
             </>
           )}
 
+          {result.ai_synthesis && (
+            <>
+              <h4 style={{ marginTop: 16 }}>Synthèse IA du mesh local — auditée par le Safety Gate</h4>
+              <p
+                style={{ whiteSpace: "pre-wrap", background: "rgba(106,154,122,.10)", padding: 12, borderRadius: 8, border: "1px solid rgba(106,154,122,.35)" }}
+                data-testid="tr-ai-synthesis"
+              >
+                {result.ai_synthesis}
+              </p>
+              <p className="note">Couche finale : {result.ai_layer === "ai-validated"
+                ? "IA validée (couverture de preuves vérifiée)"
+                : "déterministe"} — la décision reste médicale.</p>
+            </>
+          )}
+
           {result.narrative && (
             <>
-              <h4 style={{ marginTop: 16 }}>Synthèse clinique</h4>
+              <h4 style={{ marginTop: 16 }}>Synthèse clinique déterministe</h4>
               <p style={{ whiteSpace: "pre-wrap", background: "rgba(127,127,127,.08)", padding: 12, borderRadius: 8 }}>
                 {result.narrative}
               </p>

@@ -1,9 +1,14 @@
 /** Épidémiologie (GOOD TO HAVE) — surveillance santé publique ivoirienne :
  *  paludisme (courbe hebdomadaire + positivité TDR), cascade VIH, activité
- *  événementielle. Sources : analytics-service (aggregation read-only). */
+ *  événementielle, carte des éclosions TropiRAG (14 districts, comptes
+ *  déterministes). Sources : analytics-service + tropirag-service. */
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../../services/api";
 import { downloadCsv, toCsv } from "../../utils/csv";
+import {
+  buildMapTiles, nationalChips, outbreakLines, type TrSurveillance,
+} from "./outbreaks";
 
 interface Palu {
   annee: number;
@@ -51,6 +56,8 @@ export default function Epidemiology() {
   const [palu, setPalu] = useState<Palu | null>(null);
   const [vih, setVih] = useState<Vih | null>(null);
   const [act, setAct] = useState<Activite | null>(null);
+  const [surv, setSurv] = useState<TrSurveillance | null>(null);
+  const [survErr, setSurvErr] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -61,6 +68,11 @@ export default function Epidemiology() {
     ])
       .then(([p, v, a]) => { setPalu(p); setVih(v); setAct(a); })
       .catch((e) => setError(e.message));
+    // Surveillance éclosions TropiRAG : échec en mode dégradé — n'affecte
+    // pas les indicateurs analytics (disponibilité indépendante des services).
+    api.get<TrSurveillance>("/api/tropirag/api/v1/surveillance/map?days=30")
+      .then(setSurv)
+      .catch((e) => setSurvErr((e as Error).message));
   }, []);
 
   function exportPalu() {
@@ -145,6 +157,70 @@ export default function Epidemiology() {
           <p className="note">Total : {act.total} événements traités par le bus d'intégration.</p>
         </div>
       </div>
+
+      {survErr && (
+        <p className="note" style={{ marginTop: 14 }}>
+          Surveillance TropiRAG indisponible (tropirag-service injoignable) : {survErr}
+        </p>
+      )}
+
+      {surv && (
+        <div className="card" style={{ marginTop: 14 }} data-testid="epi-outbreaks">
+          <h3>⚠ Surveillance des éclosions — TropiRAG (14 districts sanitaires, {surv.window_days} j)</h3>
+          <p className="note">
+            Agrégation <strong>100 % déterministe</strong> des analyses TropiRAG par district de
+            voyage (aucune IA dans le comptage — même source de vérité que l'export DHIS2).
+            Signal = progression de la dernière semaine vs précédente (+2 cas, seuil ≥ 3).
+          </p>
+
+          {surv.outbreaks.length > 0 ? (
+            <div className="banner warn" role="alert">
+              <strong>Signaux d'éclosion actifs :</strong>
+              <ul style={{ margin: "6px 0 0 18px" }} data-testid="epi-outbreak-list">
+                {outbreakLines(surv).map((l) => <li key={l}>{l}</li>)}
+              </ul>
+            </div>
+          ) : (
+            <p className="note">✓ Aucun signal d'éclosion sur la fenêtre ({surv.total_cases} cas analysés).</p>
+          )}
+
+          <div className="epi-outbreak-map" style={{ marginTop: 12 }}>
+            {buildMapTiles(surv).map((t) => (
+              <div key={t.key}
+                className={`epi-tile ${t.outbreak ? "outbreak" : ""}`}
+                style={{
+                  gridColumn: t.col, gridRow: t.row,
+                  background: t.tone,
+                  border: t.outbreak ? "2px solid #b3402f" : "1px solid var(--border, rgba(127,127,127,.25))",
+                }}
+                title={t.title}
+                data-testid={`epi-district-${t.key}${t.outbreak ? " outbreak" : ""}`}
+              >
+                <span className="epi-tile-town">{t.chief_town}</span>
+                <span className="epi-tile-cases">{t.outbreak ? "⚠ " : ""}{t.cases} cas</span>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ marginTop: 10 }}>
+            {nationalChips(surv).map((c) => (
+              <span key={c.label} className="modality-chip on" style={{ cursor: "default", marginRight: 6 }}>
+                {c.label} : <strong>{c.n}</strong>
+              </span>
+            ))}
+            {surv.non_localises.cases > 0 && (
+              <span className="modality-chip" style={{ cursor: "default" }}>
+                non localisés : <strong>{surv.non_localises.cases}</strong>
+              </span>
+            )}
+          </p>
+
+          <p className="note" style={{ marginTop: 8 }}>
+            <Link to="/decision">🧭 Analyser un cas fièvre + voyage</Link> — chaque analyse alimente
+            la surveillance (district résolu depuis le segment CI du voyage).
+          </p>
+        </div>
+      )}
 
       <p className="note" style={{ marginTop: 14 }}>
         Indicateurs agrégés en lecture seule (database-per-service) — aucune donnée
