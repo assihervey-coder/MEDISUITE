@@ -192,6 +192,55 @@ La surveillance est branchée sur le système national DHIS2 (V1.3 TropiRAG) :
   /epidemiologie carte des éclosions + panneau DHIS2 export→push→cron →
   /study promoteur sans faux 403).
 
+## 7 bis. Gouvernance clinique — verrou investigation R6-R8 / M+18
+
+Le bandeau réglementaire (« Sorties IA NON VALIDÉES cliniquement —
+investigation R6-R8 en cours, verrou M+18 ; toute décision clinique sur ces
+sorties est interdite. », clé i18n `scr.ai_banner`) est désormais **appliqué
+techniquement**, en défense en profondeur — pas seulement affiché :
+
+- **Source de vérité** : `tropirag/governance/investigation.py` — descripteur
+  versionné (protocole MEDISUITE-CI-01, phases R6/R7/R8, verrou M+18,
+  références MDR Annexe XV / ISO 14155 / MEDDEV 2.7/1) + calendrier M+
+  (M0 défaut 2025-06-01 → verrou de base **2026-12-01**, surcharge
+  `MEDISUITE_GOVERNANCE_M0`). Mode fail-closed : `certified` (post-marquage
+  CE) exige le double opt-in `MEDISUITE_GOVERNANCE_MODE=certified` **ET**
+  `MEDISUITE_GOVERNANCE_CE_ACK=ce` — toute autre valeur retombe sur
+  `locked`.
+- **Tampon obligatoire des sorties CDS** : middleware
+  `GovernanceMiddleware` — toute réponse décisionnelle (`/api/v1/cases`,
+  `/api/v1/clinical`, `/api/v1/evidence`, `/api/v1/surveillance`) porte le
+  bloc JSON `governance: {statut, protocole, phases_en_cours, verrou,
+  decision_clinique: "interdite", avis, references}` + en-têtes
+  `X-Governance-Status/Lock/Decision`. Le tampon subsiste en mode
+  `certified` (traçabilité réglementaire permanente).
+- **Garde de matérialisation (451)** : `POST /api/v1/decision/finalize` →
+  **451 Unavailable For Legal Reasons** tant que l'investigation est
+  ouverte (`error: clinical_decision_locked`, reprise documentée « après
+  marquage CE ») — convertir une sortie IA en décision clinique est bloqué
+  au niveau API, pas seulement déconseillé dans l'UI.
+- **Portail** : bandeau partagé `features/governance/GovernanceBanner.tsx`
+  sur **/decision** (plus tampon par-sortie `OutputStamp` sous chaque
+  restitution), **/epidemiologie**, **/study** (calendrier indicatif M+18
+  dans la carte verrou) et le gabarit des **28 écrans AiAssist** (texte i18n
+  conservé, 4 langues). Logique pure `features/governance/investigation.ts`
+  (miroir du backend : addMonths, m18Status, countdownLabel).
+- **Simulation** : `python scripts/dev/simulate_governance_timeline.py
+  [--live] [--m0 YYYY-MM-DD]` — calendrier R5→R8 mois par mois avec verdicts
+  du garde (451 jusqu'au CE), cohorte eCRF simulée (inclusions, requêtes
+  SDV, sûreté DSMB, 144/240 sujets à M+15) et, en `--live`, vérification du
+  service réel : état `/governance`, tampon sur `/clinical/analyze`, refus
+  451 sur `/decision/finalize`.
+- **Tests** : 23 pytest (`tests/unit/governance/` — phrase exacte, fail-closed
+  double opt-in, calendrier bissextile, tampons TestClient, garde 451) + 13
+  vitest (`investigation.test.ts`). Suite : **399/399 pytest**, **103/103
+  vitest**, `tsc -b` OK.
+
+> Distinction honnête affichée sur /study : le **verrou eCRF réel** (posé,
+> dérivé de l'état de la base) pilote la phase R6→R7 de l'écran ; le
+> **calendrier M+18 du bandeau** est la simulation réglementaire du plan de
+> validation (M0 simulé), les deux sont étiquetés séparément.
+
 ## 8. Limites assumées (v0.5)
 
 - En mode déterministe pur, la couche LLM reste désactivée ; l'activation

@@ -27,6 +27,8 @@ import {
   TIMELINE,
   type LockForm,
 } from "./status-logic";
+import GovernanceBanner from "../governance/GovernanceBanner";
+import { countdownLabel, m18Status } from "../governance/investigation";
 
 const BASE = "/api/ecrf/api/v1/ecrf";
 
@@ -163,6 +165,8 @@ export default function StudyStatus() {
         <span className="badge critical">🔴 jusqu'à R6-R8</span>
       </p>
 
+      <GovernanceBanner testId="governance-banner-study" />
+
       {!online && (
         <p className="badge warn" style={{ display: "inline-block", marginTop: 8 }}>
           Hors connexion — ce cockpit lit des indicateurs vivants, aucune donnée
@@ -217,6 +221,9 @@ export default function StudyStatus() {
       {/* ── Verrou de base M+18 ─────────────────────────────────────── */}
       <div className="card" style={cardStyle}>
         <h3>Verrou de base (lock M+18) — protocole §7.4</h3>
+        <p className="sub" style={{ marginTop: 0 }}>
+          ⏳ Calendrier indicatif (jalon M0 simulé 2025-06-01) : {countdownLabel(m18Status())}
+        </p>
         <div className="cards">
           <div className="card">
             <div className="sub">État du verrou</div>

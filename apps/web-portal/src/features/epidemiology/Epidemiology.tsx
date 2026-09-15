@@ -15,6 +15,7 @@ import {
   lastRunLabel, payloadStats, type Dhis2CronStatus, type Dhis2ExportResult,
   type Dhis2PushResult, type Dhis2Status,
 } from "./dhis2";
+import GovernanceBanner from "../governance/GovernanceBanner";
 
 interface Palu {
   annee: number;
@@ -153,6 +154,8 @@ export default function Epidemiology() {
   return (
     <div>
       <h2>Épidémiologie — surveillance santé publique 🇨🇮</h2>
+
+      <GovernanceBanner testId="governance-banner-epi" />
 
       <div className="detail-grid">
         <div className="card">

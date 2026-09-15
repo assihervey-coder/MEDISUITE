@@ -9,6 +9,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { toast } from "../../store/toastStore";
+import GovernanceBanner, { OutputStamp } from "../governance/GovernanceBanner";
 import {
   buildCasePayload, dedupeTests, meshBadgeLabel, meshFromNodesReport, pickLabel,
   SEVERITY_LABEL, SYMPTOM_FALLBACK, TR_COUNTRIES, TR_FORM_DEFAULT, urgencyClass,
@@ -83,6 +84,8 @@ export default function TropiRagConsult() {
         cite ses sources (OMS · CDC · MSF) — la décision reste médicale. Usage : fièvre + voyage,
         Afrique de l'Ouest.
       </p>
+
+      <GovernanceBanner testId="governance-banner-decision" />
 
       <form onSubmit={analyze} style={{ marginTop: 12 }}>
         <div className="detail-grid">
@@ -199,6 +202,8 @@ export default function TropiRagConsult() {
       {result && (
         <div style={{ marginTop: 20 }} data-testid="tr-result">
           <h3>Résultat de l'analyse {result.case_id ? <code style={{ fontSize: 12 }}>{result.case_id}</code> : ""}</h3>
+
+          <OutputStamp testId="governance-stamp-decision" />
 
           <p>
             Urgence : <span className={`badge ${urgencyClass(result.urgency)}`}>

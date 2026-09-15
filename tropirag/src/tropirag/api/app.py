@@ -58,6 +58,12 @@ def create_app() -> FastAPI:
     app.add_middleware(AuditMiddleware)
     app.add_middleware(RequestIdMiddleware)
     app.add_middleware(ErrorHandlerMiddleware)
+    # V1.4 bis — tampon « investigation » sur les sorties CDS (headers + corps)
+    # + garde 451 : toute matérialisation de décision clinique est interdite
+    # tant que l'investigation MEDISUITE-CI-01 est ouverte (verrou M+18).
+    from tropirag.api.middleware.governance import GovernanceMiddleware
+
+    app.add_middleware(GovernanceMiddleware)
 
     # --- routes ----------------------------------------------------------
     from tropirag.api.routes import (
@@ -89,6 +95,10 @@ def create_app() -> FastAPI:
     app.include_router(export_routes.router, prefix="/api/v1", tags=["export"])
     # V1.3 — surveillance et carte des éclosions
     app.include_router(surveillance_routes.router, prefix="/api/v1", tags=["surveillance"])
+    # V1.4 bis — gouvernance : état du verrou M+18 + garde de décision 451
+    from tropirag.api.routes import governance as governance_routes
+
+    app.include_router(governance_routes.router, prefix="/api/v1", tags=["governance"])
 
     @app.get("/metrics")
     async def metrics_endpoint() -> Response_Metrics:

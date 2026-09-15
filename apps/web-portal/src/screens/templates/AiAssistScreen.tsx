@@ -1,10 +1,12 @@
 /** Gabarit « assistance IA » des écrans fins (v0.14) — transparence du module
  *  IA : tâche, modalités, politique des modalités manquantes (ADR-0018),
  *  explicabilité (ADR-0015), features attendues, spec de label — avec
- *  AVERTISSEMENT permanent de validité clinique (🔴 R6-R8, verrou M+18). */
+ *  AVERTISSEMENT permanent de validité clinique (🔴 R6-R8, verrou M+18)
+ *  rendu par le bandeau de gouvernance partagé. */
 import { Link } from "react-router-dom";
 import { siblingRoute } from "../logic";
 import type { ScreenDef } from "../types";
+import GovernanceBanner from "../../features/governance/GovernanceBanner";
 import { useI18n } from "../../i18n/i18n";
 import type { MsgKey } from "../../i18n/resolve";
 
@@ -26,9 +28,7 @@ export default function AiAssistScreen({ screen }: { screen: ScreenDef }) {
         {screen.icon} {t(`mod.${screen.slug}` as MsgKey)} — {t("scr.ia")}
       </h2>
 
-      <p className="error" role="alert">
-        🔴 {t("scr.ai_banner")}
-      </p>
+      <GovernanceBanner text={t("scr.ai_banner")} withCountdown={false} compact testId="governance-banner-ai" />
       <p className="note">{t("scr.ai_consent")}</p>
 
       <table>
